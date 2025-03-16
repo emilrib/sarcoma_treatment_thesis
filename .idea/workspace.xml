@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="add/data_cleaning_process">
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-cleaning.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_clean.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_clean.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/labels.py" beforeDir="false" afterPath="$PROJECT_DIR$/labels.py" afterDir="false" />
-    </list>
+    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="add/new_columns" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,7 +113,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741361577861</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add/new_columns">
+      <option name="closed" value="true" />
+      <created>1742159358781</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1742159358781</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -138,6 +140,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add/data_cleaning_process" />
-    <option name="LAST_COMMIT_MESSAGE" value="add/data_cleaning_process" />
+    <MESSAGE value="add/new_columns" />
+    <option name="LAST_COMMIT_MESSAGE" value="add/new_columns" />
   </component>
 </project>
