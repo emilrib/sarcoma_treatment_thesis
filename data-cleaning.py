@@ -2,23 +2,49 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from nltk.corpus import stopwords
-
+from datetime import datetime
 def import_file_to_dataframe(file_path):
-    df = pd.read_excel(file_path, engine='openpyxl')
+    df = pd.read_csv(file_path)
     #print(df.head())
     return df
-df = import_file_to_dataframe('/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/Timo dataset.xlsx')
+df = import_file_to_dataframe('Metadata.csv')
 
-dataset_raw = df[['id','year_of_birth', 'gender', 'date_first_patientcontact', 'OP_638 - Local situation', 'OP_648 - Presence of metastasis', 'OP_1115 - Specify current status', '(W) Other diagnoses?', 'cci', 'dignity', 'anatomicregion_group', 'anatomicregion_code', 'anatomicregion_code_grouping', 'date_radiologyexam', 'type_radiologyexam','date_first_radiologyexam', 'type_first_radiologyexam', 'date_biopsy','type_biopsy', 'biopsy_neoadjuvant', 'biopsy_grading', 'resection_diagnosis', 'number_all_operation', 'date_reoperation', '(all) Severty of reoperation (zB. Amputation)', 'chemo_indication', 'chemo_first_indication', 'date_chemo_start', 'date_chemo_end', 'chemo_substance', 'chemo_discontinuation', 'chemo_treatmentresponse', 'metastasis_initial', 'metastasis_followup', 'date_last_contact', 'status_last_contact', '(newest) Patient history (clinics, therapy) - latest to newest', 'date_metastasis', 'number_metastasis', 'date_death', '(newest) Patient history (clinics, therapy) - latest to newest', 'endpoint']]
+#add new column to have the first chemo date and the same for the end of the first round of chemo
+def first_round_chemo_start(row):
+    if row["date_chemo_start"] != "-":
+        return row["date_chemo_start"].split("|")[0].strip()
+    return None
+
+
+df["first_round_chemo_start"] = df.apply(first_round_chemo_start, axis=1)
+
+#add new column to have the first chemo date and the same for the end of the first round of chemo
+def first_round_chemo_end(row):
+    if row["date_chemo_end"] != "-":
+        return row["date_chemo_end"].split("|")[0].strip()
+    return None
+
+df["first_round_chemo_end"] = df.apply(first_round_chemo_end, axis=1)
+
+print(df[["id", "first_round_chemo_start", "first_round_chemo_end"]])
+
+dataset_raw = df[['id','year_of_birth', 'gender', 'date_first_patientcontact', 'OP_638 - Local situation', 'OP_648 - Presence of metastasis',
+                  'OP_1115 - Specify current status', '(W) Other diagnoses?', 'cci', 'dignity', 'anatomicregion_group', 'anatomicregion_code',
+                  'anatomicregion_code_grouping', 'date_radiologyexam', 'type_radiologyexam','date_first_radiologyexam', 'type_first_radiologyexam',
+                  'date_biopsy','type_biopsy', 'biopsy_neoadjuvant', 'biopsy_grading', 'resection_diagnosis','resection_grading', 'number_all_operation',
+                  'date_reoperation', '(all) Severty of reoperation (zB. Amputation)', 'chemo_indication', 'chemo_first_indication',
+                  'chemo_substance', 'chemo_discontinuation', 'chemo_treatmentresponse',  'date_chemo_start', 'date_chemo_end',
+                  "first_round_chemo_start", 'first_round_chemo_end','metastasis_initial', 'metastasis_followup', 'date_last_contact',
+                  'status_last_contact', '(newest) Patient history (clinics, therapy) - latest to newest', 'date_metastasis', 'number_metastasis',
+                  'date_death', '(newest) Patient history (clinics, therapy) - latest to newest', 'endpoint']]
 #print(dataset_raw.head())
 
 #check for duplicates
 duplicates = dataset_raw[dataset_raw.duplicated(keep=False)]
 #print(duplicates)
 
-dataset_clean = dataset_raw[dataset_raw['anatomicregion_code_grouping'] != 1]
 
-print(dataset_clean)
+dataset_filtered = dataset_raw[dataset_raw['anatomicregion_code_grouping'] != 1]
 
 """
 def extract_group_words(text):
@@ -42,10 +68,11 @@ group_words_other_diagnosis = pd.DataFrame(group_word_counts.items(), columns=['
 # Display the top 10 most common group words
 print(group_words_other_diagnosis.head(10))
 
+
 """
 
 file_path_output = "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/dataset_clean.csv"
-dataset_clean.to_csv(file_path_output, index=False)
+dataset_filtered.to_csv(file_path_output, index=False)
 
 
 
