@@ -4,47 +4,48 @@ import numpy as np
 from nltk.corpus import stopwords
 from datetime import datetime
 def import_file_to_dataframe(file_path):
-    df = pd.read_csv(file_path)
+    df = pd.read_excel(file_path)
     #print(df.head())
     return df
-df = import_file_to_dataframe('Metadata.csv')
+df = import_file_to_dataframe('Metadata.xlsx')
 
+#print(type(df["Start date of line"]))
 #add new column to have the first chemo date and the same for the end of the first round of chemo
-def first_round_chemo_start(row):
-    if row["date_chemo_start"] != "-":
-        return row["date_chemo_start"].split("|")[0].strip()
-    return None
+def date_retrieval(row):
+    if pd.isnull(row) or row == "-" or row == None:
+        return None
+    elif str(row).strip().lower() == "open":
+        return "open"
+    else:
+        return str(row).split("|")[0].strip()
 
+df["first_round_chemo_start"] = df["Start date of line"].apply(date_retrieval)
+df["first_round_chemo_end"] = df["Optional: End date of line"].apply(date_retrieval)
 
-df["first_round_chemo_start"] = df.apply(first_round_chemo_start, axis=1)
-
+print(df[["Pat ID", "first_round_chemo_start", "first_round_chemo_end"]].head(20))
+#print(df["first_round_chemo_start"].head(14))
 #add new column to have the first chemo date and the same for the end of the first round of chemo
-def first_round_chemo_end(row):
-    if row["date_chemo_end"] != "-":
-        return row["date_chemo_end"].split("|")[0].strip()
-    return None
 
-df["first_round_chemo_end"] = df.apply(first_round_chemo_end, axis=1)
 
-print(df[["id", "first_round_chemo_start", "first_round_chemo_end"]])
 
-dataset_raw = df[['id','year_of_birth', 'gender', 'date_first_patientcontact', 'OP_638 - Local situation', 'OP_648 - Presence of metastasis',
-                  'OP_1115 - Specify current status', '(W) Other diagnoses?', 'cci', 'dignity', 'anatomicregion_group', 'anatomicregion_code',
-                  'anatomicregion_code_grouping', 'date_radiologyexam', 'type_radiologyexam','date_first_radiologyexam', 'type_first_radiologyexam',
-                  'date_biopsy','type_biopsy', 'biopsy_neoadjuvant', 'biopsy_grading', 'resection_diagnosis','resection_grading', 'number_all_operation',
-                  'date_reoperation', '(all) Severty of reoperation (zB. Amputation)', 'chemo_indication', 'chemo_first_indication',
-                  'chemo_substance', 'chemo_discontinuation', 'chemo_treatmentresponse',  'date_chemo_start', 'date_chemo_end',
-                  "first_round_chemo_start", 'first_round_chemo_end','metastasis_initial', 'metastasis_followup', 'date_last_contact',
-                  'status_last_contact', '(newest) Patient history (clinics, therapy) - latest to newest', 'date_metastasis', 'number_metastasis',
-                  'date_death', '(newest) Patient history (clinics, therapy) - latest to newest', 'endpoint']]
+
+dataset_raw = df[['Pat ID','Date of birth', 'Gender', 'date_first_patientcontact_Timo', 'Date of histological diagnosis', 'Histological diagnosis', '(W) Other diagnoses?_Timo',
+                  'Grading (FNCLCC)', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'Affected tissue','resection_necrosis_timo', 'Anatomic side of lesion',
+                  'Tumor maximal size before surgery', 'Type of index surgery', 'number_all_operation_Timo', 'Tumor maximal size (mm)', 'number_all_operation_Timo', '(all) Severty of reoperation (zB. Amputation)_Timo',
+                  'chemo_indication_Timo','Reason for Chemotherapy','chemo_first_indication_Timo','Start date of line','Optional: End date of line', 'chemo_discontinuation_Timo','chemo_treatmentresponse_Timo', 'metastasis_initial_Timo',
+                  'metastasis_followup_Timo','date_metastasis_Timo', 'number_metastasis_Timo', 'date_death_Timo', 'Date of last follow-up', 'Status']]
 #print(dataset_raw.head())
 
 #check for duplicates
 duplicates = dataset_raw[dataset_raw.duplicated(keep=False)]
+
 #print(duplicates)
 
 
-dataset_filtered = dataset_raw[dataset_raw['anatomicregion_code_grouping'] != 1]
+dataset_filtered = dataset_raw[dataset_raw['Affected tissue'] != "Superficial"]
+
+dataset_metadata = dataset_filtered.drop(index=0)
+print(dataset_metadata.head(3))
 
 """
 def extract_group_words(text):
@@ -72,7 +73,7 @@ print(group_words_other_diagnosis.head(10))
 """
 
 file_path_output = "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/dataset_clean.csv"
-dataset_filtered.to_csv(file_path_output, index=False)
+dataset_metadata.to_csv(file_path_output, index=False)
 
 
 

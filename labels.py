@@ -10,7 +10,7 @@ def import_file(file_path):
     return df
 df = import_file(file_path)
 
-#print(df.head(3))
+print(df.head(3))
 
 """
 classification label to determine patients that needed to be reoperated and impact of reoperation
