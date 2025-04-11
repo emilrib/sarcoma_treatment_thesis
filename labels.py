@@ -19,13 +19,26 @@ df = import_file(input_file)
 print(df.head(3))
 
 """
+Binary classification of the gender
+"""
+def gender_label(row):
+    if row == "female":
+        return 1
+    elif row == "male":
+        return 2
+    else:
+        return "error"
+
+df['gender_label'] = df['Gender'].apply(gender_label)
+
+"""
 classification label to determine patients that needed to be reoperated and impact of reoperation
 """
 def reoperation(row):
     if row == 1:
-        return 'No'
+        return 1
     elif row > 1:
-        return 'Yes'
+        return 2
     else:
         return 'error'
 
@@ -36,11 +49,11 @@ classification of metastasis status during the treatment
 """
 def metastasis_label(row):
     if row == '-':
-        return 'No'
+        return 1
     elif row == 0:
-        return 'No'
+        return 1
     else:
-        return 'Yes'
+        return 2
 
 df['metastasis_label'] = df['number_metastasis_Timo'].apply(metastasis_label)
 
@@ -50,27 +63,20 @@ df["date_first_patientcontact_Timo"] = pd.to_datetime(df["date_first_patientcont
 df["date_metastasis_Timo"] = pd.to_datetime(df["date_metastasis_Timo"], format="%Y-%m-%d", errors = "coerce")
 #print(type("date_metastasis_Timo"))
 def classify_metastasis(col1,col2, col3):
-    if col1 == '-' or col1 == None:
-        return 'Metastasis free'
+    if col1 == '-' or pd.isnull(col1):
+        return 1
     elif col2 > col3:
-        return 'Metastasis existed'
+        return 2
     elif col2 < col3:
-        return 'Metastasis Appeared'
+        return 3
+    else:
+        return 0
 
 df['metastasis_status'] = df.apply(lambda row: classify_metastasis(row['number_metastasis_Timo'],row['date_first_patientcontact_Timo'], row['date_metastasis_Timo']), axis =1)
 
-#print(df['PAT ID', 'metastasis_status'])
-#calculate the number of days have passed since the first patient contact and the date of metastasis discovery
-
-
-
-#print(df.columns)
-#print(type(df[["date_metastasis"]]))
-#print(df.dtypes)
-
 #calculate the number of days from the first contact until from the date of discovery of metastasis for patients that did not have
 def days_of_metastasis(col1, col2, col3):
-    if col1 == 'Metastasis Appeared':
+    if col1 == 3:
         return (col2 - col3).days
     else:
         return None
@@ -81,9 +87,9 @@ df["Days_to_metastasis_discovery"] = df.apply(lambda row: days_of_metastasis(row
 #label to heck if chemo was used or not
 def chemo_indication_label(row):
     if row == "-":
-        return "No"
+        return 1
     else:
-        return "Yes"
+        return 2
 
 df["Chemo_status"] = df['chemo_first_indication_Timo'].apply(chemo_indication_label)
 
@@ -124,18 +130,18 @@ def radiotherapy_status(text):
     val_str = str(text).strip().lower()
     match = re.match(r"\[?(\d+)\]?", val_str)
     if match and int(match.group(1)) == 0 or pd.isnull(text):
-        return "No"
+        return 1
     if val_str == "none":
-        return "No"
-    return "Yes"
+        return 1
+    return 2
 
 df["radiation_status"] = df["Indication for radiotherapy"].apply(radiotherapy_status)
 
 #add label to distinguish patients that alive and patients that are not alive
 def death_by_disease(row):
     if row == 3:
-        return "Yes"
-    return "No"
+        return 2
+    return 1
 
 df["deceased_by_disease"] = df['status_label_number'].apply(death_by_disease)
 
@@ -154,5 +160,32 @@ os.makedirs(output_directory, exist_ok=True)
 
 output_file = os.path.join(output_directory, "dataset_labelled.csv")
 
-dataset_labelled.to_csv(output_file, index=False)
+df.to_csv(output_file, index=False)
 print(f"File successfully saved to {output_file}")
+
+"""
+Writing the translation of the binary code
+"""
+
+with open("README.md", "w") as file:
+    file.write(
+        "### Code Legends\n"
+        "#### Gender\n"
+        "- `1`: **Female**\n"
+        "- `2`: **Male**\n\n"
+        "#### Metastasis Classification\n"
+        "- `1`: **Metastasis free** during treatment observation\n"
+        "- `2`: Metastasis existed **before** first patient contact\n"
+        "- `3`: Metastasis appeared **after** first patient contact\n"
+        "- `0`: Metastasis present, discovery date unknown\n\n"
+        "#### Patient Status\n"
+        "- `1`: **NED** (No evidence of disease)\n"
+        "- `2`: **AWD** (Alive with disease)\n"
+        "- `3`: **DOD** (Dead of disease)\n\n"
+        "#### Remaining Labels (Binary Codes)\n"
+        "- `1`: **No**\n"
+        "- `2`: **Yes**\n"
+    )
+
+
+
