@@ -1,18 +1,30 @@
+import os.path
 import pandas as pd
 from datetime import datetime
 import numpy as np
 from nltk.corpus import stopwords
 from datetime import datetime
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+output_directory = os.path.join(current_dir, "output")
+
+input_file = os.path.join(current_dir, "dataset.csv")
+
+
 def import_file_to_dataframe(file_path):
-    df = pd.read_excel(file_path)
+    df = pd.read_csv(file_path)
     #print(df.head())
     return df
-df = import_file_to_dataframe('Metadata.xlsx')
+df = import_file_to_dataframe(input_file)
+
+print(df.head(2))
 
 #print(type(df["Start date of line"]))
 #add new column to have the first chemo date and the same for the end of the first round of chemo
+
+"""
 def date_retrieval(row):
-    if pd.isnull(row) or row == "-" or row == None:
+    if pd.isnull(row) or row == "NA" or row == None:
         return None
     elif str(row).strip().lower() == "open":
         return "open"
@@ -21,19 +33,18 @@ def date_retrieval(row):
 
 df["first_round_chemo_start"] = df["Start date of line"].apply(date_retrieval)
 df["first_round_chemo_end"] = df["Optional: End date of line"].apply(date_retrieval)
-
-print(df[["Pat ID", "first_round_chemo_start", "first_round_chemo_end"]].head(20))
+"""
+#print(df[["Pat ID", "first_round_chemo_start", "first_round_chemo_end"]].head(20))
 #print(df["first_round_chemo_start"].head(14))
 #add new column to have the first chemo date and the same for the end of the first round of chemo
 
 
-
-
 dataset_raw = df[['Pat ID','Date of birth', 'Gender', 'date_first_patientcontact_Timo', 'Date of histological diagnosis', 'Histological diagnosis', '(W) Other diagnoses?_Timo',
                   'Grading (FNCLCC)', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'Affected tissue','resection_necrosis_timo', 'Anatomic side of lesion',
-                  'Tumor maximal size before surgery', 'Type of index surgery', 'number_all_operation_Timo', 'Tumor maximal size (mm)', 'number_all_operation_Timo', '(all) Severty of reoperation (zB. Amputation)_Timo',
-                  'chemo_indication_Timo','Reason for Chemotherapy','chemo_first_indication_Timo','Start date of line','Optional: End date of line', 'chemo_discontinuation_Timo','chemo_treatmentresponse_Timo', 'metastasis_initial_Timo',
-                  'metastasis_followup_Timo','date_metastasis_Timo', 'number_metastasis_Timo', 'date_death_Timo', 'Date of last follow-up', 'Status']]
+                  'Tumor maximal size before surgery', 'Type of index surgery', 'number_all_operation_Timo', 'Tumor maximal size (mm)',
+                  '(all) Severty of reoperation (zB. Amputation)_Timo',
+                  'Indication for radiotherapy','Reason for Chemotherapy','chemo_first_indication_Timo','Start date of line','Optional: End date of line', 'chemo_discontinuation_Timo','chemo_treatmentresponse_Timo'
+                ,'metastasis_initial_Timo', 'metastasis_followup_Timo','date_metastasis_Timo', 'number_metastasis_Timo', 'date_death_Timo', 'Date of last follow-up', 'Status']]
 #print(dataset_raw.head())
 
 #check for duplicates
@@ -42,10 +53,12 @@ duplicates = dataset_raw[dataset_raw.duplicated(keep=False)]
 #print(duplicates)
 
 
-dataset_filtered = dataset_raw[dataset_raw['Affected tissue'] != "Superficial"]
+dataset_filtered = dataset_raw[dataset_raw['anatomicregion_group_Timo'] != 1]
 
-dataset_metadata = dataset_filtered.drop(index=0)
-print(dataset_metadata.head(3))
+dataset_clean = dataset_filtered[dataset_filtered['dignity_timo'] == 'malignant']
+
+
+
 
 """
 def extract_group_words(text):
@@ -71,10 +84,9 @@ print(group_words_other_diagnosis.head(10))
 
 
 """
+os.makedirs(output_directory, exist_ok=True)
 
-file_path_output = "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/dataset_clean.csv"
-dataset_metadata.to_csv(file_path_output, index=False)
+output_file = os.path.join(output_directory, "dataset_clean.csv")
 
-
-
-
+dataset_clean.to_csv(output_file, index=False)
+print(f"File successfully saved to {output_file}")
