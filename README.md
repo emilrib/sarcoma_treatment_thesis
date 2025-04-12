@@ -17,4 +17,3 @@
 #### Remaining Labels (Binary Codes)
 - `1`: **No**
 - `2`: **Yes**
-

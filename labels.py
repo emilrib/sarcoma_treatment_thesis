@@ -5,10 +5,10 @@ from datetime import datetime
 import numpy as np
 from nltk.corpus import stopwords
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-output_directory = os.path.join(current_dir, "output")
+#current_dir = os.path.dirname(os.path.abspath(__file__))
+output_dir = os.path.join(os.getcwd())
 
-input_file = os.path.join(current_dir, "dataset_clean.csv")
+input_file = os.path.join(output_dir, "dataset_clean.csv")
 
 def import_file(file_path):
     df = pd.read_csv(file_path)
@@ -167,9 +167,9 @@ df["overall_survival_days"] = df.apply(lambda row: survival_days(row['status_lab
 print(df.head())
 #print(df[["id","first_round_chemo_start", "first_round_chemo_end", "first_chemo_duration"]])
 
-os.makedirs(output_directory, exist_ok=True)
+os.makedirs(output_dir, exist_ok=True)
 
-output_file = os.path.join(output_directory, "dataset_labelled.csv")
+output_file = os.path.join(output_dir, "dataset_labelled.csv")
 
 df.to_csv(output_file, index=False)
 print(f"File successfully saved to {output_file}")
