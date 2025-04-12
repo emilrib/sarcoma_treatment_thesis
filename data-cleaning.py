@@ -7,7 +7,7 @@ def import_file_to_dataframe(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
     return df
-df = import_file_to_dataframe('dataset.csv')
+df = import_file_to_dataframe('../../../../PycharmProjects/sarcoma_treatment_thesis/dataset.csv')
 
 #print(type(df["Start date of line"]))
 #add new column to have the first chemo date and the same for the end of the first round of chemo
@@ -75,7 +75,7 @@ print(group_words_other_diagnosis.head(10))
 
 """
 
-file_path_output = "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/dataset_clean.csv"
+file_path_output = "/dataset_clean.csv"
 dataset_clean.to_csv(file_path_output, index=False)
 
 

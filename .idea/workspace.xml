@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="add/new_dataset">
-      <change afterPath="$PROJECT_DIR$/econml_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-cleaning.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_clean.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_clean.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_labelled.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_labelled.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/labels.py" beforeDir="false" afterPath="$PROJECT_DIR$/labels.py" afterDir="false" />
-    </list>
+    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/scripts" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -163,7 +156,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743454775040</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="update/scripts">
+      <option name="closed" value="true" />
+      <created>1744376029502</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1744376029502</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -184,6 +185,7 @@
     <MESSAGE value="add/data_cleaning_process" />
     <MESSAGE value="add/new_columns" />
     <MESSAGE value="add/new_dataset" />
-    <option name="LAST_COMMIT_MESSAGE" value="add/new_dataset" />
+    <MESSAGE value="update/scripts" />
+    <option name="LAST_COMMIT_MESSAGE" value="update/scripts" />
   </component>
 </project>

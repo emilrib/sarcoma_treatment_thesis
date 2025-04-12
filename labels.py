@@ -1,11 +1,10 @@
 import re
-
 import pandas as pd
 from datetime import datetime
 import numpy as np
 from nltk.corpus import stopwords
 
-file_path = "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/dataset_clean.csv"
+file_path = "/dataset_clean.csv"
 def import_file(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
@@ -146,5 +145,5 @@ df["overal_survival_days"] = df.apply(lambda row: survival_days(row['status_labe
 print(df.head())
 #print(df[["id","first_round_chemo_start", "first_round_chemo_end", "first_chemo_duration"]])
 
-file_path_output = "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis/dataset_labelled.csv"
+file_path_output = "/dataset_labelled.csv"
 df.to_csv(file_path_output, index=False)
