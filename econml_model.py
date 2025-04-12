@@ -38,28 +38,13 @@ X = df[['age', 'gender_label', 'Histological diagnosis',
         'radiation_status', 'Days_to_metastasis_discovery', 'metastasis_status',
         'metastasis_label','Reason for Chemotherapy', 'Anatomic side of lesion']]
 
+# Preprocessing - Convert categorical variables if needed
+# For example, convert categorical columns to numeric
+X_encoded = pd.get_dummies(X, drop_first=True)
 
-
-
-"""
-
-X_train, X_test, T_train, T_test, Y_train, Y_test = train_test_split(X, T, Y, test_size=0.2, random_state=42)
-
-# Define models for nuisance functions
-model_y = RandomForestRegressor(n_estimators=100)
-model_t = RandomForestRegressor(n_estimators=100)
-
-# Causal forest estimator
-est = CausalForestDML(
-    model_y=model_y,
-    model_t=model_t,
-    n_estimators=100,
-    min_samples_leaf=10,
-    max_depth=10,
-    verbose=1,
-    random_state=42,
+X_train, X_test, T_train, T_test, Y_train, Y_test = train_test_split(
+    X_encoded, T, Y, test_size=0.2, random_state=42
 )
-
-# Fit model
-est.fit(Y_train, T_train, X=X_train)
-"""
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # Fit on train
+X_test_scaled = scaler.transform(X_test)
