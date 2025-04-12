@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="add/new_columns">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sarcoma_treatment_thesis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sarcoma_treatment_thesis.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/labels.py" beforeDir="false" afterPath="$PROJECT_DIR$/labels.py" afterDir="false" />
+    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/labels">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +51,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.data-cleaning.executor": "Run",
+    "Python.econml_model.executor": "Run",
+    "Python.labels.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -190,7 +189,7 @@
       <option name="presentableId" value="Default" />
       <updated>1735817260530</updated>
       <workItem from="1744377296727" duration="32000" />
-      <workItem from="1744377339448" duration="935000" />
+      <workItem from="1744377339448" duration="16158000" />
     </task>
     <task id="LOCAL-00001" summary="add/data_cleaning_process">
       <option name="closed" value="true" />
@@ -232,7 +231,47 @@
       <option name="project" value="LOCAL" />
       <updated>1744377397969</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1744380733196</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744380733196</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1744380747773</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1744380747773</updated>
+    </task>
+    <task id="LOCAL-00008" summary="update/labels">
+      <option name="closed" value="true" />
+      <created>1744387650963</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1744387650963</updated>
+    </task>
+    <task id="LOCAL-00009" summary="update/requirements">
+      <option name="closed" value="true" />
+      <created>1744388818259</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1744388818259</updated>
+    </task>
+    <task id="LOCAL-00010" summary="update/labels">
+      <option name="closed" value="true" />
+      <created>1744465088807</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744465088807</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -255,9 +294,14 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add/data_cleaning_process" />
     <MESSAGE value="add/new_columns" />
-    <option name="LAST_COMMIT_MESSAGE" value="add/new_columns" />
+    <MESSAGE value="update/models" />
+    <MESSAGE value="update/requirements" />
+    <MESSAGE value="update/labels" />
+    <option name="LAST_COMMIT_MESSAGE" value="update/labels" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_cleaning.coverage" NAME="data-cleaning Coverage Results" MODIFIED="1744377368949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$labels.coverage" NAME="labels Coverage Results" MODIFIED="1744465032359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_cleaning.coverage" NAME="data-cleaning Coverage Results" MODIFIED="1744380437989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744464486285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis" />
   </component>
 </project>
