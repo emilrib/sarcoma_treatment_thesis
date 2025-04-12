@@ -19,6 +19,16 @@ df = import_file(input_file)
 print(df.head(3))
 
 """
+Calculation of age
+"""
+
+def calculate_age(year_of_birth):
+    current_year = datetime.now().year
+    return current_year - year_of_birth
+
+df['age'] = df['Date of birth'].apply(calculate_age)
+
+"""
 Binary classification of the gender
 """
 def gender_label(row):
@@ -151,7 +161,8 @@ def survival_days(col1,col2, col3):
     if col1 == 3:
         return (col2 - col3).days
     return None
-df["overal_survival_days"] = df.apply(lambda row: survival_days(row['status_label_number'],row['date_death_Timo'], row['date_first_patientcontact_Timo']), axis =1)
+
+df["overall_survival_days"] = df.apply(lambda row: survival_days(row['status_label_number'],row['date_death_Timo'], row['date_first_patientcontact_Timo']), axis =1)
 
 print(df.head())
 #print(df[["id","first_round_chemo_start", "first_round_chemo_end", "first_chemo_duration"]])
