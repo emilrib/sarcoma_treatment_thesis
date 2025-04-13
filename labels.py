@@ -167,10 +167,9 @@ df["overall_survival_days"] = df.apply(lambda row: survival_days(row['status_lab
 print(df.head())
 #print(df[["id","first_round_chemo_start", "first_round_chemo_end", "first_chemo_duration"]])
 
+
 os.makedirs(output_dir, exist_ok=True)
-
 output_file = os.path.join(output_dir, "dataset_labelled.csv")
-
 df.to_csv(output_file, index=False)
 print(f"File successfully saved to {output_file}")
 
@@ -178,7 +177,7 @@ print(f"File successfully saved to {output_file}")
 Writing the translation of the binary code
 """
 
-with open("README.md", "w") as file:
+with open("README.md", "a") as file:
     file.write(
         "### Code Legends\n"
         "#### Gender\n"

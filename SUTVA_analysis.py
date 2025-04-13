@@ -149,7 +149,7 @@ no significant group effect on outcomes (less likely interference (e.g. spillove
 
 """
 
-with open("README.md", "w") as file:
+with open("README.md", "a") as file:
     file.write(
         "### STUVA Analysis\n"
         "The STUVA analysis uses ANOVA to determine if there is a significant STUVA interference amaong groups.\n"

@@ -5,10 +5,9 @@ import numpy as np
 from nltk.corpus import stopwords
 from datetime import datetime
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-output_directory = os.path.join(current_dir, "output")
+output_dir = os.path.join(os.getcwd())
+input_file = os.path.join(output_dir, "dataset.csv")
 
-input_file = os.path.join(current_dir, "dataset.csv")
 
 
 def import_file_to_dataframe(file_path):
@@ -84,9 +83,8 @@ print(group_words_other_diagnosis.head(10))
 
 
 """
-os.makedirs(output_directory, exist_ok=True)
 
-output_file = os.path.join(output_directory, "dataset_clean.csv")
-
+os.makedirs(output_dir, exist_ok=True)
+output_file = os.path.join(output_dir, "dataset_clean.csv")
 dataset_clean.to_csv(output_file, index=False)
 print(f"File successfully saved to {output_file}")

@@ -1,4 +1,4 @@
-### Label coding
+### Code Legends
 #### Gender
 - `1`: **Female**
 - `2`: **Male**
