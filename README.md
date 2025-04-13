@@ -1,4 +1,4 @@
-### Code Legends
+### Label coding
 #### Gender
 - `1`: **Female**
 - `2`: **Male**
@@ -17,3 +17,8 @@
 #### Remaining Labels (Binary Codes)
 - `1`: **No**
 - `2`: **Yes**
+
+### STUVA Analysis
+The STUVA analysis uses ANOVA to determine if there is a significant STUVA interference amaong groups.
+- `1`: If p-value is less than 0.05: Significant difference detected across groups — possible SUTVA interference.
+- `2`: if p-value is higher than 0.05: No significant group-level differences detected — SUTVA may hold.

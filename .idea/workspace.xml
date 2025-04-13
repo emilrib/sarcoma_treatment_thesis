@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/econml_model">
-      <change afterPath="$PROJECT_DIR$/econml_model.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis/econml_model.py" beforeDir="false" afterPath="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis/econml_model.py" afterDir="false" />
+    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/model">
+      <change afterPath="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis/SUTVA.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SUTVA_analysis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_labelled.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_labelled.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/labels.py" beforeDir="false" afterPath="$PROJECT_DIR$/labels.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +59,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.SUTVA.executor": "Run",
+    "Python.SUTVA_analysis.executor": "Run",
     "Python.data-cleaning.executor": "Run",
     "Python.econml_model.executor": "Run",
     "Python.labels.executor": "Run",
@@ -70,7 +69,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/emiliaribeiro/PycharmProjects/sarcoma_treatment_thesis",
+    "last_opened_file_path": "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,6 +80,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -88,7 +88,27 @@
       <recent name="$PROJECT_DIR$/venv" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.SUTVA_analysis">
+    <configuration name="SUTVA_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sarcoma_treatment_thesis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SUTVA_analysis.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="data-cleaning" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="sarcoma_treatment_thesis" />
       <option name="ENV_FILES" value="" />
@@ -183,6 +203,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.SUTVA_analysis" />
         <item itemvalue="Python.data-cleaning" />
         <item itemvalue="Python.labels" />
       </list>
@@ -206,7 +227,7 @@
       <updated>1735817260530</updated>
       <workItem from="1744377296727" duration="32000" />
       <workItem from="1744377339448" duration="16175000" />
-      <workItem from="1744469614755" duration="5102000" />
+      <workItem from="1744469614755" duration="12326000" />
     </task>
     <task id="LOCAL-00001" summary="add/data_cleaning_process">
       <option name="closed" value="true" />
@@ -312,7 +333,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744470644486</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="update/model">
+      <option name="closed" value="true" />
+      <created>1744475107723</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1744475107723</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -339,11 +368,13 @@
     <MESSAGE value="update/requirements" />
     <MESSAGE value="update/labels" />
     <MESSAGE value="update/econml_model" />
-    <option name="LAST_COMMIT_MESSAGE" value="update/econml_model" />
+    <MESSAGE value="update/model" />
+    <option name="LAST_COMMIT_MESSAGE" value="update/model" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$labels.coverage" NAME="labels Coverage Results" MODIFIED="1744474240892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_cleaning.coverage" NAME="data-cleaning Coverage Results" MODIFIED="1744474261186" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744474711694" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$SUTVA.coverage" NAME="SUTVA_analysis Coverage Results" MODIFIED="1744565654415" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744475137475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
