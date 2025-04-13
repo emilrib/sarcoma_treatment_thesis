@@ -6,7 +6,6 @@
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (Thesis)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Thesis" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="modifyBaseFiles" value="true" />

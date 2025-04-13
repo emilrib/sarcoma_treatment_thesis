@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/model">
-      <change afterPath="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis/SUTVA.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SUTVA_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="add/statistical_model" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,6 +49,7 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2r4THeb6ELC0uOJ7ZMJ2EWNttGO" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -227,7 +224,7 @@
       <updated>1735817260530</updated>
       <workItem from="1744377296727" duration="32000" />
       <workItem from="1744377339448" duration="16175000" />
-      <workItem from="1744469614755" duration="12326000" />
+      <workItem from="1744469614755" duration="13293000" />
     </task>
     <task id="LOCAL-00001" summary="add/data_cleaning_process">
       <option name="closed" value="true" />
@@ -341,7 +338,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744475107723</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="add/statistical_model">
+      <option name="closed" value="true" />
+      <created>1744566814529</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1744566814529</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -369,12 +374,13 @@
     <MESSAGE value="update/labels" />
     <MESSAGE value="update/econml_model" />
     <MESSAGE value="update/model" />
-    <option name="LAST_COMMIT_MESSAGE" value="update/model" />
+    <MESSAGE value="add/statistical_model" />
+    <option name="LAST_COMMIT_MESSAGE" value="add/statistical_model" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$labels.coverage" NAME="labels Coverage Results" MODIFIED="1744474240892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_cleaning.coverage" NAME="data-cleaning Coverage Results" MODIFIED="1744474261186" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$SUTVA.coverage" NAME="SUTVA_analysis Coverage Results" MODIFIED="1744565654415" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$SUTVA.coverage" NAME="SUTVA_analysis Coverage Results" MODIFIED="1744566707921" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744475137475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
