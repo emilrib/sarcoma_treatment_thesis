@@ -60,6 +60,10 @@ dataset_filtered = dataset_raw[dataset_raw['anatomicregion_group_Timo'] != 1]
 total = dataset_filtered['Pat ID'].nunique()
 print( f'Total Patients: {total}')
 
+#dataset_filtered['Histological diagnosis'] = dataset_filtered['Histological diagnosis'].str.replace(r'^\d+(\.\d+)*\.\s*', '', regex=True)
+
+dataset_filtered.loc[:, 'Histological diagnosis'] = dataset_filtered['Histological diagnosis'].str.replace(r'^\d+(\.\d+)*\.\s*', '', regex=True)
+
 #dataset_clean = dataset_filtered[dataset_filtered['dignity_timo'] == 'malignant']
 
 #total_patients = dataset_clean['Pat ID'].nunique()

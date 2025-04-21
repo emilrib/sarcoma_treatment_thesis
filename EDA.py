@@ -2,7 +2,9 @@ import os.path
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-#current_dir = os.path.dirname(os.path.abspath(__file__))
+import re
+from collections import Counter
+
 output_dir = os.path.join(os.getcwd())
 
 input_file = os.path.join(output_dir, "dataset_labelled.csv")
@@ -92,8 +94,85 @@ print(df_demographics['age'].max())
 PATIENT HISTORY
 """
 
-df_history = df[['Pat ID','date_first_patientcontact_Timo', 'Histological diagnosis', '(W) Other diagnoses?_Timo', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'Affected tissue', 'number_all_operation_Timo', 'Tumor maximal size (mm)', 'metastasis_status', 'metastasis_label', 'reoperation_label']]
+df_history = df[['Pat ID','date_first_patientcontact_Timo', 'Histological diagnosis', '(W) Other diagnoses?_Timo', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'anatomic_region_label',  'Affected tissue', 'number_all_operation_Timo', 'Tumor maximal size (mm)', 'metastasis_status', 'metastasis_label', 'metastasis_label_description', 'reoperation_label']]
 
+#Display of values of CCI
+print(type(df_history['cci_Timo'][0]))
+
+df_clean = df_history[df_history['cci_Timo'].notna()].copy()
+df_clean['cci_Timo'] = df_clean['cci_Timo'].astype(int)
+
+# Count and sort values by numeric order
+cci_counts = df_clean['cci_Timo'].value_counts().sort_index(ascending=True)
+
+# Plot
+plt.figure(figsize=(10, 6))
+ax = cci_counts.plot(kind='bar', color='#ADD8E6', edgecolor='black')
+
+# Annotate each bar with count
+for bar in ax.patches:
+    ax.annotate(
+        text=f'{int(bar.get_height())}',
+        xy=(bar.get_x() + bar.get_width() / 2, bar.get_height()),
+        ha='center', va='bottom', fontsize=10
+    )
+
+plt.xlabel('CCI Groups')
+plt.ylabel('Number of Occurrences')
+plt.title('Number of Occurrences by Different CCI Groups', fontsize=14)
+plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+
+#Identify the most common deceases in patients history
+
+
+def extract_group_words(text):
+    text = text.strip().lower()  # Convert to lowercase and remove surrounding spaces
+    if text == '-':  # Ignore rows containing only '-'
+        return []
+    text = re.sub(r'\b\d{4}\b', '', text)  # Remove year dates
+    group_words = re.split(r'[|,]', text)  # Split by '|' or ','
+    group_words = [word.strip() for word in group_words if word.strip()]  # Remove extra spaces and empty strings
+    return group_words
+
+# Extract and flatten all group words from the column
+other_diagnoses_group= df_history['(W) Other diagnoses?_Timo'].dropna().apply(extract_group_words).sum()
+histological_diagnosis_group= df_history['Histological diagnosis'].dropna().apply(extract_group_words).sum()
+
+# Count the frequency of group words
+other_diagnoses_counts = Counter(other_diagnoses_group)
+histological_diagnosis_counts = Counter(histological_diagnosis_group)
+
+# Convert to DataFrame for better visualization
+group_words_other_diagnosis = pd.DataFrame(other_diagnoses_counts.items(), columns=['Most occurred Other Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
+group_words_histoloical_diagnosis = pd.DataFrame(histological_diagnosis_counts.items(), columns=['Most occurred Histological Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
+
+# Display the top 10 most common group words
+print(group_words_other_diagnosis.head(10))
+print(group_words_histoloical_diagnosis.head(10))
+
+"""
+
+#Display the total patient per anatomic region group
+anatomic_grouping_counts = df_history['anatomic_region_label'].value_counts()
+
+plt.figure(figsize=(10, 6))
+anatomic_grouping_counts.plot(kind='barh', color='#ADD8E6', edgecolor='black')
+for index, value in enumerate(anatomic_grouping_counts):
+    plt.text(value + 0.1, index, str(value), va='center', fontsize=10)
+
+plt.title('Total Sarcoma cases per Anatomic Region Group', fontsize=10, weight='bold')
+plt.xlabel('Total', fontsize=12)
+plt.ylabel('Group', fontsize=12)
+plt.grid(axis='x', linestyle='--', alpha=0.7)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.tight_layout()
+plt.show()
+"""
+# Analyse the percentage of the data sample with metastasis and its resurfacing time
 metastasis_counts = df_history['metastasis_label'].value_counts()
 
 label_map = {1: 'No', 2: 'Yes'}
@@ -120,4 +199,50 @@ plt.pie(
 )
 plt.title('Presence of Metastasis by First Diagnosis')
 plt.axis('equal')  # Ensures pie is a circle
+plt.show()
+print(metastasis_counts)
+
+metastasis_counts_description = df_history['metastasis_label_description'].value_counts()
+
+# Data
+labels = metastasis_counts_description.index
+values = metastasis_counts_description.values
+total = values.sum()
+
+# Plot
+plt.figure(figsize=(10, 6))
+bars = plt.bar(
+    labels, values,
+    color=['#ACE1AF', '#FFDAB9', '#ADD8E6', '#FFFFE0'],
+    edgecolor='black'
+)
+
+# Add absolute values & prepare percentage labels
+percentages = []
+for bar, label, value in zip(bars, labels, values):
+    plt.text(
+        bar.get_x() + bar.get_width() / 2,
+        value,
+        f'{value}',
+        ha='center', va='bottom', fontsize=10
+    )
+    percentages.append(f"{label}: {value / total:.1%}")
+
+# Description box with percentages
+description = "\n".join(percentages)
+plt.gca().text(
+    1.02, 0.95,
+    description,
+    transform=plt.gca().transAxes,
+    fontsize=10,
+    verticalalignment='top',
+    bbox=dict(boxstyle='round', facecolor='white', edgecolor='gray', alpha=0.8)
+)
+
+# Titles and styling
+plt.title('Metastasis Cases by Resurfacing Time', fontsize=12, weight='bold')
+plt.xlabel('Resurfacing Time')
+plt.ylabel('Number of Cases')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
 plt.show()
