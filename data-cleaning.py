@@ -21,6 +21,8 @@ print(df.head(2))
 #print(type(df["Start date of line"]))
 #add new column to have the first chemo date and the same for the end of the first round of chemo
 
+
+
 """
 def date_retrieval(row):
     if pd.isnull(row) or row == "NA" or row == None:
@@ -54,9 +56,14 @@ duplicates = dataset_raw[dataset_raw.duplicated(keep=False)]
 
 dataset_filtered = dataset_raw[dataset_raw['anatomicregion_group_Timo'] != 1]
 
-dataset_clean = dataset_filtered[dataset_filtered['dignity_timo'] == 'malignant']
+#test for change in total amount
+total = dataset_filtered['Pat ID'].nunique()
+print( f'Total Patients: {total}')
 
+#dataset_clean = dataset_filtered[dataset_filtered['dignity_timo'] == 'malignant']
 
+#total_patients = dataset_clean['Pat ID'].nunique()
+#print( f'Total Patients: {total_patients}')
 
 
 """
@@ -86,5 +93,5 @@ print(group_words_other_diagnosis.head(10))
 
 os.makedirs(output_dir, exist_ok=True)
 output_file = os.path.join(output_dir, "dataset_clean.csv")
-dataset_clean.to_csv(output_file, index=False)
+dataset_filtered.to_csv(output_file, index=False)
 print(f"File successfully saved to {output_file}")

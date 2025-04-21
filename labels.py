@@ -45,12 +45,10 @@ df['gender_label'] = df['Gender'].apply(gender_label)
 classification label to determine patients that needed to be reoperated and impact of reoperation
 """
 def reoperation(row):
-    if row == 1:
-        return 1
-    elif row > 1:
+    if row >= 1:
         return 2
     else:
-        return 'error'
+        return 1
 
 df['reoperation_label'] = df['number_all_operation_Timo'].apply(reoperation)
 
