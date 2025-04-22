@@ -33,9 +33,9 @@ Binary classification of the gender
 """
 def gender_label(row):
     if row == "female":
-        return 1
+        return 0
     elif row == "male":
-        return 2
+        return 1
     else:
         return "error"
 
@@ -46,9 +46,9 @@ classification label to determine patients that needed to be reoperated and impa
 """
 def reoperation(row):
     if row >= 1:
-        return 2
-    else:
         return 1
+    else:
+        return 0
 
 df['reoperation_label'] = df['number_all_operation_Timo'].apply(reoperation)
 
@@ -87,12 +87,12 @@ df['anatomic_region_label'] = df['anatomicregion_group_Timo'].apply(anatomic_reg
 classification of metastasis status during the treatment    
 """
 def metastasis_label(row):
-    if row == '-':
-        return 1
+    if row == '-' or pd.isnull(row):
+        return 0
     elif row == 0:
-        return 1
+        return 0
     else:
-        return 2
+        return 1
 
 df['metastasis_label'] = df['number_metastasis_Timo'].apply(metastasis_label)
 
@@ -144,10 +144,10 @@ df["metastasis_days"] = df.apply(lambda row: days_of_metastasis(row['metastasis_
 
 #label to heck if chemo was used or not
 def chemo_indication_label(row):
-    if row == "-":
-        return 1
+    if row == "-" or pd.isnull(row):
+        return 0
     else:
-        return 2
+        return 1
 
 df["Chemo_status"] = df['chemo_first_indication_Timo'].apply(chemo_indication_label)
 
@@ -165,19 +165,19 @@ fallback_mask = pd.notna(df["Start date of line"]) & df["Optional: End date of l
 fallback_durations = (pd.Timestamp.today().normalize() - df.loc[fallback_mask, "Start date of line"]).dt.days
 
 # Combine all valid durations
-all_durations = pd.concat([durations, fallback_durations])
-mean_duration = round(all_durations.mean())
+#all_durations = pd.concat([durations, fallback_durations])
+#mean_duration = round(all_durations.mean())
 
 # Define function with mean fallback
-def chemo_duration(start, end, mean_value):
+def chemo_duration(start, end):
     if pd.notna(start) and pd.notna(end):
         return (end - start).days
     elif pd.notna(start) and pd.isna(end):
         return (pd.Timestamp.today().normalize() - start).days
     else:
-        return mean_value
+        return None
 
-df["chemo_duration"] = df.apply(lambda row: chemo_duration(row['Start date of line'],row['Optional: End date of line'], mean_duration), axis =1)
+df["chemo_duration"] = df.apply(lambda row: chemo_duration(row['Start date of line'],row['Optional: End date of line']), axis =1)
 
 #extract the labels of the status column
 
@@ -189,9 +189,9 @@ df["survival_status_label"] = df['Status'].apply(status_label)
 #label to find out the status of patients
 def survival_status_binary(text):
     if text == 'AWD':
-        return 2
-    else:
         return 1
+    else:
+        return 0
 
 df["survival_status_binary"] = df['survival_status_label'].apply(survival_status_binary)
 
@@ -200,26 +200,26 @@ def radiotherapy_status(text):
     val_str = str(text).strip().lower()
     match = re.match(r"\[?(\d+)\]?", val_str)
     if match and int(match.group(1)) == 0 or pd.isnull(text):
-        return 1
+        return 0
     if val_str == "none":
-        return 1
-    return 2
+        return 0
+    return 1
 
 df["radiation_status"] = df["Indication for radiotherapy"].apply(radiotherapy_status)
 
 #add label to distinguish patients that alive and patients that are not alive
 def death_by_disease(row):
     if row == 'DOD':
-        return 2
-    else:
         return 1
+    else:
+        return 0
 
 df["deceased_by_disease"] = df['survival_status_label'].apply(death_by_disease)
 
 #calculate the number of survival days a patient that passed away from the decease (from day of contact until the date of death)
 df["date_death_Timo"] = pd.to_datetime(df["date_death_Timo"], format="%Y-%m-%d", errors = "coerce")
 def survival_days(col1,col2, col3):
-    if col1 == 1:
+    if col1 == 0:
         return (col2 - col3).days
     return None
 
@@ -232,6 +232,15 @@ mean_tumor_size = df["Tumor maximal size (mm)"].mean().round(0)
 print(f' Mean tumour size (in mm): {mean_tumor_size}')
 df["Tumor maximal size (mm)"] = df["Tumor maximal size (mm)"].fillna(mean_tumor_size)
 
+#apply null values when needed
+
+def null_values(row):
+    if row == '-':
+        return None
+    else:
+        return row
+
+df["(W) Other diagnoses?_Timo"] = df['(W) Other diagnoses?_Timo'].apply(null_values)
 
 os.makedirs(output_dir, exist_ok=True)
 output_file = os.path.join(output_dir, "dataset_labelled.csv")
@@ -245,20 +254,20 @@ with open("README.md", "w") as file:
     file.write(
         "### Code Legends\n"
         "#### Gender\n"
-        "- `1`: **Female**\n"
-        "- `2`: **Male**\n\n"
+        "- `0`: **Female**\n"
+        "- `1`: **Male**\n\n"
         "#### Metastasis Classification\n"
         "- `1`: **Metastasis free** during treatment observation\n"
         "- `2`: Metastasis existed **before** first patient contact\n"
         "- `3`: Metastasis appeared **after** first patient contact\n"
         "- `0`: Metastasis present, discovery date unknown\n\n"
         "#### Patient Status\n"
-        "- `1`: **NED** (No evidence of disease)\n"
-        "- `2`: **AWD** (Alive with disease)\n"
-        "- `3`: **DOD** (Dead of disease)\n\n"
+        "- `0`: **NED** (No evidence of disease)\n"
+        "- `1`: **AWD** (Alive with disease)\n"
+        "- `2`: **DOD** (Dead of disease)\n\n"
         "#### Remaining Labels (Binary Codes)\n"
-        "- `1`: **No**\n"
-        "- `2`: **Yes**\n"
+        "- `0`: **No**\n"
+        "- `1`: **Yes**\n"
     )
 
 

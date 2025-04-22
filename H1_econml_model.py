@@ -28,6 +28,7 @@ def import_file(file_path):
 df = import_file(input_file)
 
 print(df.head(3))
+#print(df.columns.tolist())
 
 """
 DEFINE VARIABLES FOR CAUSAL FOREST
@@ -35,15 +36,15 @@ DEFINE VARIABLES FOR CAUSAL FOREST
 
 # model considering survival_status as outcome variable as well chemo status
 
-treatment_col = df['Chemo_status']
-outcome_col = df['survival_status_binary']
-covariate_cols = df['age', 'gender_label', 'reoperation_label', 'anatomic_region_label', 'metastasis_label',
+treatment_col = 'Chemo_status'
+outcome_col = 'survival_status_binary'
+covariate_cols = ['age', 'gender_label', 'reoperation_label', 'anatomic_region_label', 'metastasis_label',
                   'metastasis_status', 'radiation_status', 'Tumor maximal size (mm)', 'anatomicregion_group_Timo', 'Histological diagnosis',
                   '(W) Other diagnoses?_Timo', 'chemo_duration']
 
 # Split covariates into numeric and categorical
-categorical_cols =df['Histological diagnosis', '(W) Other diagnoses?_Timo']
-numeric_cols = df['age', 'gender_label', 'reoperation_label', 'anatomic_region_label', 'metastasis_label',
+categorical_cols = ['Histological diagnosis', '(W) Other diagnoses?_Timo', 'anatomic_region_label']
+numeric_cols = ['age', 'gender_label', 'reoperation_label', 'metastasis_label',
                   'metastasis_status', 'radiation_status', 'Tumor maximal size (mm)', 'anatomicregion_group_Timo']
 
 # Drop rows with missing T or Y
@@ -56,14 +57,23 @@ Y = df_cf[outcome_col].values
 # Preprocess covariates
 preprocessor = ColumnTransformer(transformers=[
     ('num', Pipeline([
-        ('imputer', SimpleImputer(strategy='mean')),
-        ('scaler', StandardScaler())
+        ('imputer', SimpleImputer(strategy='mean')),  # Impute missing numeric data
+        ('scaler', StandardScaler())  # Standardize numerical features
     ]), numeric_cols),
-    ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_cols)
+    ('cat', Pipeline([
+        ('imputer', SimpleImputer(strategy='most_frequent')),  # Impute missing categorical data
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))  # Encode categorical features
+    ]), categorical_cols)
 ])
+
 
 # Transform X from DataFrame
 X = preprocessor.fit_transform(df_cf[covariate_cols])
+X = X.toarray() if hasattr(X, 'toarray') else np.asarray(X)
+
+print(f"Shape of X after preprocessing: {X.shape}")
+if X.shape[1] == 0 or X.ndim != 2:
+    raise ValueError("Preprocessed X is empty or not 2D. Check your input data and preprocessing pipeline.")
 
 # Fit Causal Forest model
 cf_model = CausalForestDML(
@@ -80,7 +90,7 @@ cf_model.fit(Y, T, X=X)
 ate = cf_model.ate(X)
 ate_lb, ate_ub = cf_model.ate_interval(X)
 
-print(f"\n📊 Average Treatment Effect (ATE): {ate:.2f} survival days")
+print(f"\n Average Treatment Effect (ATE): {ate:.2f} survival days")
 print(f"95% Confidence Interval: ({ate_lb:.2f}, {ate_ub:.2f})")
 
 # Estimate CATE for individuals

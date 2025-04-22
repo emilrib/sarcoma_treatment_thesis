@@ -1,7 +1,7 @@
 ### Code Legends
 #### Gender
-- `1`: **Female**
-- `2`: **Male**
+- `0`: **Female**
+- `1`: **Male**
 
 #### Metastasis Classification
 - `1`: **Metastasis free** during treatment observation
@@ -10,10 +10,10 @@
 - `0`: Metastasis present, discovery date unknown
 
 #### Patient Status
-- `1`: **NED** (No evidence of disease)
-- `2`: **AWD** (Alive with disease)
-- `3`: **DOD** (Dead of disease)
+- `0`: **NED** (No evidence of disease)
+- `1`: **AWD** (Alive with disease)
+- `2`: **DOD** (Dead of disease)
 
 #### Remaining Labels (Binary Codes)
-- `1`: **No**
-- `2`: **Yes**
+- `0`: **No**
+- `1`: **Yes**
