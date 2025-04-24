@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LogisticRegression
 from econml.dml import CausalForestDML
 import matplotlib.pyplot as plt
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import train_test_split
 
 # Load data
 data_path = os.path.join(os.getcwd(), "dataset_labelled.csv")
@@ -23,41 +23,44 @@ from cf_config import (
     numeric_cols
 )
 
+df_cf = df.dropna(subset=[treatment_col, outcome_col]).copy()
 
-# Drop rows with missing T or Y
-df_cf = df.dropna(subset=[treatment_col, outcome_col])
+# Ensure all categoricals are strings
+for col in categorical_cols:
+    df_cf[col] = df_cf[col].astype(str)
 
-# Extract T and Y
-T = df_cf[treatment_col].astype(int).values  # ensure binary
-Y = df_cf[outcome_col].values
+# --------------------------------------
+# Train/test split (stratified by treatment)
+# --------------------------------------
+df_train, df_test = train_test_split(
+    df_cf, test_size=0.3, stratify=df_cf[treatment_col], random_state=42
+)
 
-# Preprocess covariates
+# --------------------------------------
+# Preprocessing pipeline
+# --------------------------------------
 preprocessor = ColumnTransformer(transformers=[
     ('num', Pipeline([
-        ('imputer', SimpleImputer(strategy='mean')),  # Impute missing numeric data
-        ('scaler', StandardScaler())  # Standardize numerical features
+        ('imputer', SimpleImputer(strategy='mean')),
+        ('scaler', StandardScaler())
     ]), numeric_cols),
     ('cat', Pipeline([
-        ('imputer', SimpleImputer(strategy='most_frequent')),  # Impute missing categorical data
-        ('onehot', OneHotEncoder(handle_unknown='ignore'))  # Encode categorical features
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))
     ]), categorical_cols)
 ])
 
+# --------------------------------------
+# Prepare training data
+# --------------------------------------
+T_train = df_train[treatment_col].astype(int).values.ravel()
+Y_train = df_train[outcome_col].astype(int).values.ravel()
+X_train = preprocessor.fit_transform(df_train[covariate_cols])
+X_train = X_train.toarray() if hasattr(X_train, 'toarray') else np.asarray(X_train)
 
-# Transform X from DataFrame
-X = preprocessor.fit_transform(df_cf[covariate_cols])
-X = X.toarray() if hasattr(X, 'toarray') else np.asarray(X)
-
-print(f"Shape of X after preprocessing: {X.shape}")
-if X.shape[1] == 0 or X.ndim != 2:
-    raise ValueError("Preprocessed X is empty or not 2D. Check your input data and preprocessing pipeline.")
-
-print("Joint distribution (treatment vs outcome):")
-print(pd.crosstab(df['Chemo_status'], df['survival_status_binary']))
-print(df['Chemo_status'].value_counts(normalize=True))
-print(df['survival_status_binary'].value_counts(normalize=True))
-
-# Fit Causal Forest model
+# --------------------------------------
+# Fit Causal Forest on training data
+# --------------------------------------
 cf_model = CausalForestDML(
     model_y=RandomForestRegressor(n_estimators=100, random_state=42),
     model_t=LogisticRegression(max_iter=1000),
@@ -66,22 +69,40 @@ cf_model = CausalForestDML(
     min_samples_leaf=5,
     max_depth=10,
     random_state=42,
-    cv=1
+    cv=1  # Disable cross-fitting due to small and imbalanced dataset
 )
-cf_model.fit(Y, T, X=X)
 
+cf_model.fit(Y_train, T_train, X=X_train)
 
-# Estimate CATE for individuals
-cate = cf_model.effect(X, T0=0, T1=1)
+# --------------------------------------
+# Prepare test data
+# --------------------------------------
+T_test = df_test[treatment_col].astype(int).values.ravel()
+Y_test = df_test[outcome_col].astype(int).values.ravel()
+X_test = preprocessor.transform(df_test[covariate_cols])
+X_test = X_test.toarray() if hasattr(X_test, 'toarray') else np.asarray(X_test)
 
-cate_percent = cate * 100
+# --------------------------------------
+# Estimate CATE on test set
+# --------------------------------------
+cate = cf_model.effect(X_test, T0=0, T1=1)
+df_test['CATE'] = cate
+df_test['CATE_percent'] = cate * 100
+df_test['treatment_recommendation'] = np.where(df_test['CATE'] > 0, 'Recommend Chemo', 'Do Not Recommend')
 
-# Plot CATE distribution as change in survival probability
+# --------------------------------------
+# Plot CATE distribution on test set
+# --------------------------------------
 plt.figure(figsize=(10, 5))
-plt.hist(cate_percent, bins=30, edgecolor='k')
-plt.title('Estimated Treatment Effect (CATE) Distribution')
-plt.xlabel('Estimated Change in Survival Probability (%) from Chemotherapy')
+plt.hist(df_test['CATE'], bins=30, edgecolor='k')
+plt.title('Estimated CATE Distribution on Test Set (Survival Probability Δ from Chemo)')
+plt.xlabel('Estimated Change in Survival Probability (%)')
 plt.ylabel('Number of Patients')
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+# --------------------------------------
+# (Optional) Export test results
+# --------------------------------------
+# df_test.to_csv("test_results_with_cate.csv", index=False)
