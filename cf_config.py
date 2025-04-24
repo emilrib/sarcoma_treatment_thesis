@@ -31,7 +31,7 @@ treatment_col = 'Chemo_status'
 outcome_col = 'deceased_by_disease'
 covariate_cols = ['age', 'gender_label', 'reoperation_label', 'anatomic_region_label', 'metastasis_label',
                   'metastasis_status', 'radiation_status', 'Tumor maximal size (mm)', 'anatomicregion_group_Timo', 'Histological diagnosis',
-                  '(W) Other diagnoses?_Timo', 'chemo_duration']
+                  '(W) Other diagnoses?_Timo']
 
 # Split covariates into numeric and categorical
 categorical_cols = ['Histological diagnosis', '(W) Other diagnoses?_Timo', 'anatomic_region_label']
