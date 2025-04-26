@@ -14,7 +14,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 import seaborn as sns
 from econml.cate_interpreter import SingleTreeCateInterpreter
-import joblib
 
 if '__file__' in globals():
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -205,9 +204,7 @@ df_cf["CATE_upper"] = all_ci_upper
 # Interpret with SingleTreeCateInterpreter
 # ---------------------------
 interpreter = SingleTreeCateInterpreter(max_depth=3)
-interpreter = SingleTreeCateInterpreter(max_depth=3)
-interpreter.interpret(cf_model, X_val)
-
+interpreter.interpret(X_val, cate_fold)
 
 plt.figure(figsize=(12, 8))
 interpreter.plot()
@@ -281,31 +278,10 @@ os.makedirs(output_dir, exist_ok=True)
 output_file = os.path.join(output_dir, "dataset_with_cate.csv")
 df.to_csv(output_file, index=False)
 
-# Save the full X, T, Y used for training/testing
-X_cf = np.asarray(preprocessor.transform(df_cf[covariate_cols]))
-T_cf = df_cf[treatment_col].astype(int).values.ravel()
-Y_cf = df_cf[outcome_col].astype(int).values.ravel()
+# Save X_test, T_test, Y_test, and the best trained model (optional)
+np.save(os.path.join(output_dir, "X_test.npy"), X_val)  # last validation fold
+np.save(os.path.join(output_dir, "T_test.npy"), T_train)  # last train fold
+np.save(os.path.join(output_dir, "Y_test.npy"), Y_train)
 
-np.save(os.path.join(output_dir, "X_cf.npy"), X_cf)
-np.save(os.path.join(output_dir, "T_cf.npy"), T_cf)
-np.save(os.path.join(output_dir, "Y_cf.npy"), Y_cf)
-
-print("\nRefitting Causal Forest on full data...")
-X_full = np.asarray(preprocessor.fit_transform(df_cf[covariate_cols]))
-T_full = df_cf[treatment_col].astype(int).values.ravel()
-Y_full = df_cf[outcome_col].astype(int).values.ravel()
-
-final_cf_model = CausalForestDML(
-    model_y=RandomForestRegressor(n_estimators=100, random_state=42),
-    model_t=LogisticRegression(max_iter=1000),
-    discrete_treatment=True,
-    random_state=42,
-    cv=3,
-    **best_params  # reuse best hyperparams
-)
-
-final_cf_model.fit(Y_full, T_full, X=X_full, sample_weight=weights)
-
-# Save final model
-joblib.dump(final_cf_model, os.path.join(output_dir, "cf_model_final.pkl"))
-joblib.dump(preprocessor, "preprocessor.pkl")
+import joblib
+joblib.dump(cf_model, os.path.join(output_dir, "cf_model.pkl"))

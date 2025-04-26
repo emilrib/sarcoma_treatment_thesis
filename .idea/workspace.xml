@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/models">
-      <change afterPath="$PROJECT_DIR$/validate/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cf_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/cf_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/data-processing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_labelled.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_labelled.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fine-tuning.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_evaluation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_causal_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_causal_forest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -280,7 +274,7 @@
       <workItem from="1744469614755" duration="18799000" />
       <workItem from="1745236559292" duration="48599000" />
       <workItem from="1745558144127" duration="17483000" />
-      <workItem from="1745683119478" duration="19832000" />
+      <workItem from="1745683119478" duration="20924000" />
     </task>
     <task id="LOCAL-00001" summary="add/data_cleaning_process">
       <option name="closed" value="true" />
@@ -466,7 +460,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745687595824</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1745706752842</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1745706752842</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -501,7 +503,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_processing.coverage" NAME="data-processing Coverage Results" MODIFIED="1745688076418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$EDA.coverage" NAME="EDA Coverage Results" MODIFIED="1745263063578" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$run_causal_forest.coverage" NAME="run_causal_forest Coverage Results" MODIFIED="1745703923700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$run_causal_forest.coverage" NAME="run_causal_forest Coverage Results" MODIFIED="1745707554867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744475137475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$H1_econml_model.coverage" NAME="H1_econml_model Coverage Results" MODIFIED="1745356475218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$evaluation.coverage" NAME="evaluation Coverage Results" MODIFIED="1745568906066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
