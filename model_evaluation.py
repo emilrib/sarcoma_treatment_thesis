@@ -108,29 +108,28 @@ plt.show()
 # Predict CATEs
 # ---------------------------
 print("\nPredicting CATEs...")
-cate_preds = cf_model_final.effect(X_cf)
+cate_preds = cf_model.effect(X_test)
 
 # ---------------------------
 # Run Best Linear Projection (BLP)
 # ---------------------------
 print("\nRunning Best Linear Projection (BLP)...")
 
-# Fit simple linear regression: Y_cf ~ cate_preds
+# Fit simple linear regression: observed outcome Y_test ~ predicted CATEs
 blp_model = LinearRegression()
-blp_model.fit(cate_preds.reshape(-1, 1), Y_cf)
+blp_model.fit(cate_preds.reshape(-1, 1), Y_test)
 
-# Calculate estimates
-coef = blp_model.coef_[0]  # BLP estimate
+# Calculate statistics
+coef = blp_model.coef_[0]         # BLP estimate
 intercept = blp_model.intercept_
 
 # Predicted outcomes
 y_pred = blp_model.predict(cate_preds.reshape(-1, 1))
 
 # Residuals and variance
-residuals = Y_cf - y_pred
+residuals = Y_test - y_pred
 rss = np.sum(residuals ** 2)
-n = len(Y_cf)
-var_x = np.var(cate_preds, ddof=1)
+n = len(Y_test)
 se = np.sqrt(rss / (n - 2)) / np.sqrt(np.sum((cate_preds - np.mean(cate_preds)) ** 2))
 
 # t-statistic and p-value
@@ -138,13 +137,14 @@ t_stat = coef / se
 p_val = 2 * (1 - stats.t.cdf(np.abs(t_stat), df=n-2))
 
 # ---------------------------
-# Prepare values for BLPEvaluationResults
+# Prepare BLP output
 # ---------------------------
 params = [coef]
 errs = [se]
 pvals = [p_val]
-treatments = np.array([0, 1])  # Example: Control vs Treatment (binary treatment)
+treatments = np.array([0, 1])  # Dummy treatments for BLP
 
+# Wrap into BLPEvaluationResults
 blp_eval = BLPEvaluationResults(
     params=params,
     errs=errs,
@@ -153,7 +153,7 @@ blp_eval = BLPEvaluationResults(
 )
 
 # ---------------------------
-# Print Summary
+# Print BLP Summary
 # ---------------------------
 print("\n📈 Best Linear Projection (BLP) Summary:")
 print(blp_eval.summary())
