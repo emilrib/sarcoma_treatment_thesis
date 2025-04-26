@@ -41,7 +41,7 @@ df["first_round_chemo_end"] = df["Optional: End date of line"].apply(date_retrie
 
 
 dataset_raw = df[['Pat ID','Date of birth', 'Gender', 'date_first_patientcontact_Timo', 'Date of histological diagnosis', 'Histological diagnosis', '(W) Other diagnoses?_Timo',
-                  'Grading (FNCLCC)', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'Affected tissue','resection_necrosis_timo', 'Anatomic side of lesion',
+                  'grade_clean', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'Affected tissue','resection_necrosis_timo', 'Anatomic side of lesion',
                   'Tumor maximal size before surgery', 'Type of index surgery', 'number_all_operation_Timo', 'Tumor maximal size (mm)',
                   '(all) Severty of reoperation (zB. Amputation)_Timo',
                   'Indication for radiotherapy','Reason for Chemotherapy','chemo_first_indication_Timo','Start date of line','Optional: End date of line', 'chemo_discontinuation_Timo','chemo_treatmentresponse_Timo'
@@ -61,6 +61,8 @@ total = dataset_filtered['Pat ID'].nunique()
 print( f'Total Patients: {total}')
 
 #dataset_filtered['Histological diagnosis'] = dataset_filtered['Histological diagnosis'].str.replace(r'^\d+(\.\d+)*\.\s*', '', regex=True)
+
+dataset_filtered = dataset_filtered.copy()
 
 dataset_filtered.loc[:, 'Histological diagnosis'] = dataset_filtered['Histological diagnosis'].str.replace(r'^\d+(\.\d+)*\.\s*', '', regex=True)
 

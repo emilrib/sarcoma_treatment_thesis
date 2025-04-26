@@ -4,6 +4,8 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from nltk.corpus import stopwords
+import matplotlib.pyplot as plt
+
 
 #current_dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(os.getcwd())
@@ -27,19 +29,6 @@ def calculate_age(year_of_birth):
     return current_year - year_of_birth
 
 df['age'] = df['Date of birth'].apply(calculate_age)
-
-"""
-Binary classification of the gender
-"""
-def gender_label(row):
-    if row == "female":
-        return 0
-    elif row == "male":
-        return 1
-    else:
-        return "error"
-
-df['gender_label'] = df['Gender'].apply(gender_label)
 
 """
 classification label to determine patients that needed to be reoperated and impact of reoperation
@@ -96,50 +85,19 @@ def metastasis_label(row):
 
 df['metastasis_label'] = df['number_metastasis_Timo'].apply(metastasis_label)
 
-print(df[['Pat ID', 'number_metastasis_Timo', 'metastasis_label', "date_metastasis_Timo", "date_first_patientcontact_Timo"]])
-df["date_first_patientcontact_Timo"] = pd.to_datetime(df["date_first_patientcontact_Timo"], format="%Y-%m-%d", errors="coerce")
+#print(df[['Pat ID', 'number_metastasis_Timo', 'metastasis_label', "date_metastasis_Timo", "date_first_patientcontact_Timo"]])
+df["Date of last follow-up"] = pd.to_datetime(df["Date of last follow-up"], format="%Y-%m-%d", errors="coerce")
 df["date_metastasis_Timo"] = pd.to_datetime(df["date_metastasis_Timo"], format="%Y-%m-%d", errors = "coerce")
 
-#print(type("date_metastasis_Timo"))
-def classify_metastasis(col1,col2, col3):
-    if col1 == '-' or pd.isnull(col1):
-        return 1
-    elif col2 > col3:
-        return 2
-    elif col2 < col3:
-        return 3
-    else:
-        return 0
-
-df['metastasis_status'] = df.apply(lambda row: classify_metastasis(row['number_metastasis_Timo'],row['date_first_patientcontact_Timo'], row['date_metastasis_Timo']), axis =1)
-
-def metastasis_label_description(row):
-    if row == 1:
-        return 'Metastasis free'
-    elif row == 2:
-        return 'Metastasis existed'
-    elif row ==3:
-        return 'Metastasis reappeared'
-    else:
-        return ('Metastasis available,\n'
-                'discovery date unknown')
-
-df['metastasis_label_description'] = df['metastasis_status'].apply(metastasis_label_description)
-
-#calculate the number of days from the first contact until from the date of discovery of metastasis for patients that did not have
-metastasis = df['metastasis_status'] == 3
-days_diff = (df.loc[metastasis, 'date_metastasis_Timo'] - df.loc[metastasis, 'date_first_patientcontact_Timo']).dt.days
 
 # Compute mean
-mean_days_metastasis = round(days_diff.mean())
-print(mean_days_metastasis)
-def days_of_metastasis(col1, col2, col3, mean_value):
-    if col1 == 3:
-        return (col2 - col3).days
+def days_of_metastasis(col1, col2, col3):
+    if col1 == 1:
+        return (col3 - col2).days
     else:
-        return mean_value
+        return None
 
-df["metastasis_days"] = df.apply(lambda row: days_of_metastasis(row['metastasis_status'],row['date_metastasis_Timo'],row['date_first_patientcontact_Timo'], mean_days_metastasis), axis =1)
+df["metastasis_days"] = df.apply(lambda row: days_of_metastasis(row['metastasis_label'],row['date_metastasis_Timo'],row['Date of last follow-up']), axis =1)
 
 
 #label to heck if chemo was used or not
@@ -151,8 +109,30 @@ def chemo_indication_label(row):
 
 df["Chemo_status"] = df['chemo_first_indication_Timo'].apply(chemo_indication_label)
 
+# --- Count and percentage calculation ---
+chemo_counts = df["Chemo_status"].value_counts().sort_index()
+chemo_counts.index = ["No Chemotherapy", "Received Chemotherapy"]
+percentages = (chemo_counts / chemo_counts.sum() * 100).round(1)
 
-#calculate the durantion of the first chemotherapy in days
+# --- Plot ---
+plt.figure(figsize=(6, 4))
+bars = plt.bar(chemo_counts.index, chemo_counts.values, color=["#A9CCE3", "#2E86C1"], edgecolor="black")
+plt.title("Distribution of Chemotherapy Status")
+plt.ylabel("Number of Patients")
+plt.xticks(rotation=0)
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+# --- Add labels: absolute + percentage ---
+for bar, count, pct in zip(bars, chemo_counts.values, percentages):
+    height = bar.get_height()
+    label = f"{count} ({pct:.1f}%)"
+    plt.text(bar.get_x() + bar.get_width() / 2, height + 0.5, label, ha='center', va='bottom', fontsize=10)
+
+plt.tight_layout()
+plt.show()
+
+
+#calculate the duration of the first chemotherapy in days
 
 df["Start date of line"] = pd.to_datetime(df["Start date of line"], format="%Y-%m-%d", errors="coerce")
 df["Optional: End date of line"] = pd.to_datetime(df["Optional: End date of line"], format="%Y-%m-%d", errors = "coerce")
@@ -186,38 +166,68 @@ def status_label(text):
 
 df["survival_status_label"] = df['Status'].apply(status_label)
 
+mode_value = df['survival_status_label'].mode()[0]  # mode() returns a Series; take the first value
+df['survival_status_label'] = df['survival_status_label'].fillna(mode_value)
+
 #label to find out the status of patients
 def survival_status_binary(text):
-    if text == 'AWD':
+    if text == 'AWD' or text == 'NED':
         return 1
     else:
         return 0
 
 df["survival_status_binary"] = df['survival_status_label'].apply(survival_status_binary)
 
+awd_counts = df["survival_status_binary"].value_counts().sort_index()
+awd_counts.index = ["Not Alive", "Alive"]
+percentages = (awd_counts / awd_counts.sum() * 100).round(1)
+
+# --- Plot ---
+plt.figure(figsize=(6, 4))
+bars = plt.bar(awd_counts.index, awd_counts.values, color=["#AED6F1", "#2874A6"], edgecolor="black")
+plt.title("Distribution of Alive Status")
+plt.ylabel("Number of Patients")
+plt.xticks(rotation=0)
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+# --- Add labels: absolute + percentage ---
+for bar, count, pct in zip(bars, awd_counts.values, percentages):
+    height = bar.get_height()
+    label = f"{count} ({pct:.1f}%)"
+    plt.text(bar.get_x() + bar.get_width() / 2, height + 0.5, label, ha='center', va='bottom', fontsize=10)
+
+plt.tight_layout()
+plt.show()
+
 #add label to distinguish patients that receive radiotherapy from the ones that did not
-def radiotherapy_status(text):
+def extract_radiotherapy_number(text):
     val_str = str(text).strip().lower()
     match = re.match(r"\[?(\d+)\]?", val_str)
-    if match and int(match.group(1)) == 0 or pd.isnull(text):
+    if match:
+        return int(match.group(1))
+    else:
+        return np.nan  # If no match, treat as missing for now
+
+# Create a temporary column to hold extracted numbers
+df["Indication for radiotherapy"] = df["Indication for radiotherapy"].apply(extract_radiotherapy_number)
+
+# Step 2: Fill missing values with MODE (most common value)
+mode_value = df["Indication for radiotherapy"].mode()[0]
+df["Indication for radiotherapy"] = df["Indication for radiotherapy"].fillna(mode_value)
+
+# Step 3: Now assign binary radiation status
+def radiotherapy_status(number):
+    if number == 0:
         return 0
-    if val_str == "none":
-        return 0
-    return 1
+    else:
+        return 1
 
 df["radiation_status"] = df["Indication for radiotherapy"].apply(radiotherapy_status)
 
-#add label to distinguish patients that alive and patients that are not alive
-def death_by_disease(row):
-    if row == 'DOD':
-        return 1
-    else:
-        return 0
-
-df["deceased_by_disease"] = df['survival_status_label'].apply(death_by_disease)
-
 #calculate the number of survival days a patient that passed away from the decease (from day of contact until the date of death)
 df["date_death_Timo"] = pd.to_datetime(df["date_death_Timo"], format="%Y-%m-%d", errors = "coerce")
+df["date_first_patientcontact_Timo"] = pd.to_datetime(df["date_first_patientcontact_Timo"], format="%Y-%m-%d", errors="coerce")
+
 def survival_days(col1,col2, col3):
     if col1 == 0:
         return (col2 - col3).days
@@ -232,15 +242,9 @@ mean_tumor_size = df["Tumor maximal size (mm)"].mean().round(0)
 print(f' Mean tumour size (in mm): {mean_tumor_size}')
 df["Tumor maximal size (mm)"] = df["Tumor maximal size (mm)"].fillna(mean_tumor_size)
 
-#apply null values when needed
-
-def null_values(row):
-    if row == '-':
-        return None
-    else:
-        return row
-
-df["(W) Other diagnoses?_Timo"] = df['(W) Other diagnoses?_Timo'].apply(null_values)
+#populate null values with mean values for the CCI
+mode_value = df['cci_Timo'].mode()[0]  # mode() returns a Series; take the first value
+df['cci_Timo'] = df['cci_Timo'].fillna(mode_value)
 
 os.makedirs(output_dir, exist_ok=True)
 output_file = os.path.join(output_dir, "dataset_labelled.csv")
@@ -252,20 +256,7 @@ Writing the translation of the binary code
 """
 with open("README.md", "w") as file:
     file.write(
-        "### Code Legends\n"
-        "#### Gender\n"
-        "- `0`: **Female**\n"
-        "- `1`: **Male**\n\n"
-        "#### Metastasis Classification\n"
-        "- `1`: **Metastasis free** during treatment observation\n"
-        "- `2`: Metastasis existed **before** first patient contact\n"
-        "- `3`: Metastasis appeared **after** first patient contact\n"
-        "- `0`: Metastasis present, discovery date unknown\n\n"
-        "#### Patient Status\n"
-        "- `0`: **NED** (No evidence of disease)\n"
-        "- `1`: **AWD** (Alive with disease)\n"
-        "- `2`: **DOD** (Dead of disease)\n\n"
-        "#### Remaining Labels (Binary Codes)\n"
+        "#### Binary Codes Meaning\n"
         "- `0`: **No**\n"
         "- `1`: **Yes**\n"
     )
