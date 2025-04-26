@@ -203,8 +203,10 @@ df_cf["CATE_upper"] = all_ci_upper
 # ---------------------------
 # Interpret with SingleTreeCateInterpreter
 # ---------------------------
+from econml.cate_interpreter import SingleTreeCateInterpreter
+
 interpreter = SingleTreeCateInterpreter(max_depth=3)
-interpreter.interpret(X_val, cate_fold)
+interpreter.interpret(cf_model, X_val)
 
 plt.figure(figsize=(12, 8))
 interpreter.plot()
@@ -280,8 +282,8 @@ df.to_csv(output_file, index=False)
 
 # Save X_test, T_test, Y_test, and the best trained model (optional)
 np.save(os.path.join(output_dir, "X_test.npy"), X_val)  # last validation fold
-np.save(os.path.join(output_dir, "T_test.npy"), T_train)  # last train fold
-np.save(os.path.join(output_dir, "Y_test.npy"), Y_train)
+np.save(os.path.join(output_dir, "T_test.npy"), T_val)  # <-- use validation fold T
+np.save(os.path.join(output_dir, "Y_test.npy"), Y_val)
 
 import joblib
 joblib.dump(cf_model, os.path.join(output_dir, "cf_model.pkl"))

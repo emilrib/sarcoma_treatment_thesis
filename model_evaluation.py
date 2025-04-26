@@ -30,51 +30,64 @@ output_dir = os.path.join(current_dir)
 # ---------------------------
 # Load Data
 # ---------------------------
-print("\nLoading data...")
-df_test = pd.read_csv("dataset_with_cate.csv")
-X_cf = np.load(os.path.join(output_dir, "X_cf.npy"))
-T_cf = np.load(os.path.join(output_dir, "T_cf.npy"))
-Y_cf = np.load(os.path.join(output_dir, "Y_cf.npy"))
+df_test = pd.read_csv(os.path.join(output_dir, "dataset_with_cate.csv"))
+
+# Load arrays (use the correct X_test, T_test, Y_test)
+X_test = np.load(os.path.join(output_dir, "X_test.npy"))
+T_test = np.load(os.path.join(output_dir, "T_test.npy"))
+Y_test = np.load(os.path.join(output_dir, "Y_test.npy"))
+# Load trained models
 cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
-cf_model_final = joblib.load(os.path.join(output_dir, "cf_model_final.pkl"))
-preprocessor = joblib.load("preprocessor.pkl")
+preprocessor = joblib.load(os.path.join(output_dir, "preprocessor.pkl"))
 
 
-print(type(cf_model_final))
-# 1. Estimate nuisance models:
+print(type(cf_model))
+
+# ---------------------------
+# 1. Estimate nuisance models on X_test
+# ---------------------------
+print("\nEstimating nuisance models...")
+
 model_y = RandomForestRegressor()
 model_t = LogisticRegression(max_iter=1000)
 
-model_y.fit(X_cf, Y_cf)
-model_t.fit(X_cf, T_cf)
+model_y.fit(X_test, Y_test)
+model_t.fit(X_test, T_test)
 
-mu = model_y.predict(X_cf)
-propensity = model_t.predict_proba(X_cf)[:, 1]
+mu = model_y.predict(X_test)
+propensity = model_t.predict_proba(X_test)[:, 1]
 
-W = T_cf
-Y = Y_cf
+W = T_test
+Y = Y_test
 
+# ---------------------------
+# 2. Compute pseudo-outcome
+# ---------------------------
 pseudo_outcome = ((W - propensity) * (Y - mu)) / (propensity * (1 - propensity))
 
-cate_preds = cf_model.effect(X_cf)
+# Predict CATEs
+cate_preds = cf_model.effect(X_test)
 
+# Compute DR loss (proxy loss)
 dr_loss = np.mean((pseudo_outcome - cate_preds) ** 2)
 
-# Set up the figure
+print(f"\n✅ DR Loss (lower is better): {dr_loss:.4f}")
+
+# ---------------------------
+# 3. Plot DR Score bands
+# ---------------------------
 fig, ax = plt.subplots(figsize=(8, 2))
 
-# Define the bands (Good, Moderate, Weak)
 bands = [0.1, 0.3, 0.5, 1.0]
 colors = ['green', 'yellow', 'orange', 'red']
 labels = ['Excellent', 'Good', 'Moderate', 'Weak']
 
-# Draw colored bands
 start = 0
 for band, color, label in zip(bands, colors, labels):
     ax.axvspan(start, band, color=color, alpha=0.4, label=label)
     start = band
 
-# Plot the DR Score
+# Plot vertical line for DR Score
 ax.axvline(dr_loss, color='blue', linestyle='--', linewidth=2)
 plt.text(dr_loss + 0.01, 0.5, f'DR Score = {dr_loss:.3f}', verticalalignment='center', color='blue')
 
@@ -87,8 +100,9 @@ ax.set_title('Model Reliability based on DR Score')
 ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.grid(True, axis='x')
 plt.tight_layout()
-plt.show()
 
+# Show plot
+plt.show()
 
 # ---------------------------
 # Predict CATEs
