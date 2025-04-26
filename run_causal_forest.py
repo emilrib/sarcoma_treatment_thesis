@@ -1,10 +1,3 @@
-from cf_config import (
-    treatment_col,
-    outcome_col,
-    covariate_cols,
-    categorical_cols,
-    numeric_cols
-)
 
 import os.path
 import numpy as np
@@ -20,10 +13,19 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 import seaborn as sns
+from econml.cate_interpreter import SingleTreeCateInterpreter
+import joblib
 
-data_path = os.path.join(os.getcwd(), "dataset_labelled.csv")
-df = pd.read_csv(data_path)
-# Load and preprocess data
+if '__file__' in globals():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+else:
+    current_dir = os.getcwd()
+
+# Input/output locations
+input_file = os.path.join(current_dir, "dataset_labelled.csv")
+os.makedirs(os.path.dirname(input_file), exist_ok=True)
+
+df = pd.read_csv(input_file)
 
 from cf_config import (
     treatment_col,
@@ -74,16 +76,16 @@ def compute_standardized_mean_diff(df, treatment_col, covariates):
             std_pooled = np.sqrt((treated[col].var() + untreated[col].var()) / 2)
             smd = abs(mean_t - mean_u) / std_pooled if std_pooled > 0 else 0
         smd_results.append((col, smd))
-    return pd.DataFrame(smd_results, columns=["Variable", "SMD"]).sort_values(by="SMD", ascending=False)
+    return pd.DataFrame(smd_results, columns=["Subgroup", "SMD"]).sort_values(by="SMD", ascending=False)
 
 imbalance_df = compute_standardized_mean_diff(df_cf, treatment_col, covariate_cols)
 imbalanced_vars = imbalance_df[imbalance_df["SMD"] > 0.1]
-
+print(imbalanced_vars)
 # ---------------------------
 # Propensity Score Weighting (IPTW)
 # ---------------------------
-numeric_imbalanced = [col for col in numeric_cols if col in imbalanced_vars["Variable"].values]
-categorical_imbalanced = [col for col in categorical_cols if col in imbalanced_vars["Variable"].values]
+numeric_imbalanced = [col for col in numeric_cols if col in imbalanced_vars["Subgroup"].values]
+categorical_imbalanced = [col for col in categorical_cols if col in imbalanced_vars["Subgroup"].values]
 
 imbalanced_preprocessor = ColumnTransformer(transformers=[
     ('num', SimpleImputer(strategy='mean'), numeric_imbalanced),
@@ -163,7 +165,9 @@ for param_set in ParameterGrid(param_grid):
         best_mse = avg_mse
         best_params = param_set
 
-# Train best model on full data
+# ---------------------------
+# Train best model on full data (with best hyperparameters)
+# ---------------------------
 print(f"\nBest params selected: {best_params}")
 
 for train_idx, val_idx in kf.split(df_cf):
@@ -198,6 +202,20 @@ df_cf["CATE_lower"] = all_ci_lower
 df_cf["CATE_upper"] = all_ci_upper
 
 # ---------------------------
+# Interpret with SingleTreeCateInterpreter
+# ---------------------------
+interpreter = SingleTreeCateInterpreter(max_depth=3)
+interpreter = SingleTreeCateInterpreter(max_depth=3)
+interpreter.interpret(cf_model, X_val)
+
+
+plt.figure(figsize=(12, 8))
+interpreter.plot()
+plt.title("Single Tree Approximation of CATE")
+plt.tight_layout()
+plt.show()
+
+# ---------------------------
 # Rank into Quantiles
 # ---------------------------
 df_cf['CATE_quantile'] = pd.qcut(df_cf['CATE'], q=Q, labels=[f"Q{i+1}" for i in range(Q)])
@@ -205,13 +223,41 @@ df_cf['CATE_quantile'] = pd.qcut(df_cf['CATE'], q=Q, labels=[f"Q{i+1}" for i in 
 # ---------------------------
 # Analyze Quantile Groups
 # ---------------------------
-print("\n📊 CATE by Quantile Group:")
-print(df_cf.groupby('CATE_quantile')['CATE'].agg(['mean', 'count']))
+print("\n CATE by Quantile Group:")
+grouped_summary = df_cf.groupby('CATE_quantile').agg(
+    Estimate=('CATE', 'mean'),
+    StdError=('CATE', 'std'),
+    Count=('CATE', 'count')
+).reset_index()
+print(grouped_summary)
 
-# Plot
+# ---------------------------
+# Calculate Overall ATE
+# ---------------------------
+ate = df_cf["CATE"].mean()
+ate_se = df_cf["CATE"].std() / np.sqrt(df_cf.shape[0])
+
+print(f"\n Overall ATE (Average Treatment Effect): {ate:.4f}")
+print(f"Standard Error of ATE: {ate_se:.4f}")
+
+# ---------------------------
+# Plotting
+# ---------------------------
+# Barplot of grouped CATEs
 plt.figure(figsize=(8, 5))
-sns.barplot(x='CATE_quantile', y='CATE', data=df_cf, estimator=np.mean, ci='sd')
+sns.barplot(x='CATE_quantile', y='Estimate', data=grouped_summary, errorbar='sd')
 plt.title('Average CATE by Quantile Group')
+plt.ylabel('Average CATE')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# Plot CATE Distribution
+plt.figure(figsize=(10, 5))
+plt.hist(df_cf['CATE'] * 100, bins=30, edgecolor='k')
+plt.title("CATE Distribution on Full Dataset")
+plt.xlabel("Estimated Risk Reduction (%)")
+plt.ylabel("Number of Patients")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
@@ -219,5 +265,47 @@ plt.show()
 # ---------------------------
 # Export Function
 # ---------------------------
-def get_test_results():
-    return df_cf.copy()
+
+# Merge CATE results back into the original dataset (df)
+df = df.copy()  # ensure no view issues
+df["CATE"] = df_cf["CATE"]
+df["CATE_lower"] = df_cf["CATE_lower"]
+df["CATE_upper"] = df_cf["CATE_upper"]
+df["CATE_quantile"] = df_cf["CATE_quantile"]
+
+# Define output directory
+output_dir = os.path.join(current_dir)
+os.makedirs(output_dir, exist_ok=True)
+
+# Save full dataset (with CATE predictions)
+output_file = os.path.join(output_dir, "dataset_with_cate.csv")
+df.to_csv(output_file, index=False)
+
+# Save the full X, T, Y used for training/testing
+X_cf = np.asarray(preprocessor.transform(df_cf[covariate_cols]))
+T_cf = df_cf[treatment_col].astype(int).values.ravel()
+Y_cf = df_cf[outcome_col].astype(int).values.ravel()
+
+np.save(os.path.join(output_dir, "X_cf.npy"), X_cf)
+np.save(os.path.join(output_dir, "T_cf.npy"), T_cf)
+np.save(os.path.join(output_dir, "Y_cf.npy"), Y_cf)
+
+print("\nRefitting Causal Forest on full data...")
+X_full = np.asarray(preprocessor.fit_transform(df_cf[covariate_cols]))
+T_full = df_cf[treatment_col].astype(int).values.ravel()
+Y_full = df_cf[outcome_col].astype(int).values.ravel()
+
+final_cf_model = CausalForestDML(
+    model_y=RandomForestRegressor(n_estimators=100, random_state=42),
+    model_t=LogisticRegression(max_iter=1000),
+    discrete_treatment=True,
+    random_state=42,
+    cv=3,
+    **best_params  # reuse best hyperparams
+)
+
+final_cf_model.fit(Y_full, T_full, X=X_full, sample_weight=weights)
+
+# Save final model
+joblib.dump(final_cf_model, os.path.join(output_dir, "cf_model_final.pkl"))
+joblib.dump(preprocessor, "preprocessor.pkl")

@@ -1,0 +1,157 @@
+import os.path
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import joblib
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+from scipy import stats
+from validate import BLPEvaluationResults
+
+from cf_config import (
+    treatment_col,
+    outcome_col,
+    covariate_cols,
+    categorical_cols,
+    numeric_cols
+)
+
+# ---------------------------
+# Setup paths
+# ---------------------------
+if '__file__' in globals():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+else:
+    current_dir = os.getcwd()
+
+output_dir = os.path.join(current_dir)
+
+# ---------------------------
+# Load Data
+# ---------------------------
+print("\nLoading data...")
+df_test = pd.read_csv("dataset_with_cate.csv")
+X_cf = np.load(os.path.join(output_dir, "X_cf.npy"))
+T_cf = np.load(os.path.join(output_dir, "T_cf.npy"))
+Y_cf = np.load(os.path.join(output_dir, "Y_cf.npy"))
+cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
+cf_model_final = joblib.load(os.path.join(output_dir, "cf_model_final.pkl"))
+preprocessor = joblib.load("preprocessor.pkl")
+
+
+print(type(cf_model_final))
+# 1. Estimate nuisance models:
+model_y = RandomForestRegressor()
+model_t = LogisticRegression(max_iter=1000)
+
+model_y.fit(X_cf, Y_cf)
+model_t.fit(X_cf, T_cf)
+
+mu = model_y.predict(X_cf)
+propensity = model_t.predict_proba(X_cf)[:, 1]
+
+W = T_cf
+Y = Y_cf
+
+pseudo_outcome = ((W - propensity) * (Y - mu)) / (propensity * (1 - propensity))
+
+cate_preds = cf_model.effect(X_cf)
+
+dr_loss = np.mean((pseudo_outcome - cate_preds) ** 2)
+
+# Set up the figure
+fig, ax = plt.subplots(figsize=(8, 2))
+
+# Define the bands (Good, Moderate, Weak)
+bands = [0.1, 0.3, 0.5, 1.0]
+colors = ['green', 'yellow', 'orange', 'red']
+labels = ['Excellent', 'Good', 'Moderate', 'Weak']
+
+# Draw colored bands
+start = 0
+for band, color, label in zip(bands, colors, labels):
+    ax.axvspan(start, band, color=color, alpha=0.4, label=label)
+    start = band
+
+# Plot the DR Score
+ax.axvline(dr_loss, color='blue', linestyle='--', linewidth=2)
+plt.text(dr_loss + 0.01, 0.5, f'DR Score = {dr_loss:.3f}', verticalalignment='center', color='blue')
+
+# Formatting
+ax.set_xlim(0, 1)
+ax.set_ylim(0, 1)
+ax.set_yticks([])
+ax.set_xlabel('DR Score (Lower is Better)')
+ax.set_title('Model Reliability based on DR Score')
+ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
+plt.grid(True, axis='x')
+plt.tight_layout()
+plt.show()
+
+
+# ---------------------------
+# Predict CATEs
+# ---------------------------
+print("\nPredicting CATEs...")
+cate_preds = cf_model_final.effect(X_cf)
+
+# ---------------------------
+# Run Best Linear Projection (BLP)
+# ---------------------------
+print("\nRunning Best Linear Projection (BLP)...")
+
+# Fit simple linear regression: Y_cf ~ cate_preds
+blp_model = LinearRegression()
+blp_model.fit(cate_preds.reshape(-1, 1), Y_cf)
+
+# Calculate estimates
+coef = blp_model.coef_[0]  # BLP estimate
+intercept = blp_model.intercept_
+
+# Predicted outcomes
+y_pred = blp_model.predict(cate_preds.reshape(-1, 1))
+
+# Residuals and variance
+residuals = Y_cf - y_pred
+rss = np.sum(residuals ** 2)
+n = len(Y_cf)
+var_x = np.var(cate_preds, ddof=1)
+se = np.sqrt(rss / (n - 2)) / np.sqrt(np.sum((cate_preds - np.mean(cate_preds)) ** 2))
+
+# t-statistic and p-value
+t_stat = coef / se
+p_val = 2 * (1 - stats.t.cdf(np.abs(t_stat), df=n-2))
+
+# ---------------------------
+# Prepare values for BLPEvaluationResults
+# ---------------------------
+params = [coef]
+errs = [se]
+pvals = [p_val]
+treatments = np.array([0, 1])  # Example: Control vs Treatment (binary treatment)
+
+blp_eval = BLPEvaluationResults(
+    params=params,
+    errs=errs,
+    pvals=pvals,
+    treatments=treatments
+)
+
+# ---------------------------
+# Print Summary
+# ---------------------------
+print("\n📈 Best Linear Projection (BLP) Summary:")
+print(blp_eval.summary())
+
+# ---------------------------
+# Optional: Plot Coefficient
+# ---------------------------
+plt.figure(figsize=(6, 4))
+plt.bar(['CATE effect'], blp_eval.params, yerr=blp_eval.errs, capsize=5)
+plt.axhline(0, color='gray', linestyle='--')
+plt.title('Best Linear Projection (BLP) Estimate')
+plt.ylabel('Effect Size')
+plt.grid(True)
+plt.tight_layout()
+plt.show()

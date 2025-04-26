@@ -170,15 +170,15 @@ mode_value = df['survival_status_label'].mode()[0]  # mode() returns a Series; t
 df['survival_status_label'] = df['survival_status_label'].fillna(mode_value)
 
 #label to find out the status of patients
-def survival_status_binary(text):
+def survival_status(text):
     if text == 'AWD' or text == 'NED':
         return 1
     else:
         return 0
 
-df["survival_status_binary"] = df['survival_status_label'].apply(survival_status_binary)
+df["survival_status"] = df['survival_status_label'].apply(survival_status)
 
-awd_counts = df["survival_status_binary"].value_counts().sort_index()
+awd_counts = df["survival_status"].value_counts().sort_index()
 awd_counts.index = ["Not Alive", "Alive"]
 percentages = (awd_counts / awd_counts.sum() * 100).round(1)
 
@@ -233,7 +233,7 @@ def survival_days(col1,col2, col3):
         return (col2 - col3).days
     return None
 
-df["overall_survival_days"] = df.apply(lambda row: survival_days(row['survival_status_binary'],row['date_death_Timo'], row['date_first_patientcontact_Timo']), axis =1)
+df["overall_survival_days"] = df.apply(lambda row: survival_days(row['survival_status'],row['date_death_Timo'], row['date_first_patientcontact_Timo']), axis =1)
 
 #populate null values with mean values for the tumor size
 df["Tumor maximal size (mm)"] = pd.to_numeric(df["Tumor maximal size (mm)"], errors="coerce")
