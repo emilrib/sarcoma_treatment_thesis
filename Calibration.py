@@ -3,8 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import joblib
-from validate import CalibrationEvaluationResults
-from sklearn.metrics import mean_squared_error
 import statsmodels.api as sm
 
 # ---------------------------
@@ -25,7 +23,7 @@ T_test = np.load(os.path.join(output_dir, "T_test.npy"))
 Y_test = np.load(os.path.join(output_dir, "Y_test.npy"))
 
 cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
-preprocessor = joblib.load(os.path.join(output_dir, "preprocessor.pkl"))  # if you want to re-transform X later
+#preprocessor = joblib.load(os.path.join(output_dir, "preprocessor.pkl"))  # if you want to re-transform X later
 
 # ---------------------------
 # Predict CATEs
