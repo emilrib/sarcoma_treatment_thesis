@@ -254,7 +254,7 @@ print(f"File successfully saved to {output_file}")
 """
 Writing the translation of the binary code
 """
-with open("README.md", "w") as file:
+with open("README.md", "a") as file:
     file.write(
         "#### Binary Codes Meaning\n"
         "- `0`: **No**\n"
