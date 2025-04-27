@@ -101,66 +101,6 @@ plt.show()
 
 
 # ---------------------------
-# Run Best Linear Projection (BLP)
-# ---------------------------
-print("\nRunning Best Linear Projection (BLP)...")
-
-# Fit simple linear regression: observed outcome Y_test ~ predicted CATEs
-blp_model = LinearRegression()
-blp_model.fit(cate_preds.reshape(-1, 1), Y_test)
-
-# Calculate statistics
-coef = blp_model.coef_[0]         # BLP estimate
-intercept = blp_model.intercept_
-
-# Predicted outcomes
-y_pred = blp_model.predict(cate_preds.reshape(-1, 1))
-
-# Residuals and variance
-residuals = Y_test - y_pred
-rss = np.sum(residuals ** 2)
-n = len(Y_test)
-se = np.sqrt(rss / (n - 2)) / np.sqrt(np.sum((cate_preds - np.mean(cate_preds)) ** 2))
-
-# t-statistic and p-value
-t_stat = coef / se
-p_val = 2 * (1 - stats.t.cdf(np.abs(t_stat), df=n-2))
-
-# ---------------------------
-# Prepare BLP output
-# ---------------------------
-params = [coef]
-errs = [se]
-pvals = [p_val]
-treatments = np.array([0, 1])  # Dummy treatments for BLP
-
-# Wrap into BLPEvaluationResults
-blp_eval = BLPEvaluationResults(
-    params=params,
-    errs=errs,
-    pvals=pvals,
-    treatments=treatments
-)
-
-# ---------------------------
-# Print BLP Summary
-# ---------------------------
-print("\n Best Linear Projection (BLP) Summary:")
-print(blp_eval.summary())
-
-# ---------------------------
-# Optional: Plot Coefficient
-# ---------------------------
-plt.figure(figsize=(6, 4))
-plt.bar(['CATE effect'], blp_eval.params, yerr=blp_eval.errs, capsize=5)
-plt.axhline(0, color='gray', linestyle='--')
-plt.title('Best Linear Projection (BLP) Estimate')
-plt.ylabel('Effect Size')
-plt.grid(True)
-plt.tight_layout()
-plt.show()
-
-# ---------------------------
 # Run Uplift Evaluation
 # ---------------------------
 print("\nRunning Uplift Evaluation...")

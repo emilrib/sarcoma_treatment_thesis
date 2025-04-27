@@ -311,10 +311,30 @@ output_file = os.path.join(output_dir, "dataset_with_cate.csv")
 df.to_csv(output_file, index=False)
 
 # Save X_test, T_test, Y_test, and the best trained model (optional)
-np.save(os.path.join(output_dir, "X_test.npy"), X_val)  # last validation fold
 np.save(os.path.join(output_dir, "T_test.npy"), T_val)  # <-- use validation fold T
 np.save(os.path.join(output_dir, "Y_test.npy"), Y_val)
 
+# For X_test: save after reapplying the preprocessor properly
+# ---------------------------------------
+# Re-transform using preprocessor on covariate columns
+X_test_raw = df_cf.loc[val_idx, covariate_cols]  # use same validation fold
+
+X_test_preprocessed = preprocessor.transform(X_test_raw)
+
+# Save corrected X_test
+np.save(os.path.join(output_dir, "X_test_corrected.npy"), X_test_preprocessed)
+
+# Save feature names as well
+feature_names = preprocessor.get_feature_names_out()
+np.save(os.path.join(output_dir, "X_test_feature_names.npy"), feature_names)
+
+print(f" Saved corrected X_test shape: {X_test_preprocessed.shape}")
+print(f" Saved feature names ({len(feature_names)} features).")
+
+# ---------------------------
+# Save trained causal forest model
+# ---------------------------
 import joblib
 joblib.dump(cf_model, os.path.join(output_dir, "cf_model.pkl"))
+joblib.dump(preprocessor, os.path.join(output_dir, "preprocessor.pkl"))
 
