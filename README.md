@@ -1,22 +1,20 @@
-### Code Legends
-#### Gender
-- `1`: **Female**
-- `2`: **Male**
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**
+- 
+# Validate Package
 
-#### Metastasis Classification
-- `1`: **Metastasis free** during treatment observation
-- `2`: Metastasis existed **before** first patient contact
-- `3`: Metastasis appeared **after** first patient contact
-- `0`: Metastasis present, discovery date unknown
+This package provides local extensions to model evaluation tools for causal inference.
 
-#### Patient Status
-- `1`: **NED** (No evidence of disease)
-- `2`: **AWD** (Alive with disease)
-- `3`: **DOD** (Dead of disease)
+It adapts and extends functionalities originally developed in Microsoft Research's EconML library (v0.15.1), including:
 
-#### Remaining Labels (Binary Codes)
-- `1`: **No**
-- `2`: **Yes**
+- Uplift Ranking Evaluation(`UpliftEvaluationResults`)
+
+## Origin
+The original methods are documented in the EconML repository: [https://github.com/microsoft/EconML](https://github.com/microsoft/EconML).
+
+## License
+The original EconML library is under the MIT License. This project inherits that license.
 
 ### STUVA Analysis
 The STUVA analysis uses ANOVA to determine if there is a significant STUVA interference amaong groups.

@@ -18,6 +18,7 @@ pandas==1.5.3
 patsy==1.0.1
 pillow==11.1.0
 pyparsing==3.2.3
+pytesseract==0.3.13
 python-dateutil==2.9.0.post0
 pytz==2025.2
 regex==2024.11.6
