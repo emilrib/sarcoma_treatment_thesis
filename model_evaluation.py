@@ -7,8 +7,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from scipy import stats
+from sklearn.metrics import mean_squared_error
 from validate import BLPEvaluationResults
-
+from validate import UpliftEvaluationResults
+from validate import CalibrationEvaluationResults
 from cf_config import (
     treatment_col,
     outcome_col,
@@ -71,7 +73,7 @@ cate_preds = cf_model.effect(X_test)
 # Compute DR loss (proxy loss)
 dr_loss = np.mean((pseudo_outcome - cate_preds) ** 2)
 
-print(f"\n✅ DR Loss (lower is better): {dr_loss:.4f}")
+print(f"\n DR Loss (lower is better): {dr_loss:.4f}")
 
 # ---------------------------
 # 3. Plot DR Score bands
@@ -109,6 +111,62 @@ plt.show()
 # ---------------------------
 print("\nPredicting CATEs...")
 cate_preds = cf_model.effect(X_test)
+
+# ---------------------------
+# Calibration Evaluation
+# ---------------------------
+print("\nRunning Calibration Evaluation...")
+
+# Predict CATEs
+cate_preds = cf_model.effect(X_test)
+
+# Bin by predicted CATE (5 quantiles)
+df_cal = pd.DataFrame({
+    "cate_pred": cate_preds,
+    "outcome": Y_test,
+    "treatment": T_test
+})
+df_cal['cate_bin'] = pd.qcut(df_cal['cate_pred'], q=5, labels=False)
+
+# Compute average CATE and GATE per bin
+summary_cal = df_cal.groupby('cate_bin').agg(
+    g_cate=('cate_pred', 'mean'),
+    gate=('outcome', 'mean'),
+    se_gate=('outcome', 'sem')  # standard error
+).reset_index()
+
+# Compute calibration MSE and R^2
+calibration_mse = mean_squared_error(summary_cal['g_cate'], summary_cal['gate'])
+calibration_r2 = 1 - (calibration_mse / np.var(summary_cal['gate']))
+
+# Prepare plot_data_dict
+plot_data_dict = {
+    1: summary_cal  # treatment = 1 (treated group)
+}
+treatments = np.array([0, 1])  # control and treatment
+
+# Instantiate CalibrationEvaluationResults
+calibration_eval = CalibrationEvaluationResults(
+    cal_r_squared=np.array([calibration_r2]),
+    plot_data_dict=plot_data_dict,
+    treatments=treatments
+)
+
+# ---------------------------
+# Print Calibration Summary
+# ---------------------------
+print("\n Calibration Evaluation Summary:")
+print(calibration_eval.summary())
+
+# ---------------------------
+# Plot Calibration Curve
+# ---------------------------
+plt.figure(figsize=(8, 5))
+calibration_eval.plot_cal(tmt=1)
+plt.title('Calibration Curve: Predicted CATE vs Observed GATE')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
 
 # ---------------------------
 # Run Best Linear Projection (BLP)
@@ -155,7 +213,7 @@ blp_eval = BLPEvaluationResults(
 # ---------------------------
 # Print BLP Summary
 # ---------------------------
-print("\n📈 Best Linear Projection (BLP) Summary:")
+print("\n Best Linear Projection (BLP) Summary:")
 print(blp_eval.summary())
 
 # ---------------------------
@@ -169,3 +227,70 @@ plt.ylabel('Effect Size')
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+# ---------------------------
+# Run Uplift Evaluation
+# ---------------------------
+print("\nRunning Uplift Evaluation...")
+
+# Sort individuals by predicted CATE
+uplift_df = pd.DataFrame({
+    "cate_pred": cate_preds,
+    "outcome": Y_test,
+    "treatment": T_test
+}).sort_values("cate_pred", ascending=False).reset_index(drop=True)
+
+# Create uplift curve (cumulative gain)
+uplift_df['cumulative_treated'] = uplift_df['treatment'].cumsum()
+uplift_df['cumulative_outcome'] = uplift_df['outcome'].cumsum()
+uplift_df['percentage_treated'] = np.linspace(0, 1, len(uplift_df))
+
+# Uplift = outcome gain over random
+uplift_df['gain_over_random'] = uplift_df['cumulative_outcome'] - uplift_df['percentage_treated'] * uplift_df['outcome'].sum()
+
+# Dummy error estimate (optional real bootstrap later)
+uplift_df['err'] = 0.05  # fixed dummy error
+
+# Build curve_data_dict expected by UpliftEvaluationResults
+curve_data_dict = {
+    1: uplift_df.rename(columns={
+        "percentage_treated": "Percentage treated",
+        "gain_over_random": "value"
+    })
+}
+
+# Estimate simple stats
+uplift_integral = uplift_df["gain_over_random"].mean()
+uplift_std = uplift_df["gain_over_random"].std() / np.sqrt(len(uplift_df))
+uplift_pval = 2 * (1 - stats.norm.cdf(np.abs(uplift_integral / uplift_std)))
+
+params = [uplift_integral]
+errs = [uplift_std]
+pvals = [uplift_pval]
+treatments = np.array([0, 1])  # 0 = control, 1 = treatment group
+
+# Instantiate UpliftEvaluationResults
+uplift_eval = UpliftEvaluationResults(
+    params=params,
+    errs=errs,
+    pvals=pvals,
+    treatments=treatments,
+    curve_data_dict=curve_data_dict
+)
+
+# ---------------------------
+# Print Uplift Summary
+# ---------------------------
+print("\n Uplift Evaluation Summary:")
+print(uplift_eval.summary())
+
+# ---------------------------
+# Plot Uplift Curve
+# ---------------------------
+plt.figure(figsize=(8, 5))
+uplift_eval.plot_uplift(tmt=1)
+plt.title("Uplift Curve for Treated Patients")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
