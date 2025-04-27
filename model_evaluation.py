@@ -11,13 +11,6 @@ from sklearn.metrics import mean_squared_error
 from validate import BLPEvaluationResults
 from validate import UpliftEvaluationResults
 from validate import CalibrationEvaluationResults
-from cf_config import (
-    treatment_col,
-    outcome_col,
-    covariate_cols,
-    categorical_cols,
-    numeric_cols
-)
 
 # ---------------------------
 # Setup paths

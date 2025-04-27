@@ -1,112 +1,145 @@
 import os.path
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.metrics import roc_auc_score
-from run_causal_forest import get_test_results, treatment_col, outcome_col
+import numpy as np
 import pandas as pd
-from cf_config import (
-    treatment_col,
-    outcome_col,
-    covariate_cols,
-    categorical_cols,
-    numeric_cols
+import joblib
+import os
+import matplotlib.pyplot as plt
+
+"""
+RATE assesses how well CATE rank observations on an evaluation set according to treatment profit 
+A significant RATE suggests there is heterogeneity present in treatment effects.
+"""
+
+
+# ---------------------------
+# Setup paths
+# ---------------------------
+if '__file__' in globals():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+else:
+    current_dir = os.getcwd()
+
+output_dir = os.path.join(current_dir)
+
+# ---------------------------
+# Load Holdout Data and Trained Model
+# ---------------------------
+
+# Define where your outputs were saved
+output_dir = current_dir  # Assuming current_dir is already defined
+
+X_val = np.load(os.path.join(output_dir, "X_test.npy"))
+T_val = np.load(os.path.join(output_dir, "T_test.npy"))
+Y_val = np.load(os.path.join(output_dir, "Y_test.npy"))
+
+# Load trained Causal Forest model (optional)
+cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
+
+# Load dataset with CATEs
+df_cf = pd.read_csv(os.path.join(output_dir, "dataset_with_cate.csv"))
+
+# ---------------------------
+# Priority Ranking Evaluation
+# ---------------------------
+
+# Priority scores = estimated CATEs from df_cf (already computed)
+priority_cate = df_cf.loc[df_cf.index[-len(X_val):], "CATE"].values
+
+# True CATE estimates on holdout can be approximated by cf_model.effect(X_val) if needed
+true_cate = cf_model.effect(X_val)
+
+# Rank by predicted priority (highest CATE first)
+sorted_indices = np.argsort(-priority_cate)
+
+# Evaluate Average Treatment Effect across top-k percentages
+k_list = np.linspace(0.1, 1.0, 10)  # From top 10% to 100%
+avg_treatment_effects = []
+
+for k in k_list:
+    top_k = int(k * len(priority_cate))
+    selected = sorted_indices[:top_k]
+    avg_te = np.mean(true_cate[selected])
+    avg_treatment_effects.append(avg_te)
+
+# Build a summary DataFrame
+rate = pd.DataFrame({
+    'Top Percentile': (k_list * 100).astype(int),
+    'Average Treatment Effect': avg_treatment_effects
+})
+
+print("\nPriority Ranking Evaluation:")
+print(rate)
+
+# ---------------------------
+# Calculate AUTOC and Standard Error
+# ---------------------------
+
+# Normalize x-axis to [0,1] before calculating area
+normalized_top_percentile = rate['Top Percentile'] / 100
+AUTOC = np.trapz(rate['Average Treatment Effect'], normalized_top_percentile)
+
+# Estimate Std. Error using standard deviation of RATE and sample size
+rate_std = np.std(rate['Average Treatment Effect'])
+rate_n = len(rate['Average Treatment Effect'])
+AUTOC_stderr = rate_std / np.sqrt(rate_n)
+
+# Calculate 95% Confidence Interval bounds
+AUTOC_lower = AUTOC - 1.96 * AUTOC_stderr
+AUTOC_upper = AUTOC + 1.96 * AUTOC_stderr
+
+print(f"\nAUTOC (Area Under TOC Curve): {AUTOC:.4f}")
+print(f"Standard Error of AUTOC: {AUTOC_stderr:.4f}")
+print(f"95% Confidence Interval for AUTOC: ({AUTOC_lower:.4f}, {AUTOC_upper:.4f})")
+
+# ---------------------------
+# Combined Plot: TOC and RATE (with shaded background and 95% CI)
+# ---------------------------
+
+fig, axs = plt.subplots(1, 2, figsize=(16, 6))
+
+# TOC Curve with Confidence Band
+axs[0].plot(rate['Top Percentile'], rate['Average Treatment Effect'], marker='o', label='TOC Curve')
+axs[0].fill_between(
+    rate['Top Percentile'],
+    rate['Average Treatment Effect'] - 1.96 * AUTOC_stderr,
+    rate['Average Treatment Effect'] + 1.96 * AUTOC_stderr,
+    color='blue', alpha=0.2, label='95% CI'
 )
+for i, txt in enumerate(rate['Average Treatment Effect']):
+    axs[0].annotate(f"{txt:.2f}", (rate['Top Percentile'][i], rate['Average Treatment Effect'][i]),
+                    textcoords="offset points", xytext=(0,10), ha='center')
+axs[0].set_title('TOC Curve: ATE by Priority Percentile')
+axs[0].set_xlabel('Top Percentile of Patients')
+axs[0].set_ylabel('Average Treatment Effect')
+axs[0].legend()
+axs[0].grid(True)
 
+# RATE Curve with Zero Line and Background Shading
+axs[1].plot(rate['Top Percentile'], rate['Average Treatment Effect'], marker='o', linestyle='-')
+axs[1].axhline(0, color='black', linestyle='--', label='Zero Effect')
+axs[1].fill_between(rate['Top Percentile'], rate['Average Treatment Effect'], 0, where=(rate['Average Treatment Effect']>=0), color='green', alpha=0.3)
+axs[1].fill_between(rate['Top Percentile'], rate['Average Treatment Effect'], 0, where=(rate['Average Treatment Effect']<0), color='red', alpha=0.3)
+axs[1].set_title('RATE Curve (Simple Check with Shading)')
+axs[1].set_xlabel('Top Percentile of Patients')
+axs[1].set_ylabel('Average Treatment Effect')
+axs[1].legend()
+axs[1].grid(True)
 
-# Load results
-df_test = get_test_results()
+plt.tight_layout()
+plt.show()
 
-# Add age_grouping logic explicitly
-if "age" in df_test.columns:
-    df_test["age_group"] = pd.cut(df_test["age"], bins=[0, 40, 60, 80, 120], labels=["<40", "40-60", "60-80", "80+"])
-    if "age_group" not in categorical_cols:
-        categorical_cols.append("age_group")
+# ---------------------------
+# Optional: Cumulative Gain Plot
+# ---------------------------
 
-def evaluate_model(df_test):
-    treated = df_test[df_test[treatment_col] == 1]
-    untreated = df_test[df_test[treatment_col] == 0]
+cumulative_gain = np.cumsum(true_cate[sorted_indices]) / np.arange(1, len(true_cate) + 1)
+percentiles = np.linspace(1, 100, len(cumulative_gain))
 
-    mean_treated = treated["CATE"].mean()
-    mean_untreated = untreated["CATE"].mean()
-
-    if mean_untreated != 0:
-        rate = (mean_treated - mean_untreated) / abs(mean_untreated)
-    else:
-        rate = float('inf') if mean_treated > 0 else float('-inf')
-
-    print(f"\n✅ Overall RATE: {rate:.3f}")
-    print(f"Mean CATE (Treated): {mean_treated:.4f}")
-    print(f"Mean CATE (Untreated): {mean_untreated:.4f}")
-
-    # Subgroup analysis for categorical covariates
-    cat_subgroups = [col for col in categorical_cols if col in df_test.columns and df_test[col].nunique() < 20]
-
-    for var in cat_subgroups:
-        print(f"\n📊 CATE by {var}:")
-        cate_grouped = df_test.groupby(var)["CATE"].mean()
-        ci_lower = df_test.groupby(var)["CATE_lower"].mean()
-        ci_upper = df_test.groupby(var)["CATE_upper"].mean()
-        print(cate_grouped)
-
-        # RATE by subgroup category
-        for level in df_test[var].dropna().unique():
-            subset = df_test[df_test[var] == level]
-            treated = subset[subset[treatment_col] == 1]
-            untreated = subset[subset[treatment_col] == 0]
-            m1 = treated["CATE"].mean()
-            m0 = untreated["CATE"].mean()
-            rate = (m1 - m0) / abs(m0) if m0 != 0 else float('inf')
-            print(f"  - {var} = {level}: RATE = {rate:.3f} (treated: {m1:.4f}, untreated: {m0:.4f})")
-
-        # Plot with confidence intervals
-        plt.figure(figsize=(7, 4))
-        plt.errorbar(cate_grouped.index.astype(str), cate_grouped.values,
-                     yerr=[cate_grouped.values - ci_lower.values, ci_upper.values - cate_grouped.values],
-                     fmt='o', capsize=5)
-        plt.title(f'CATE by {var} (with CI)')
-        plt.ylabel('CATE')
-        plt.xlabel(var)
-        plt.grid(True)
-        plt.tight_layout()
-        plt.show()
-
-    # Analysis for numeric covariates using binned RATE and smoothed CATE plots
-    for var in numeric_cols:
-        if var in df_test.columns:
-            print(f"\n📈 CATE and RATE by binned {var}:")
-            df_test[f"{var}_bin"] = pd.qcut(df_test[var], q=4, duplicates='drop')
-            grouped = df_test.groupby(f"{var}_bin")
-            for bin_label, subset in grouped:
-                treated = subset[subset[treatment_col] == 1]
-                untreated = subset[subset[treatment_col] == 0]
-                m1 = treated["CATE"].mean()
-                m0 = untreated["CATE"].mean()
-                rate = (m1 - m0) / abs(m0) if m0 != 0 else float('inf')
-                print(f"  - {var} bin {bin_label}: RATE = {rate:.3f} (treated: {m1:.4f}, untreated: {m0:.4f})")
-
-            # Smoothed plot
-            plt.figure(figsize=(7, 4))
-            sns.regplot(data=df_test, x=var, y="CATE", lowess=True, scatter_kws={'s': 10}, line_kws={'color': 'red'})
-            plt.title(f"Smoothed CATE vs {var}")
-            plt.grid(True)
-            plt.tight_layout()
-            plt.show()
-
-    # Plot CATE distribution
-    plt.figure(figsize=(10, 5))
-    plt.hist(df_test["CATE"] * 100, bins=30, edgecolor='k')
-    plt.title("Distribution of treatment effect estimation")
-    plt.xlabel("CATE (%)")
-    plt.ylabel("Patients")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
-    # Interpretation
-    print("\n🧠 Interpretation:")
-    print("- RATE compares treatment effect in treated vs. untreated.")
-    print("- Categorical and numeric covariates reveal subgroup treatment effects.")
-    print("- Confidence intervals and smooth curves show uncertainty and trends.")
-
-# Run evaluation
-evaluate_model(df_test)
+plt.figure(figsize=(8, 5))
+plt.plot(percentiles, cumulative_gain)
+plt.title('Cumulative Gain Curve')
+plt.xlabel('Top Percentile of Patients')
+plt.ylabel('Cumulative Average Treatment Effect')
+plt.grid(True)
+plt.tight_layout()
+plt.show()

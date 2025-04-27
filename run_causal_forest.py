@@ -101,6 +101,32 @@ ps_scores = ps_model.predict_proba(X_ps_df)[:, 1]
 treated = df_cf[treatment_col] == 1
 weights = treated / ps_scores + (1 - treated) / (1 - ps_scores)
 
+ps_scores = ps_model.predict_proba(X_ps_df)[:, 1]
+
+
+def plot_all_covariate_propensity_scores(df, ps_scores, covariates, n_bins=5):
+    for cov in covariates:
+        if cov not in df.columns:
+            continue
+        plt.figure(figsize=(8, 5))
+
+        # Check if categorical or numeric
+        if pd.api.types.is_numeric_dtype(df[cov]):
+            # Bin continuous variable into quantiles
+            binned = pd.qcut(df[cov], q=n_bins, duplicates='drop')
+            sns.boxplot(x=binned, y=ps_scores)
+            plt.xlabel(f"{cov} (Binned)")
+        else:
+            sns.boxplot(x=df[cov], y=ps_scores)
+            plt.xlabel(cov)
+
+        plt.title(f'Propensity Scores by {cov}')
+        plt.ylabel('Propensity Score')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+plot_all_covariate_propensity_scores(df_cf, ps_scores, covariate_cols)
 # ---------------------------
 # Hyperparameter Tuning Setup
 # ---------------------------
@@ -251,15 +277,19 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# Plot CATE Distribution
+# ---------------------------
+# Histogram of CATE Estimates
+# ---------------------------
+
 plt.figure(figsize=(10, 5))
-plt.hist(df_cf['CATE'] * 100, bins=30, edgecolor='k')
-plt.title("CATE Distribution on Full Dataset")
-plt.xlabel("Estimated Risk Reduction (%)")
-plt.ylabel("Number of Patients")
+plt.hist(df_cf['CATE'], bins=30, edgecolor='k', alpha=0.7)
+plt.title("Distribution of Treatment Effect Estimation")
+plt.xlabel("Estimated Treatment Effect (CATE)")
+plt.ylabel("Number of Samples")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
 
 # ---------------------------
 # Export Function
@@ -287,3 +317,4 @@ np.save(os.path.join(output_dir, "Y_test.npy"), Y_val)
 
 import joblib
 joblib.dump(cf_model, os.path.join(output_dir, "cf_model.pkl"))
+
