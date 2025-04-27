@@ -5,26 +5,20 @@ import numpy as np
 import scipy.stats as stats
 import seaborn as sns
 import matplotlib.pyplot as plt
+from global_config import datasets_dir
 
 
-if '__file__' in globals():
-    current_file_path = os.path.abspath(__file__)
-    current_dir = os.path.dirname(current_file_path)
-else:
-    # Fallback for interactive environments
-    current_dir = os.getcwd()
+input_file = os.path.join(datasets_dir, "dataset_labelled.csv")
 
-output_directory = os.path.join(current_dir, "output")
-
-input_file = os.path.join(current_dir, "dataset_labelled.csv")
-
-def import_file(file_path):
+def import_file_to_dataframe(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
     return df
-df = import_file(input_file)
+df = import_file_to_dataframe(input_file)
 
-print(df.head(3))
+print(df.head(2))
+
+
 
 """
 This section checks for SUTVA interference by anatomic region group
@@ -149,9 +143,9 @@ no significant group effect on outcomes (less likely interference (e.g. spillove
 
 """
 
-with open("README.md", "a") as file:
+with open("../README.md", "a") as file:
     file.write(
-        "### STUVA Analysis\n"
+        "\n ### STUVA Analysis\n"
         "The STUVA analysis uses ANOVA to determine if there is a significant STUVA interference amaong groups.\n"
         "- `1`: If p-value is less than 0.05: Significant difference detected across groups — possible SUTVA interference.\n"
         "- `2`: if p-value is higher than 0.05: No significant group-level differences detected — SUTVA may hold.\n"

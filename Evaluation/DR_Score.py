@@ -5,29 +5,21 @@ import matplotlib.pyplot as plt
 import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
+from global_config import datasets_dir, model_dir
 
-# ---------------------------
-# Setup paths
-# ---------------------------
-if '__file__' in globals():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-else:
-    current_dir = os.getcwd()
-
-output_dir = os.path.join(current_dir)
 
 # ---------------------------
 # Load Data
 # ---------------------------
-df_test = pd.read_csv(os.path.join(output_dir, "dataset_with_cate.csv"))
+df_test = pd.read_csv(os.path.join(datasets_dir, "dataset_with_cate.csv"))
 
 # Load arrays (use the correct X_test, T_test, Y_test)
-X_test = np.load(os.path.join(output_dir, "X_test.npy"))
-T_test = np.load(os.path.join(output_dir, "T_test.npy"))
-Y_test = np.load(os.path.join(output_dir, "Y_test.npy"))
+X_test = np.load(os.path.join(datasets_dir, "X_test_corrected.npy"))
+T_test = np.load(os.path.join(datasets_dir, "T_test.npy"))
+Y_test = np.load(os.path.join(datasets_dir, "Y_test.npy"))
 # Load trained models
-cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
-preprocessor = joblib.load(os.path.join(output_dir, "preprocessor.pkl"))
+cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
+preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
 
 
 print(type(cf_model))

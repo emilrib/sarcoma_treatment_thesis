@@ -1,4 +1,3 @@
-
 import os.path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,26 +12,23 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 import seaborn as sns
-from econml.cate_interpreter import SingleTreeCateInterpreter
-
-if '__file__' in globals():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-else:
-    current_dir = os.getcwd()
-
-# Input/output locations
-input_file = os.path.join(current_dir, "dataset_labelled.csv")
-os.makedirs(os.path.dirname(input_file), exist_ok=True)
-
-df = pd.read_csv(input_file)
-
-from cf_config import (
+from global_config import datasets_dir, model_dir
+from Model.cf_config import (
     treatment_col,
     outcome_col,
     covariate_cols,
     categorical_cols,
     numeric_cols
 )
+
+
+# Input/output locations
+input_file = os.path.join(datasets_dir, "dataset_labelled.csv")
+
+
+df = pd.read_csv(input_file)
+
+
 
 # ---------------------------
 # Load Data
@@ -302,17 +298,16 @@ df["CATE_lower"] = df_cf["CATE_lower"]
 df["CATE_upper"] = df_cf["CATE_upper"]
 df["CATE_quantile"] = df_cf["CATE_quantile"]
 
-# Define output directory
-output_dir = os.path.join(current_dir)
-os.makedirs(output_dir, exist_ok=True)
+
 
 # Save full dataset (with CATE predictions)
-output_file = os.path.join(output_dir, "dataset_with_cate.csv")
+output_file = os.path.join(datasets_dir, "dataset_with_cate.csv")
 df.to_csv(output_file, index=False)
 
 # Save X_test, T_test, Y_test, and the best trained model (optional)
-np.save(os.path.join(output_dir, "T_test.npy"), T_val)  # <-- use validation fold T
-np.save(os.path.join(output_dir, "Y_test.npy"), Y_val)
+np.save(os.path.join(datasets_dir, "T_test.npy"), T_val)  # <-- use validation fold T
+np.save(os.path.join(datasets_dir, "Y_test.npy"), Y_val)
+np.save(os.path.join(datasets_dir, "X_test.npy"), Y_val)
 
 # For X_test: save after reapplying the preprocessor properly
 # ---------------------------------------
@@ -322,11 +317,11 @@ X_test_raw = df_cf.loc[val_idx, covariate_cols]  # use same validation fold
 X_test_preprocessed = preprocessor.transform(X_test_raw)
 
 # Save corrected X_test
-np.save(os.path.join(output_dir, "X_test_corrected.npy"), X_test_preprocessed)
+np.save(os.path.join(datasets_dir, "X_test_corrected.npy"), X_test_preprocessed)
 
 # Save feature names as well
 feature_names = preprocessor.get_feature_names_out()
-np.save(os.path.join(output_dir, "X_test_feature_names.npy"), feature_names)
+np.save(os.path.join(datasets_dir, "X_test_feature_names.npy"), feature_names)
 
 print(f" Saved corrected X_test shape: {X_test_preprocessed.shape}")
 print(f" Saved feature names ({len(feature_names)} features).")
@@ -335,6 +330,6 @@ print(f" Saved feature names ({len(feature_names)} features).")
 # Save trained causal forest model
 # ---------------------------
 import joblib
-joblib.dump(cf_model, os.path.join(output_dir, "cf_model.pkl"))
-joblib.dump(preprocessor, os.path.join(output_dir, "preprocessor.pkl"))
+joblib.dump(cf_model, os.path.join(model_dir, "cf_model.pkl"))
+joblib.dump(preprocessor, os.path.join(model_dir, "preprocessor.pkl"))
 

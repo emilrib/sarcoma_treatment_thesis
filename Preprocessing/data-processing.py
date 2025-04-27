@@ -5,20 +5,19 @@ from datetime import datetime
 import numpy as np
 from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
+from global_config import datasets_dir
 
+# Read a dataset from /data/
 
-#current_dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.join(os.getcwd())
+input_file = os.path.join(datasets_dir, "dataset_clean.csv")
 
-input_file = os.path.join(output_dir, "dataset_clean.csv")
-
-def import_file(file_path):
+def import_file_to_dataframe(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
     return df
-df = import_file(input_file)
+df = import_file_to_dataframe(input_file)
 
-print(df.head(3))
+print(df.head(2))
 
 """
 Calculation of age
@@ -246,15 +245,14 @@ df["Tumor maximal size (mm)"] = df["Tumor maximal size (mm)"].fillna(mean_tumor_
 mode_value = df['cci_Timo'].mode()[0]  # mode() returns a Series; take the first value
 df['cci_Timo'] = df['cci_Timo'].fillna(mode_value)
 
-os.makedirs(output_dir, exist_ok=True)
-output_file = os.path.join(output_dir, "dataset_labelled.csv")
+
+output_file = os.path.join(datasets_dir, "dataset_labelled.csv")
 df.to_csv(output_file, index=False)
-print(f"File successfully saved to {output_file}")
 
 """
 Writing the translation of the binary code
 """
-with open("README.md", "a") as file:
+with open("../README.md", "a") as file:
     file.write(
         "#### Binary Codes Meaning\n"
         "- `0`: **No**\n"

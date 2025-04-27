@@ -4,25 +4,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import joblib
 import statsmodels.api as sm
-from cf_config import covariate_cols
+from Model.cf_config import covariate_cols
 import matplotlib.patches as mpatches
+from global_config import  datasets_dir, model_dir
+from Model.cf_config import covariate_cols
 
 
 # ---------------------------
 # Load Data
 # ---------------------------
-if '__file__' in globals():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-else:
-    current_dir = os.getcwd()
-
-output_dir = os.path.join(current_dir)
-
-
-# Load saved artifacts
-X_test = np.load(os.path.join(output_dir, "X_test.npy"))
-cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
-preprocessor = joblib.load(os.path.join(output_dir, "preprocessor.pkl"))
+X_test = np.load(os.path.join(datasets_dir, "X_test_corrected.npy"))
+cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
+preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
 
 # Load feature names safely
 try:
@@ -39,6 +32,7 @@ print(f" X_test shape: {X_test.shape}")
 # ---------------------------
 # Match Covariate Columns
 # ---------------------------
+
 matched_cols = [col for col in X_test_df.columns if any(base_col in str(col) for base_col in covariate_cols)]
 
 if not matched_cols:
@@ -50,6 +44,7 @@ print(f" Matched covariate columns ({len(matched_cols)}): {matched_cols}")
 # ---------------------------
 # Run Best Linear Projection (BLP)
 # ---------------------------
+
 print("\n Running Best Linear Projection (BLP)...")
 
 X_blp = sm.add_constant(X_test_df)
@@ -60,6 +55,7 @@ blp_model = sm.OLS(y_blp, X_blp).fit(cov_type='HC3')
 # ---------------------------
 # Summarize Results
 # ---------------------------
+
 summary_df = pd.DataFrame({
     "Estimate": blp_model.params,
     "Std.Error": blp_model.bse,
@@ -78,7 +74,6 @@ print(summary_df)
 # Group Coefficients by Original Covariates
 # ---------------------------
 
-# Group function
 def match_covariate(feature, bases):
     for base in bases:
         if base in feature:
@@ -102,10 +97,10 @@ print("\n Grouped BLP Summary:")
 print(grouped_summary.round(5))
 
 # ---------------------------
-#  Plot for Grouped BLP
+# Plot Grouped BLP
 # ---------------------------
-# Assign pastel colors
-colors = [ '#FFDAB9' if est > 0 else '#ADD8E6' for est in grouped_summary["GroupedEstimate"] ]
+
+colors = ['#FFDAB9' if est > 0 else '#ADD8E6' for est in grouped_summary["GroupedEstimate"]]
 
 plt.figure(figsize=(12, 7))
 bars = plt.barh(grouped_summary["OriginalCovariate"], grouped_summary["GroupedEstimate"],
@@ -125,7 +120,7 @@ plt.title('Grouped BLP Coefficients', fontsize=14)
 plt.xlabel('Estimated Effect on CATE', fontsize=12)
 plt.grid(True)
 
-# Create custom legend
+# Custom legend
 legend_handles = [
     mpatches.Patch(color='#FFDAB9', label='Positive Effect'),
     mpatches.Patch(color='#ADD8E6', label='Negative Effect'),

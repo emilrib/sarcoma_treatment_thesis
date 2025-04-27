@@ -3,8 +3,10 @@ from PIL import Image
 import pytesseract
 import pandas as pd
 import re
+from global_config import datasets_dir
 
-output_dir = os.path.join(os.getcwd())
+
+output_dir = os.path.join(datasets_dir, os.getcwd())
 
 # List of image file paths
 image_paths = ["image1.jpg", "image2.jpg"]  # Make sure these are in the same directory or use full paths

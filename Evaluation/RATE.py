@@ -4,39 +4,26 @@ import pandas as pd
 import joblib
 import os
 import matplotlib.pyplot as plt
-
+from global_config import  datasets_dir, model_dir
 """
 RATE assesses how well CATE rank observations on an evaluation set according to treatment profit 
 A significant RATE suggests there is heterogeneity present in treatment effects.
 """
 
-
-# ---------------------------
-# Setup paths
-# ---------------------------
-if '__file__' in globals():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-else:
-    current_dir = os.getcwd()
-
-output_dir = os.path.join(current_dir)
-
 # ---------------------------
 # Load Holdout Data and Trained Model
 # ---------------------------
 
-# Define where your outputs were saved
-output_dir = current_dir  # Assuming current_dir is already defined
 
-X_val = np.load(os.path.join(output_dir, "X_test.npy"))
-T_val = np.load(os.path.join(output_dir, "T_test.npy"))
-Y_val = np.load(os.path.join(output_dir, "Y_test.npy"))
+X_val = np.load(os.path.join(datasets_dir, "X_test_corrected.npy"))
+T_val = np.load(os.path.join(datasets_dir, "T_test.npy"))
+Y_val = np.load(os.path.join(datasets_dir, "Y_test.npy"))
 
 # Load trained Causal Forest model (optional)
-cf_model = joblib.load(os.path.join(output_dir, "cf_model.pkl"))
+cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
 
 # Load dataset with CATEs
-df_cf = pd.read_csv(os.path.join(output_dir, "dataset_with_cate.csv"))
+df_cf = pd.read_csv(os.path.join(datasets_dir, "dataset_with_cate.csv"))
 
 # ---------------------------
 # Priority Ranking Evaluation

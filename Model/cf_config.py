@@ -1,16 +1,8 @@
 import os.path
 import pandas as pd
+from global_config import datasets_dir
 
-if '__file__' in globals():
-    current_file_path = os.path.abspath(__file__)
-    current_dir = os.path.dirname(current_file_path)
-else:
-    # Fallback for interactive environments
-    current_dir = os.getcwd()
-
-output_directory = os.path.join(current_dir)
-
-input_file = os.path.join(current_dir, "dataset_labelled.csv")
+input_file = os.path.join(datasets_dir, "dataset_labelled.csv")
 
 def import_file(file_path):
     df = pd.read_csv(file_path)
