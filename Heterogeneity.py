@@ -99,67 +99,6 @@ plt.tight_layout()
 # Show plot
 plt.show()
 
-# ---------------------------
-# Predict CATEs
-# ---------------------------
-print("\nPredicting CATEs...")
-cate_preds = cf_model.effect(X_test)
-
-# ---------------------------
-# Calibration Evaluation
-# ---------------------------
-print("\nRunning Calibration Evaluation...")
-
-# Predict CATEs
-cate_preds = cf_model.effect(X_test)
-
-# Bin by predicted CATE (5 quantiles)
-df_cal = pd.DataFrame({
-    "cate_pred": cate_preds,
-    "outcome": Y_test,
-    "treatment": T_test
-})
-df_cal['cate_bin'] = pd.qcut(df_cal['cate_pred'], q=5, labels=False)
-
-# Compute average CATE and GATE per bin
-summary_cal = df_cal.groupby('cate_bin').agg(
-    g_cate=('cate_pred', 'mean'),
-    gate=('outcome', 'mean'),
-    se_gate=('outcome', 'sem')  # standard error
-).reset_index()
-
-# Compute calibration MSE and R^2
-calibration_mse = mean_squared_error(summary_cal['g_cate'], summary_cal['gate'])
-calibration_r2 = 1 - (calibration_mse / np.var(summary_cal['gate']))
-
-# Prepare plot_data_dict
-plot_data_dict = {
-    1: summary_cal  # treatment = 1 (treated group)
-}
-treatments = np.array([0, 1])  # control and treatment
-
-# Instantiate CalibrationEvaluationResults
-calibration_eval = CalibrationEvaluationResults(
-    cal_r_squared=np.array([calibration_r2]),
-    plot_data_dict=plot_data_dict,
-    treatments=treatments
-)
-
-# ---------------------------
-# Print Calibration Summary
-# ---------------------------
-print("\n Calibration Evaluation Summary:")
-print(calibration_eval.summary())
-
-# ---------------------------
-# Plot Calibration Curve
-# ---------------------------
-plt.figure(figsize=(8, 5))
-calibration_eval.plot_cal(tmt=1)
-plt.title('Calibration Curve: Predicted CATE vs Observed GATE')
-plt.grid(True)
-plt.tight_layout()
-plt.show()
 
 # ---------------------------
 # Run Best Linear Projection (BLP)
