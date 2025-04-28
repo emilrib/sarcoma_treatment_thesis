@@ -74,59 +74,42 @@ AUTOC_stderr = rate_std / np.sqrt(rate_n)
 AUTOC_lower = AUTOC - 1.96 * AUTOC_stderr
 AUTOC_upper = AUTOC + 1.96 * AUTOC_stderr
 
-print(f"\nAUTOC (Area Under TOC Curve): {AUTOC:.4f}")
-print(f"Standard Error of AUTOC: {AUTOC_stderr:.4f}")
-print(f"95% Confidence Interval for AUTOC: ({AUTOC_lower:.4f}, {AUTOC_upper:.4f})")
 
-# ---------------------------
-# Combined Plot: TOC and RATE (with shaded background and 95% CI)
-# ---------------------------
+print("\n📢 AUTOC Summary:")
+print(f" Area Under TOC Curve (AUTOC): {AUTOC:.4f}")
+print(f" Standard Error: {AUTOC_stderr:.4f}")
+print(f" 95% Confidence Interval: ({AUTOC_lower:.4f}, {AUTOC_upper:.4f})")
 
-fig, axs = plt.subplots(1, 2, figsize=(16, 6))
+plt.figure(figsize=(10, 4))
 
-# TOC Curve with Confidence Band
-axs[0].plot(rate['Top Percentile'], rate['Average Treatment Effect'], marker='o', label='TOC Curve')
-axs[0].fill_between(
+# TOC Curve with 95% Confidence Band
+plt.plot(rate['Top Percentile'], rate['Average Treatment Effect'], marker='o', label='TOC Curve')
+plt.fill_between(
     rate['Top Percentile'],
     rate['Average Treatment Effect'] - 1.96 * AUTOC_stderr,
     rate['Average Treatment Effect'] + 1.96 * AUTOC_stderr,
-    color='blue', alpha=0.2, label='95% CI'
+    color='blue', alpha=0.2, label='95% Confidence Interval'
 )
+
+# Add annotations for each point (optional but helpful)
 for i, txt in enumerate(rate['Average Treatment Effect']):
-    axs[0].annotate(f"{txt:.2f}", (rate['Top Percentile'][i], rate['Average Treatment Effect'][i]),
-                    textcoords="offset points", xytext=(0,10), ha='center')
-axs[0].set_title('TOC Curve: ATE by Priority Percentile')
-axs[0].set_xlabel('Top Percentile of Patients')
-axs[0].set_ylabel('Average Treatment Effect')
-axs[0].legend()
-axs[0].grid(True)
+    plt.annotate(f"{txt:.2f}", (rate['Top Percentile'][i], rate['Average Treatment Effect'][i]),
+                 textcoords="offset points", xytext=(0,10), ha='center')
 
-# RATE Curve with Zero Line and Background Shading
-axs[1].plot(rate['Top Percentile'], rate['Average Treatment Effect'], marker='o', linestyle='-')
-axs[1].axhline(0, color='black', linestyle='--', label='Zero Effect')
-axs[1].fill_between(rate['Top Percentile'], rate['Average Treatment Effect'], 0, where=(rate['Average Treatment Effect']>=0), color='green', alpha=0.3)
-axs[1].fill_between(rate['Top Percentile'], rate['Average Treatment Effect'], 0, where=(rate['Average Treatment Effect']<0), color='red', alpha=0.3)
-axs[1].set_title('RATE Curve (Simple Check with Shading)')
-axs[1].set_xlabel('Top Percentile of Patients')
-axs[1].set_ylabel('Average Treatment Effect')
-axs[1].legend()
-axs[1].grid(True)
-
-plt.tight_layout()
-plt.show()
-
-# ---------------------------
-# Optional: Cumulative Gain Plot
-# ---------------------------
-
-cumulative_gain = np.cumsum(true_cate[sorted_indices]) / np.arange(1, len(true_cate) + 1)
-percentiles = np.linspace(1, 100, len(cumulative_gain))
-
-plt.figure(figsize=(8, 5))
-plt.plot(percentiles, cumulative_gain)
-plt.title('Cumulative Gain Curve')
+# Axis labels and title
+plt.title('TOC Curve: ATE by Priority Percentile')
 plt.xlabel('Top Percentile of Patients')
-plt.ylabel('Cumulative Average Treatment Effect')
+plt.ylabel('Average Treatment Effect')
+
+# Vertical and horizontal reference lines
+plt.axhline(0, color='black', linestyle='--')
+
+# Legend
+plt.legend()
+
+# Grid and tight layout
 plt.grid(True)
 plt.tight_layout()
+
+# Show
 plt.show()
