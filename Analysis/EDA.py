@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import re
 from collections import Counter
+from global_config import datasets_dir
+import seaborn as sns
 
-output_dir = os.path.join(os.getcwd())
-
-input_file = os.path.join(output_dir, "dataset_labelled.csv")
+input_file = os.path.join(datasets_dir, "dataset_labelled.csv")
 
 def import_file(file_path):
     df = pd.read_csv(file_path)
@@ -21,7 +21,7 @@ print(df.head(3))
 DEMOGRAPHIC DATA 
 """
 
-df_demographics = df[['Pat ID','age', 'Gender', 'gender_label']]
+df_demographics = df[['Pat ID','age', 'Gender']]
 
 #This chart displays the total amount of the sample as well as the distribution by gender
 gender_counts = df_demographics.groupby('Gender')['Pat ID'].nunique().sort_index()
@@ -94,7 +94,8 @@ print(df_demographics['age'].max())
 PATIENT HISTORY
 """
 
-df_history = df[['Pat ID','date_first_patientcontact_Timo', 'Histological diagnosis', '(W) Other diagnoses?_Timo', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'anatomic_region_label',  'Affected tissue', 'number_all_operation_Timo', 'Tumor maximal size (mm)', 'metastasis_status', 'metastasis_label', 'metastasis_label_description', 'reoperation_label']]
+df_history = df[['Pat ID','Histological diagnosis', 'cci_Timo', 'grade_clean', 'Affected tissue',
+                 'anatomic_region_label',  'reoperation_label', 'Tumor maximal size (mm)', 'radiation_status', 'metastasis_label',  'reoperation_label']]
 
 #Display of values of CCI
 print(type(df_history['cci_Timo'][0]))
@@ -119,7 +120,7 @@ for bar in ax.patches:
 
 plt.xlabel('CCI Groups')
 plt.ylabel('Number of Occurrences')
-plt.title('Number of Occurrences by Different CCI Groups', fontsize=14)
+plt.title('Occurrences by Charlson Comorbidity Index (CCI)', fontsize=14)
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
@@ -138,22 +139,18 @@ def extract_group_words(text):
     return group_words
 
 # Extract and flatten all group words from the column
-other_diagnoses_group= df_history['(W) Other diagnoses?_Timo'].dropna().apply(extract_group_words).sum()
 histological_diagnosis_group= df_history['Histological diagnosis'].dropna().apply(extract_group_words).sum()
 
 # Count the frequency of group words
-other_diagnoses_counts = Counter(other_diagnoses_group)
 histological_diagnosis_counts = Counter(histological_diagnosis_group)
 
 # Convert to DataFrame for better visualization
-group_words_other_diagnosis = pd.DataFrame(other_diagnoses_counts.items(), columns=['Most occurred Other Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
 group_words_histoloical_diagnosis = pd.DataFrame(histological_diagnosis_counts.items(), columns=['Most occurred Histological Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
 
 # Display the top 10 most common group words
-print(group_words_other_diagnosis.head(10))
 print(group_words_histoloical_diagnosis.head(10))
 
-"""
+
 
 #Display the total patient per anatomic region group
 anatomic_grouping_counts = df_history['anatomic_region_label'].value_counts()
@@ -171,11 +168,11 @@ plt.xticks(fontsize=10)
 plt.yticks(fontsize=10)
 plt.tight_layout()
 plt.show()
-"""
+
 # Analyse the percentage of the data sample with metastasis and its resurfacing time
 metastasis_counts = df_history['metastasis_label'].value_counts()
 
-label_map = {1: 'No', 2: 'Yes'}
+label_map = {0: 'No', 1: 'Yes'}
 translated_index = metastasis_counts.index.map(label_map)
 
 sizes = metastasis_counts.values
@@ -202,47 +199,138 @@ plt.axis('equal')  # Ensures pie is a circle
 plt.show()
 print(metastasis_counts)
 
-metastasis_counts_description = df_history['metastasis_label_description'].value_counts()
 
-# Data
-labels = metastasis_counts_description.index
-values = metastasis_counts_description.values
-total = values.sum()
+#Display in a box plot how the tumor size is distributed
 
+plt.figure(figsize=(8, 6))
+sns.boxplot(y=df_history["Tumor maximal size (mm)"], color="#ADD8E6", width=0.5)
+
+plt.title('Distribution of Tumor Size (mm)', fontsize=14)
+plt.ylabel('Tumor Size (mm)', fontsize=12)
+plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+# Add mean point
+mean_value = df_history["Tumor maximal size (mm)"].mean()
+plt.scatter(0, mean_value, color='red', label=f"Mean: {mean_value:.1f} mm", zorder=10)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+#Display boxplot for grade distribution
+
+plt.figure(figsize=(8, 6))
+sns.countplot(
+    x="grade_clean",
+    data=df_history,
+    palette="pastel",
+    edgecolor="black",
+    hue="grade_clean",
+    legend=False
+)
+
+plt.title('Number of Occurences by FNCLCC Grading', fontsize=14)
+plt.xlabel('Grading', fontsize=12)
+plt.ylabel('Number of Occurrences', fontsize=12)
+plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+# Add counts above bars
+for p in plt.gca().patches:
+    plt.gca().annotate(f'{int(p.get_height())}',
+                       (p.get_x() + p.get_width() / 2., p.get_height()),
+                       ha='center', va='center',
+                       fontsize=10, color='black',
+                       xytext=(0, 10),
+                       textcoords='offset points')
+
+plt.tight_layout()
+plt.show()
+
+"""
+PATIENT TREATMENT
+"""
+##  PIe chart displaying the percentage of patients that received and did not receive chemotherapy
+# Count the number of 0s and 1s
+chemo_counts = df["Chemo_status"].value_counts().sort_index()
+total = chemo_counts.sum()
+
+# Labels mapped manually
+labels = ['No Chemotherapy', 'Chemotherapy']
+
+# Colors for the pie
+colors = ['#ADD8E6', '#FFDAB9']  # pastel blue and peach
+
+# Custom autopct function
+def autopct_format(pct):
+    count = int(round(pct * total / 100.0))
+    return f'{pct:.1f}%\n({count})'
+
+plt.figure(figsize=(7, 7))
+plt.pie(chemo_counts, labels=labels, autopct=autopct_format, startangle=90, colors=colors,
+        wedgeprops={'edgecolor': 'black'})
+
+# Title and legend
+plt.title('Percentage of Chemotherapy Use', fontsize=14)
+plt.tight_layout()
+plt.show()
+
+"""
+PATIENT OUTCOME
+"""
+## Pie char dispaly the pertage of patient survival
+
+# Count survival statuses (assuming 0 = Not Survived, 1 = Survived)
+survival_counts = df["survival_status"].value_counts().sort_index()
+total_survival = survival_counts.sum()
+
+# Labels mapped manually
+labels_survival = ['Not Survived', 'Survived']
+colors_survival = ['#FFDAB9', '#ADD8E6']
+
+# Custom autopct function
+def autopct_format_survival(pct):
+    count = int(round(pct * total_survival / 100.0))
+    return f'{pct:.1f}%\n({count})'
+
+
+plt.figure(figsize=(7, 7))
+plt.pie(survival_counts, labels=labels_survival, autopct=autopct_format_survival, startangle=90, colors=colors_survival,
+        wedgeprops={'edgecolor': 'black'})
+
+# Title only (no legend)
+plt.title('Percentage of Patient Survival', fontsize=14)
+plt.tight_layout()
+plt.show()
+
+
+##Cross-tabulation evaluating the combination of patient treatment and survival
+
+# Crosstab
+survival_chemo_ct = pd.crosstab(df["survival_status"], df["Chemo_status"])
+
+# Relabel the axes for clarity
+survival_chemo_ct.index = ['Not Survived', 'Survived']
+survival_chemo_ct.columns = ['No Chemotherapy', 'Chemotherapy']
+
+print("\nSurvival vs Chemotherapy CrossTab:")
+print(survival_chemo_ct)
 # Plot
-plt.figure(figsize=(10, 6))
-bars = plt.bar(
-    labels, values,
-    color=['#ACE1AF', '#FFDAB9', '#ADD8E6', '#FFFFE0'],
-    edgecolor='black'
+survival_chemo_ct.plot(kind='bar', stacked=True, color=['#ADD8E6', '#FFDAB9'], edgecolor='black', figsize=(8,6))
+
+#heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(
+    survival_chemo_ct,
+    annot=True,
+    fmt='d',
+    cmap='YlOrRd',
+    linewidths=0.5,
+    linecolor='black',
+    cbar_kws={"label": "Number of Patients"}
 )
 
-# Add absolute values & prepare percentage labels
-percentages = []
-for bar, label, value in zip(bars, labels, values):
-    plt.text(
-        bar.get_x() + bar.get_width() / 2,
-        value,
-        f'{value}',
-        ha='center', va='bottom', fontsize=10
-    )
-    percentages.append(f"{label}: {value / total:.1%}")
-
-# Description box with percentages
-description = "\n".join(percentages)
-plt.gca().text(
-    1.02, 0.95,
-    description,
-    transform=plt.gca().transAxes,
-    fontsize=10,
-    verticalalignment='top',
-    bbox=dict(boxstyle='round', facecolor='white', edgecolor='gray', alpha=0.8)
-)
-
-# Titles and styling
-plt.title('Metastasis Cases by Resurfacing Time', fontsize=12, weight='bold')
-plt.xlabel('Resurfacing Time')
-plt.ylabel('Number of Cases')
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.title('Survival Status vs Chemotherapy (Heatmap)', fontsize=14)
+plt.xlabel('Chemotherapy Status', fontsize=12)
+plt.ylabel('Survival Status', fontsize=12)
 plt.tight_layout()
 plt.show()

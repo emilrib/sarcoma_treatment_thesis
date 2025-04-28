@@ -1,13 +1,10 @@
 import numpy as np
-import pandas as pd
 import os
-import joblib
-from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from econml.dml import CausalForestDML
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
-from global_config import datasets_dir, model_dir
+from global_config import datasets_dir
 
 # ---------------------------
 # Load data
