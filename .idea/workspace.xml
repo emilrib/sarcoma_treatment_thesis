@@ -33,12 +33,30 @@
     {
       &quot;state&quot;: &quot;OPEN&quot;,
       &quot;author&quot;: &quot;emilrib&quot;
+    },
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
     }
   ],
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;author&quot;: &quot;emilrib&quot;
-  }
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDONk8W4c6UFbCd&quot;,
+        &quot;number&quot;: 2
+      },
+      &quot;lastSeen&quot;: 1745876034970
+    },
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDONk8W4c6UFa8t&quot;,
+        &quot;number&quot;: 1
+      },
+      &quot;lastSeen&quot;: 1745876060923
+    }
+  ]
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
@@ -61,46 +79,46 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.BLP.executor": "Run",
-    "Python.Bagging.executor": "Run",
-    "Python.Bootstrap.executor": "Run",
-    "Python.Calibration.executor": "Run",
-    "Python.DR_Score.executor": "Run",
-    "Python.EDA.executor": "Run",
-    "Python.H1_econml_model.executor": "Run",
-    "Python.Heterogeneity.executor": "Run",
-    "Python.RATE.executor": "Run",
-    "Python.RATE_evaluation.executor": "Run",
-    "Python.SUTVA.executor": "Run",
-    "Python.SUTVA_analysis.executor": "Run",
-    "Python.Uplift.executor": "Run",
-    "Python.__init__.executor": "Run",
-    "Python.cf_config.executor": "Run",
-    "Python.data-cleaning.executor": "Run",
-    "Python.data-processing.executor": "Run",
-    "Python.econml_model.executor": "Run",
-    "Python.evaluation.executor": "Run",
-    "Python.global_config.executor": "Run",
-    "Python.labels.executor": "Run",
-    "Python.model_evaluation.executor": "Run",
-    "Python.png_scraping.executor": "Run",
-    "Python.run_causal_forest.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Dev",
-    "last_opened_file_path": "/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.BLP.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Bagging.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Bootstrap.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Calibration.executor&quot;: &quot;Run&quot;,
+    &quot;Python.DR_Score.executor&quot;: &quot;Run&quot;,
+    &quot;Python.EDA.executor&quot;: &quot;Run&quot;,
+    &quot;Python.H1_econml_model.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Heterogeneity.executor&quot;: &quot;Run&quot;,
+    &quot;Python.RATE.executor&quot;: &quot;Run&quot;,
+    &quot;Python.RATE_evaluation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SUTVA.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SUTVA_analysis.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Uplift.executor&quot;: &quot;Run&quot;,
+    &quot;Python.__init__.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cf_config.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data-cleaning.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data-processing.executor&quot;: &quot;Run&quot;,
+    &quot;Python.econml_model.executor&quot;: &quot;Run&quot;,
+    &quot;Python.evaluation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.global_config.executor&quot;: &quot;Run&quot;,
+    &quot;Python.labels.executor&quot;: &quot;Run&quot;,
+    &quot;Python.model_evaluation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.png_scraping.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run_causal_forest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Dev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/emiliaribeiro/Documents/Masters/Thesis/sarcoma_treatment_thesis&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$USER_HOME$/Documents/Masters/Thesis/sarcoma_treatment_thesis" />
@@ -114,7 +132,7 @@
       <recent name="$PROJECT_DIR$/Evaluation" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.causal_forest">
     <configuration name="SUTVA_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="sarcoma_treatment_thesis" />
       <option name="ENV_FILES" value="" />
@@ -256,7 +274,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.data-cleaning" />
-        <item itemvalue="Python.run_causal_forest" />
         <item itemvalue="Python.SUTVA_analysis" />
         <item itemvalue="Python.data-processing" />
       </list>
@@ -287,7 +304,7 @@
       <workItem from="1745707784059" duration="10914000" />
       <workItem from="1745778570388" duration="14660000" />
       <workItem from="1745793630774" duration="3000" />
-      <workItem from="1745793865281" duration="10739000" />
+      <workItem from="1745793865281" duration="10973000" />
     </task>
     <task id="LOCAL-00001" summary="add/data_cleaning_process">
       <option name="closed" value="true" />
@@ -593,7 +610,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745875833543</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1745875975137</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1745875975137</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
