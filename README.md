@@ -15,8 +15,3 @@ The original methods are documented in the EconML repository: [https://github.co
 
 #### License
 The original EconML library is under the MIT License. This project inherits that license.
-
-### STUVA Analysis
-The STUVA analysis uses ANOVA to determine if there is a significant STUVA interference amaong groups.
-- `1`: If p-value is less than 0.05: Significant difference detected across groups — possible SUTVA interference.
-- `2`: if p-value is higher than 0.05: No significant group-level differences detected — SUTVA may hold.
