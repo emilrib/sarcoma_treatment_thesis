@@ -2,18 +2,16 @@ import os.path
 import pandas as pd
 from global_config import datasets_dir
 
-input_file_covariates = os.path.join(datasets_dir, "df_with_groups.csv")
-input_file_subgroups = os.path.join(datasets_dir, "dataset_with_subgroups.csv")
+input_file = os.path.join(datasets_dir, "df_with_merged_groups.csv")
 
 def import_file(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
     return df
 
-df_with_covariates = import_file(input_file_covariates)
-df_with_subgroups = import_file(input_file_subgroups)
+df = import_file(input_file)
 
-df_with_subgroups_without_patid = df_with_subgroups.drop(df_with_subgroups.columns[0], axis=1)
+df_with_subgroups_without_patid = df.drop(df.columns[0], axis=1)
 
 #print(df[['survival_status', 'Chemo_status']].value_counts())
 #print(df.columns.tolist())
@@ -26,14 +24,17 @@ DEFINE VARIABLES FOR CAUSAL FOREST
 
 treatment_col = 'Chemo_status'
 outcome_col = 'survival_status'
-covariate_cols = ['age_group', 'Gender', 'Histological diagnosis', 'cci_group', 'grade_clean','Affected tissue',
-                  'reoperation_label', 'anatomic_region_label', 'metastasis_label', 'radiation_status', 'tumor_size_group']
 
-# Split covariates into numeric and categorical
-categorical_cols = ['Histological diagnosis', 'anatomic_region_label', 'Gender','grade_clean', 'Affected tissue',
-                    'tumor_size_group','age_group', 'cci_group' ]
-numeric_cols = ['reoperation_label', 'metastasis_label',
-                 'radiation_status' ]
+numeric_cols = ['reoperation_label', 'metastasis_label', 'radiation_status']
 
-subgroup_col = list(df_with_subgroups_without_patid.columns)
+# Define the columns you want to exclude from covariates
+exclude_cols = ['Pat ID', treatment_col, outcome_col, 'age','cci_Timo', 'Tumor maximal size (mm)', 'Histological diagnosis', 'anatomic_region_label', 'Gender', 'grade_clean', 'Affected tissue',
+                    'tumor_size_group', 'age_group', 'cci_group', numeric_cols]  # Columns to exclude from covariate_cols
+
+# List all columns in the DataFrame
+encoded_covariates = [col for col in df.columns if col not in exclude_cols and col not in numeric_cols]
+categorical_cols = encoded_covariates
+covariate_cols = numeric_cols + categorical_cols
+
+
 

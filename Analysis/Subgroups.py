@@ -93,3 +93,14 @@ df_encoded.to_csv(output_file, index=False)
 output_file = os.path.join(datasets_dir, "df_with_groups.csv")
 df.to_csv(output_file, index=False)
 
+# ---------------------------
+# Merge the original groups with the encoded subgroups
+# ---------------------------
+# Merge the original dataset with the encoded subgroups dataset based on 'Pat ID'
+df_merged = pd.merge(df, df_encoded, on='Pat ID', how='left', suffixes=('_x', '_y'))
+
+df_merged = df_merged.loc[:, ~df_merged.columns.str.endswith('_x')]
+df_merged.columns = [re.sub(r'_y$', '', col) for col in df_merged.columns]
+
+output_file_merged = os.path.join(datasets_dir, "df_with_merged_groups.csv")
+df_merged.to_csv(output_file_merged, index=False)
