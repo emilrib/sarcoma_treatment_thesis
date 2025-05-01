@@ -15,3 +15,6 @@ The original methods are documented in the EconML repository: [https://github.co
 
 #### License
 The original EconML library is under the MIT License. This project inherits that license.
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**

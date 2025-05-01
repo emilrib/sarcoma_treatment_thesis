@@ -2,6 +2,7 @@ import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy import stats
 from sklearn.model_selection import KFold, ParameterGrid
 from econml.dml import CausalForestDML
 from sklearn.linear_model import LogisticRegression
@@ -75,7 +76,10 @@ def compute_standardized_mean_diff(df, treatment_col, covariates):
 
 imbalance_df = compute_standardized_mean_diff(df_cf, treatment_col, covariate_cols)
 imbalanced_vars = imbalance_df[imbalance_df["SMD"] > 0.1]
-print(imbalanced_vars)
+# Print a summary of covariate imbalance
+print("\nCovariate Imbalance Summary (SMD > 0.1):")
+print(imbalanced_vars[['Subgroup', 'SMD']])
+
 # ---------------------------
 # Propensity Score Weighting (IPTW)
 # ---------------------------
@@ -97,9 +101,8 @@ ps_scores = ps_model.predict_proba(X_ps_df)[:, 1]
 treated = df_cf[treatment_col] == 1
 weights = treated / ps_scores + (1 - treated) / (1 - ps_scores)
 
+"""
 ps_scores = ps_model.predict_proba(X_ps_df)[:, 1]
-
-
 def plot_all_covariate_propensity_scores(df, ps_scores, covariates, n_bins=5):
     for cov in covariates:
         if cov not in df.columns:
@@ -123,6 +126,8 @@ def plot_all_covariate_propensity_scores(df, ps_scores, covariates, n_bins=5):
         plt.show()
 
 plot_all_covariate_propensity_scores(df_cf, ps_scores, covariate_cols)
+"""
+
 # ---------------------------
 # Hyperparameter Tuning Setup
 # ---------------------------
@@ -250,7 +255,15 @@ grouped_summary = df_cf.groupby('CATE_quantile').agg(
     StdError=('CATE', 'std'),
     Count=('CATE', 'count')
 ).reset_index()
-print(grouped_summary)
+
+grouped_summary['Z_Score'] = grouped_summary['Estimate'] / grouped_summary['StdError']
+
+# Determine significance based on Z-Score
+grouped_summary['Significant'] = grouped_summary['Z_Score'].apply(lambda x: abs(x) > 1.96)
+
+# Print the updated summary
+print("\n CATE by Quantile Group with Significance (Based on Z-Score):")
+print(grouped_summary[['CATE_quantile', 'Estimate', 'StdError', 'Z_Score', 'Significant', 'Count']])
 
 # ---------------------------
 # Calculate Overall ATE
@@ -260,6 +273,36 @@ ate_se = df_cf["CATE"].std() / np.sqrt(df_cf.shape[0])
 
 print(f"\n Overall ATE (Average Treatment Effect): {ate:.4f}")
 print(f"Standard Error of ATE: {ate_se:.4f}")
+
+# ---------------------------
+# Summarize SMD after Propensity Score Weighting
+# ---------------------------
+imbalanced_vars_after_ps = compute_standardized_mean_diff(df_cf, treatment_col, covariate_cols)
+imbalanced_vars_after_ps = imbalanced_vars_after_ps[imbalanced_vars_after_ps["SMD"] > 0.1]
+print("\nCovariate Imbalance After IPTW (SMD > 0.1):")
+print(imbalanced_vars_after_ps[['Subgroup', 'SMD']])
+
+# ---------------------------
+# Hypothesis Testing for CATE Estimates
+# ---------------------------
+grouped_summary = df_cf.groupby('CATE_quantile').agg(
+    Estimate=('CATE', 'mean'),
+    StdError=('CATE', 'std'),
+    Count=('CATE', 'count')
+).reset_index()
+
+# Calculate Z-scores and p-values
+grouped_summary['Z_Score'] = grouped_summary['Estimate'] / grouped_summary['StdError']
+
+# Calculate two-tailed p-values from Z-scores
+grouped_summary['p_value'] = 2 * (1 - stats.norm.cdf(np.abs(grouped_summary['Z_Score'])))
+
+# Determine significance based on p-value
+grouped_summary['Significant'] = grouped_summary['p_value'] < 0.05
+
+# Print the summary with p-values and significance
+print("\nCATE by Quantile Group with p-values and Significance:")
+print(grouped_summary[['CATE_quantile', 'Estimate', 'StdError', 'Z_Score', 'p_value', 'Significant']])
 
 # ---------------------------
 # Plotting

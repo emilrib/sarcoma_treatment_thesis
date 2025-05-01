@@ -74,12 +74,12 @@ AUTOC_stderr = rate_std / np.sqrt(rate_n)
 AUTOC_lower = AUTOC - 1.96 * AUTOC_stderr
 AUTOC_upper = AUTOC + 1.96 * AUTOC_stderr
 
-
-print("\n📢 AUTOC Summary:")
+print("\n AUTOC Summary:")
 print(f" Area Under TOC Curve (AUTOC): {AUTOC:.4f}")
 print(f" Standard Error: {AUTOC_stderr:.4f}")
 print(f" 95% Confidence Interval: ({AUTOC_lower:.4f}, {AUTOC_upper:.4f})")
 
+# Plot the TOC curve with confidence interval
 plt.figure(figsize=(10, 4))
 
 # TOC Curve with 95% Confidence Band
