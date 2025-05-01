@@ -3,94 +3,64 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import joblib
-import statsmodels.api as sm
-from global_config import  datasets_dir, model_dir
-
+from global_config import datasets_dir, model_dir
+from validate.calibration_test import test_calibration  # Import from your local package
+from Model.cf_config import covariate_cols
 # ---------------------------
 # Load Data and Model
 # ---------------------------
+df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
+# Diagnostic check for NaNs
+missing = df_test[["Chemo_status", "survival_status"] + covariate_cols].isnull().sum()
+print("\nMissing value check:")
+print(missing[missing > 0])
 
+# Drop rows with any NaNs in required columns
+df_test = df_test.dropna(subset=["Chemo_status", "survival_status"] + covariate_cols)
 
-df_test = pd.read_csv(os.path.join(datasets_dir, "dataset_with_cate.csv"))
+# Redefine inputs after dropping rows
+T_test = df_test["Chemo_status"].values
+Y_test = df_test["survival_status"].values
 
-X_test = np.load(os.path.join(datasets_dir, "X_test_corrected.npy"))
-T_test = np.load(os.path.join(datasets_dir, "T_test.npy"))
-Y_test = np.load(os.path.join(datasets_dir, "Y_test.npy"))
+# Load and apply preprocessor to align with training
+preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
+X_test = preprocessor.transform(df_test[covariate_cols])
 
 cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
-#preprocessor = joblib.load(os.path.join(output_dir, "preprocessor.pkl"))  # if you want to re-transform X later
 
 # ---------------------------
-# Predict CATEs
+# Run Calibration
 # ---------------------------
-print("\nPredicting CATEs...")
-cate_preds = cf_model.effect(X_test)
+print("\nRunning test_calibration from evaluate.calibration_test...")
+calibration_result = test_calibration(model=cf_model, X=X_test, T=T_test, y=Y_test, n_bins=5)
 
-# ---------------------------
-# Calibration Evaluation
-# ---------------------------
-print("\nRunning Calibration Evaluation...")
+# Print Calibration Summary
+summary_df = calibration_result.summary()
+print("\nCalibration Summary:")
+print(summary_df)
 
-# Calculate Mean and Differential predictions
-mean_cate = np.mean(cate_preds)
-differential_cate = cate_preds - mean_cate
-
-# Build calibration dataframe
-df_cal = pd.DataFrame({
-    "mean_pred": np.full_like(cate_preds, mean_cate),  # constant for all
-    "diff_pred": differential_cate,
-    "outcome": Y_test,
-    "treatment": T_test
-})
-
-# Bin into quantiles based on predicted CATE
-df_cal['cate_bin'] = pd.qcut(cate_preds, q=5, labels=False)
-
-# Compute group-level average outcome
-summary_cal = df_cal.groupby('cate_bin').agg(
-    mean_pred=('mean_pred', 'mean'),
-    diff_pred=('diff_pred', 'mean'),
-    gate=('outcome', 'mean'),
-    se_gate=('outcome', 'sem')  # standard error
-).reset_index()
+# Save calibration summary as CSV
+calibration_output_path = os.path.join(datasets_dir, "cate_calibration_summary.csv")
+summary_df.to_csv(calibration_output_path, index=False)
+print(f"\nCalibration summary saved to: {calibration_output_path}")
 
 # ---------------------------
-# Regression: gate ~ mean_pred + diff_pred
+# Plot Calibration for Treatment = 1
 # ---------------------------
-X = sm.add_constant(summary_cal[['mean_pred', 'diff_pred']])  # add intercept
-y = summary_cal['gate']
-
-model = sm.OLS(y, X).fit(cov_type='HC3')  # Heteroskedasticity-robust SEs
-
-print("\nCalibration Regression Results (Equivalent to test_calibration()):")
-print(model.summary())
-
-# ---------------------------
-# Clean Printing of Estimates
-# ---------------------------
-print("\nCoefficients Summary:")
-coef_names = ['Intercept', 'mean.forest.prediction', 'differential.forest.prediction']
-for idx, name in enumerate(coef_names):
-    print(f"{name:30s} Estimate: {model.params[idx]:.6f}  Std.Error: {model.bse[idx]:.6f}  "
-          f"t-value: {model.tvalues[idx]:.4f}  p-value: {model.pvalues[idx]:.4e}")
-
-# ---------------------------
-# Optional: Calibration Plot (GATE vs Predicted)
-# ---------------------------
-
-# For simple visualization
-plt.figure(figsize=(8,5))
-plt.scatter(summary_cal['mean_pred'] + summary_cal['diff_pred'], summary_cal['gate'], label='Binned Data Points')
-plt.plot(summary_cal['mean_pred'] + summary_cal['diff_pred'],
-         model.predict(X), color='red', label='Calibration Fit')
-plt.xlabel('Predicted CATE')
-plt.ylabel('Observed GATE')
-plt.title('Calibration Curve (Test Calibration Style)')
-plt.grid(True)
-plt.legend()
+print("\nGenerating Calibration Plot for treatment = 1")
+fig = calibration_result.plot_cal(tmt=1)
 plt.tight_layout()
+plt.savefig(os.path.join(datasets_dir, "calibration_plot_treatment1.png"))
 plt.show()
 
+# ---------------------------
+# Explanation
+# ---------------------------
+print("""
+This calibration test evaluates how well predicted CATEs align with observed treatment effects (GATEs).
 
-
+- The R^2 in the summary indicates how well the predicted CATE explains group-level outcomes.
+- The scatter plot shows each group's average predicted vs actual treatment effect, with a regression fit.
+- Strong alignment and high R^2 indicates that the CATE model is well-calibrated.
+""")
