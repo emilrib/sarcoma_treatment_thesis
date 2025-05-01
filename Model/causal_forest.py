@@ -53,34 +53,6 @@ preprocessor = ColumnTransformer(transformers=[
 ])
 
 # ---------------------------
-# Covariate Imbalance Check
-# ---------------------------
-def compute_standardized_mean_diff(df, treatment_col, covariates):
-    treated = df[df[treatment_col] == 1]
-    untreated = df[df[treatment_col] == 0]
-    smd_results = []
-    for col in covariates:
-        if df[col].dtype == 'object':
-            mode_t = treated[col].mode()[0] if not treated[col].mode().empty else None
-            mode_u = untreated[col].mode()[0] if not untreated[col].mode().empty else None
-            freq_t = (treated[col] == mode_t).mean() if mode_t else 0
-            freq_u = (untreated[col] == mode_u).mean() if mode_u else 0
-            smd = abs(freq_t - freq_u)
-        else:
-            mean_t = treated[col].mean()
-            mean_u = untreated[col].mean()
-            std_pooled = np.sqrt((treated[col].var() + untreated[col].var()) / 2)
-            smd = abs(mean_t - mean_u) / std_pooled if std_pooled > 0 else 0
-        smd_results.append((col, smd))
-    return pd.DataFrame(smd_results, columns=["Subgroup", "SMD"]).sort_values(by="SMD", ascending=False)
-
-imbalance_df = compute_standardized_mean_diff(df_cf, treatment_col, covariate_cols)
-imbalanced_vars = imbalance_df[imbalance_df["SMD"] > 0.1]
-# Print a summary of covariate imbalance
-print("\nCovariate Imbalance Summary (SMD > 0.1):")
-print(imbalanced_vars[['Subgroup', 'SMD']])
-
-# ---------------------------
 # Propensity Score Weighting (IPTW)
 # ---------------------------
 numeric_imbalanced = [col for col in numeric_cols if col in imbalanced_vars["Subgroup"].values]
