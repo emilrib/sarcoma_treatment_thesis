@@ -10,108 +10,100 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 from econml.dml import CausalForestDML
+from sklearn.tree import DecisionTreeClassifier
+from collections import Counter
 import joblib
 import os
-
+from scipy.stats import mode
 from global_config import datasets_dir
 from Model.cf_config import treatment_col, outcome_col, covariate_cols, categorical_cols, numeric_cols
+from sklearn.metrics import accuracy_score
 
-# Load dataset
-df = pd.read_csv(os.path.join(datasets_dir, "df_with_merged_groups.csv"))
-weights_df = pd.read_pickle(os.path.join(datasets_dir, "weights.pkl"))
-df = df.merge(weights_df, on='Pat ID')
-df = df.dropna(subset=[treatment_col, outcome_col, 'weights']).copy()
+df_path = os.path.join(datasets_dir, "df_with_merged_groups.csv")
+df = pd.read_csv(df_path)
+df = df.dropna(subset=['chemo_status', 'survival_status'])
 
-# Cast categorical columns to strings
-for col in categorical_cols:
-    df[col] = df[col].astype(str)
+X = df.drop(columns=['Pat ID', 'survival_status', 'chemo_status'])
+y = df['survival_status'].astype(int)
 
-# Preprocessing pipeline
-preprocessor = ColumnTransformer(transformers=[
-    ('num', Pipeline([
-        ('imputer', SimpleImputer(strategy='mean')),
-        ('scaler', StandardScaler())
-    ]), numeric_cols),
-    ('cat', Pipeline([
-        ('imputer', SimpleImputer(strategy='most_frequent')),
-        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
-    ]), categorical_cols)
-])
+# ---------------------------
+# Encode categorical if necessary
+# ---------------------------
+X = pd.get_dummies(X, drop_first=True)
 
-# Prepare data
-X_all = preprocessor.fit_transform(df[covariate_cols])
-Y_all = df[outcome_col].astype(int).values
-T_all = df[treatment_col].astype(int).values
-W_all = df['weights'].values
+# ---------------------------
+# Train/Test Split
+# ---------------------------
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Bootstrap setup
+# ---------------------------
+# Bagged Trees with OOB and Test Error
+# ---------------------------
 B = 100
-n = X_all.shape[0]
+n = X_train.shape[0]
 oob_errors = []
 test_errors = []
+all_preds = np.zeros((B, n))
+oob_indices_list = []
 
 for b in range(B):
-    X_train, X_test, T_train, T_test, Y_train, Y_test, W_train, W_test = train_test_split(
-        X_all, T_all, Y_all, W_all, test_size=0.2, random_state=42
-    )
+    indices = np.random.choice(n, size=n, replace=True)
+    oob_indices = list(set(range(n)) - set(indices))
+    oob_indices_list.append(oob_indices)
 
-    # Bootstrap sample from training data
-    bootstrap_idx = np.random.choice(len(X_train), len(X_train), replace=True)
-    oob_idx = np.setdiff1d(np.arange(len(X_train)), bootstrap_idx)
+    X_bootstrap = X_train.iloc[indices]
+    y_bootstrap = y_train.iloc[indices]
 
-    X_bootstrap = X_train[bootstrap_idx]
-    T_bootstrap = T_train[bootstrap_idx]
-    Y_bootstrap = Y_train[bootstrap_idx]
-    W_bootstrap = W_train[bootstrap_idx]
+    model = DecisionTreeClassifier(random_state=b)
+    model.fit(X_bootstrap, y_bootstrap)
 
-    X_oob = X_train[oob_idx]
-    T_oob = T_train[oob_idx]
-    Y_oob = Y_train[oob_idx]
+    # Store OOB predictions
+    preds = model.predict(X_train)
+    all_preds[b, :] = preds
 
-    model = CausalForestDML(
-        model_y=RandomForestRegressor(n_estimators=100, random_state=42),
-        model_t=LogisticRegression(max_iter=1000),
-        discrete_treatment=True,
-        random_state=42,
-        cv=3
-    )
-    model.fit(Y_bootstrap, T_bootstrap, X=X_bootstrap, sample_weight=W_bootstrap)
+    # Compute OOB error for this round
+    oob_preds = np.zeros(n)
+    oob_counts = np.zeros(n)
+    for i in oob_indices:
+        oob_preds[i] += preds[i]
+        oob_counts[i] += 1
 
-    # OOB error
-    cate_oob = model.effect(X_oob)
-    mse_oob = mean_squared_error(Y_oob, cate_oob * T_oob)
-    oob_errors.append(mse_oob)
+    oob_final = []
+    for i in range(n):
+        if oob_counts[i] > 0:
+            pred_vals = [int(all_preds[j, i]) for j in range(b + 1) if i in oob_indices_list[j]]
+            if pred_vals:
+                majority_vote = mode(pred_vals, keepdims=True).mode[0]  # Explicitly handle the result of mode
+            else:
+                majority_vote = y_train.iloc[i]  # Fallback if pred_vals is empty
 
-    # Test error
-    cate_test = model.effect(X_test)
-    mse_test = mean_squared_error(Y_test, cate_test * T_test)
-    test_errors.append(mse_test)
+            oob_final.append((majority_vote, y_train.iloc[i]))
 
-# Combine results
-error_df = pd.DataFrame({
-    "Bootstrap_Iteration": list(range(1, B + 1)),
-    "OOB_MSE": oob_errors,
-    "Test_MSE": test_errors
-})
+    # Final calculation for OOB error
+    if oob_final:  # Avoid errors if oob_final is empty
+        oob_error = 1 - np.mean([int(p == t) for p, t in oob_final])
+    else:
+        oob_error = 0  # Default to 0 error if no OOB predictions
 
+    oob_errors.append(oob_error)  # Append the OOB error to the list
+
+    # Compute test error
+    test_preds = model.predict(X_test)
+    test_error = 1 - accuracy_score(y_test, test_preds)
+    test_errors.append(test_error)
+
+
+# ---------------------------
+# Plot OOB vs Test Error
+# ---------------------------
 plt.figure(figsize=(12, 6))
-plt.plot(error_df['Bootstrap_Iteration'], error_df['OOB_MSE'], label='OOB MSE', marker='o')
-plt.plot(error_df['Bootstrap_Iteration'], error_df['Test_MSE'], label='Test MSE', marker='x')
-plt.title('OOB vs Test Proxy MSE Across Bootstrap Iterations')
-plt.xlabel('Bootstrap Iteration')
-plt.ylabel('MSE')
-
-# Set Y-axis ticks (optional, if MSE is high, keep this)
-y_min = 0
-y_max = max(error_df[['OOB_MSE', 'Test_MSE']].max()) + 25
-plt.yticks(np.arange(y_min, y_max + 1, 50))
-
-# Set X-axis ticks in steps of 50
-x_min = error_df['Bootstrap_Iteration'].min()
-x_max = error_df['Bootstrap_Iteration'].max()
-plt.xticks(np.arange(x_min, x_max + 1, 50))
-
-plt.legend()
+plt.plot(range(1, B+1), oob_errors, label='OOB Error', marker='o')
+plt.plot(range(1, B+1), test_errors, label='Test Error', marker='x')
+plt.xticks(np.arange(0, B+1, 25))
+plt.xlabel("Bootstrap Iteration")
+plt.ylabel("Error Rate")
+plt.title("OOB vs Test Error of Bagged Tree")
 plt.grid(True)
+plt.legend()
 plt.tight_layout()
 plt.show()
