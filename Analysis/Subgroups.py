@@ -19,7 +19,7 @@ df = import_file(input_file)
 print(df.head(3))
 
 
-df = df[['Pat ID','survival_status', 'chemo_status','age', 'Gender', 'Histological diagnosis', 'cci_Timo', 'grade_clean','Affected tissue',
+df = df[['Pat ID','survival_status', 'chemo_status','age', 'Gender', 'cci_Timo', 'grade_clean','Affected tissue',
                   'reoperation_label', 'anatomic_region_label', 'metastasis_label', 'radiation_status', 'Tumor maximal size (mm)']]
 
 print(df.head(3))
@@ -74,7 +74,7 @@ print(df.head(5))
 # Create subgroups for categorical covariates
 # ---------------------------
 
-categories = ['Histological diagnosis', 'anatomic_region_label', 'Gender','grade_clean', 'Affected tissue',
+categories = ['anatomic_region_label', 'Gender','grade_clean', 'Affected tissue',
                     'tumor_size_group','age_group', 'cci_group' ]
 df_encoded = pd.get_dummies(df, columns=categories, drop_first=False)
 

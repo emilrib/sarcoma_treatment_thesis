@@ -63,9 +63,9 @@ W_all = df_cf['weights'].values
 # Hyperparameter Tuning Setup
 # ---------------------------
 param_grid = {
-    "n_estimators": [500, 1000],
-    "min_samples_leaf": [5, 10],
-    "max_depth": [5, 10, None],
+    "n_estimators": [1000],
+    "min_samples_leaf": [3, 5, 9],
+    "max_depth": [2, 3, 5],
     "max_samples": [0.3, 0.5]
 }
 
@@ -159,6 +159,7 @@ for col in subgroup_vars:
 ate = df_cf["CATE"].mean()
 ate_se = df_cf["CATE"].std() / np.sqrt(df_cf.shape[0])
 print(f"\nOverall ATE: {ate:.4f} ± {ate_se:.4f}")
+
 
 # ---------------------------
 # Save Results
