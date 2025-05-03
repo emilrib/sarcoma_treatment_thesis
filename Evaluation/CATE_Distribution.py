@@ -25,12 +25,12 @@ plt.show()
 # ---------------------------
 # Survival Outcome by Treatment Group
 # ---------------------------
-if 'survival_status' in df_cf.columns and 'Chemo_status' in df_cf.columns:
-    treated = df_cf[df_cf['Chemo_status'] == 1]
-    untreated = df_cf[df_cf['Chemo_status'] == 0]
+if 'survival_status' in df_cf.columns and 'chemo_status' in df_cf.columns:
+    treated = df_cf[df_cf['chemo_status'] == 1]
+    untreated = df_cf[df_cf['chemo_status'] == 0]
 
     plt.figure(figsize=(8, 5))
-    sns.barplot(data=df_cf, x='Chemo_status', y='survival_status', errorbar=('ci', 95))
+    sns.barplot(data=df_cf, x='chemo_status', y='survival_status', errorbar=('ci', 95))
     plt.title('Average Survival Status by Treatment Group')
     plt.xlabel('Chemo Status (0=No, 1=Yes)')
     plt.ylabel('Mean Survival')

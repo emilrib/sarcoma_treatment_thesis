@@ -6,20 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/models">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Analysis/Subgroups.py" beforeDir="false" afterPath="$PROJECT_DIR$/Analysis/Subgroups.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/T_test.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/X_test.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/X_test_corrected.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/X_test_feature_names.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/Y_test.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/dataset_labelled.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Datasets/dataset_labelled.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/dataset_with_cate.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/scraped_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/test_results_with_cate.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/causal_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/causal_forest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/cf_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/Model/cf_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/preprocessor.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/Model/preprocessor.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Evaluation/BLP.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluation/BLP.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Evaluation/CATE_Distribution.py" beforeDir="false" afterPath="$PROJECT_DIR$/Evaluation/CATE_Distribution.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -330,7 +318,7 @@
       <workItem from="1745793865281" duration="10973000" />
       <workItem from="1745876200398" duration="829000" />
       <workItem from="1746091251928" duration="41865000" />
-      <workItem from="1746175647874" duration="24285000" />
+      <workItem from="1746175647874" duration="27318000" />
     </task>
     <task id="LOCAL-00001" summary="add/data_cleaning_process">
       <option name="closed" value="true" />
@@ -708,7 +696,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746266010968</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1746285425966</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1746285425966</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -771,19 +767,19 @@
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$SUTVA_analysis.coverage" NAME="SUTVA_analysis Coverage Results" MODIFIED="1745789436924" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$cf_config.coverage" NAME="cf_config Coverage Results" MODIFIED="1746192837627" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Bootstrap.coverage" NAME="Bootstrap Coverage Results" MODIFIED="1745868460297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Validation" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$RATE.coverage" NAME="RATE Coverage Results" MODIFIED="1746131210097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_processing.coverage" NAME="data-processing Coverage Results" MODIFIED="1746280092300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Preprocessing" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$RATE.coverage" NAME="RATE Coverage Results" MODIFIED="1746285685679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$EDA.coverage" NAME="EDA Coverage Results" MODIFIED="1746280104344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$IPTW.coverage" NAME="IPTW Coverage Results" MODIFIED="1746280182469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744475137475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$H1_econml_model.coverage" NAME="H1_econml_model Coverage Results" MODIFIED="1745356475218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Subgroups.coverage" NAME="Subgroups Coverage Results" MODIFIED="1746280111238" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Subgroups.coverage" NAME="Subgroups Coverage Results" MODIFIED="1746287606627" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1745705356018" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/econml_validate" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Uplift.coverage" NAME="Uplift Coverage Results" MODIFIED="1745791720989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_cleaning.coverage" NAME="data-cleaning Coverage Results" MODIFIED="1746280084318" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Preprocessing" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$SUTVA.coverage" NAME="SUTVA_analysis Coverage Results" MODIFIED="1744567297727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$BLP.coverage" NAME="BLP Coverage Results" MODIFIED="1746133863789" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$BLP.coverage" NAME="BLP Coverage Results" MODIFIED="1746288220139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$global_config.coverage" NAME="global_config Coverage Results" MODIFIED="1745868080098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$CATE_Distribution.coverage" NAME="CATE_Distribution Coverage Results" MODIFIED="1746131414302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$CATE_Distribution.coverage" NAME="CATE_Distribution Coverage Results" MODIFIED="1746285493875" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
   </component>
 </project>

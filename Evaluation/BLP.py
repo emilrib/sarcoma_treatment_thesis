@@ -14,15 +14,15 @@ from Model.cf_config import covariate_cols
 df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
 # Diagnostic check for NaNs
-missing = df_test[["Chemo_status", "survival_status"] + covariate_cols].isnull().sum()
+missing = df_test[["chemo_status", "survival_status"] + covariate_cols].isnull().sum()
 print("\nMissing value check:")
 print(missing[missing > 0])
 
 # Drop rows with any NaNs in required columns
-df_test = df_test.dropna(subset=["Chemo_status", "survival_status"] + covariate_cols)
+df_test = df_test.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
 
 # Redefine inputs after dropping rows
-T_test = df_test["Chemo_status"].values
+T_test = df_test["chemo_status"].values
 Y_test = df_test["survival_status"].values
 
 # Load and apply preprocessor to align with training
@@ -56,13 +56,19 @@ X_test_df = X_test_df[matched_cols]
 print(f" Matched covariate columns ({len(matched_cols)}): {matched_cols}")
 
 # ---------------------------
+# ATE Estimation
+# ---------------------------
+y_blp = cf_model.effect(X_test)
+ate = y_blp.mean()
+ate_se = y_blp.std() / np.sqrt(len(y_blp))
+print(f"\nEstimated ATE from Causal Forest: {ate:.4f} ± {ate_se:.4f}")
+
+# ---------------------------
 # Run Best Linear Projection (BLP)
 # ---------------------------
 print("\n Running Best Linear Projection (BLP)...")
 
 X_blp = sm.add_constant(X_test_df)
-y_blp = cf_model.effect(X_test)
-
 blp_model = sm.OLS(y_blp, X_blp).fit(cov_type='HC3')
 
 # ---------------------------
@@ -79,25 +85,28 @@ summary_df["Significance"] = summary_df["p-value"].apply(
     lambda p: '***' if p < 0.001 else '**' if p < 0.01 else '*' if p < 0.05 else '.' if p < 0.1 else ''
 )
 
-print("\n BLP Full Summary:")
-print(summary_df)
+# Extract original covariate name
+def extract_base_name(feature_name):
+    for base in covariate_cols:
+        if base in feature_name:
+            return base
+    return "Other"
 
-# Save full summary
-summary_df.to_csv(os.path.join(datasets_dir, "blp_summary_full.csv"))
+summary_df['OriginalGroup'] = summary_df.index.to_series().apply(extract_base_name)
+
+print("\n BLP Full Summary (Estimate, Std.Error, t-value, p-value):")
+print(summary_df[['Estimate', 'Std.Error', 't-value', 'p-value', 'Significance', 'OriginalGroup']])
+
+# Save full summary to CSV
+blp_full_output_path = os.path.join(datasets_dir, "blp_summary_full.csv")
+summary_df.to_csv(blp_full_output_path, index=True)
+print(f"\nBLP full summary saved to: {blp_full_output_path}")
 
 # ---------------------------
 # Group Coefficients by Original Covariates
 # ---------------------------
-def match_covariate(feature, bases):
-    for base in bases:
-        if base in feature:
-            return base
-    return "Other"
-
 coef_df = summary_df.drop(index="const").copy()
-coef_df["OriginalCovariate"] = coef_df.index.to_series().apply(lambda x: match_covariate(str(x), covariate_cols))
-
-grouped_summary = coef_df.groupby("OriginalCovariate").agg(
+grouped_summary = coef_df.groupby("OriginalGroup").agg(
     GroupedEstimate=('Estimate', 'mean'),
     GroupedStdError=('Std.Error', 'mean'),
     min_p_value=('p-value', 'min')
@@ -114,14 +123,21 @@ print(grouped_summary.round(5))
 grouped_summary.to_csv(os.path.join(datasets_dir, "blp_summary_grouped.csv"), index=False)
 
 # ---------------------------
+# Save One-Hot Encoded Covariates to TXT (as list)
+# ---------------------------
+hot_encoded_features = [col for col in matched_cols if any(sep in col for sep in ['_', '='])]
+with open(os.path.join(datasets_dir, "one_hot_encoded_columns.txt"), 'w') as f:
+    for col in hot_encoded_features:
+        f.write(f"{col}\n")
+
+# ---------------------------
 # Plot Grouped BLP (Only Statistically Significant)
 # ---------------------------
-
 significant_summary = grouped_summary[grouped_summary["min_p_value"] < 0.05].copy()
 colors = ['#FFDAB9' if est > 0 else '#ADD8E6' for est in significant_summary["GroupedEstimate"]]
 
 plt.figure(figsize=(12, 7))
-bars = plt.barh(significant_summary["OriginalCovariate"], significant_summary["GroupedEstimate"],
+bars = plt.barh(significant_summary["OriginalGroup"], significant_summary["GroupedEstimate"],
                 xerr=significant_summary["GroupedStdError"], capsize=5, color=colors, edgecolor='black')
 
 # Highlight statistically significant bars
@@ -147,4 +163,5 @@ plt.legend(handles=legend_handles, loc='best')
 
 plt.tight_layout()
 plt.show()
+
 
