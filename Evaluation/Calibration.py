@@ -3,30 +3,36 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import joblib
+import statsmodels.api as sm
+import matplotlib.patches as mpatches
 from global_config import datasets_dir, model_dir
-from validate.calibration_test import test_calibration  # Import from your local package
 from Model.cf_config import covariate_cols
+from validate.results import CalibrationEvaluationResults
+from validate.calibration_test import test_calibration, get_last_model_reg
+
 # ---------------------------
 # Load Data and Model
 # ---------------------------
 df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
 # Diagnostic check for NaNs
-missing = df_test[["Chemo_status", "survival_status"] + covariate_cols].isnull().sum()
+missing = df_test[["chemo_status", "survival_status"] + covariate_cols].isnull().sum()
 print("\nMissing value check:")
 print(missing[missing > 0])
 
 # Drop rows with any NaNs in required columns
-df_test = df_test.dropna(subset=["Chemo_status", "survival_status"] + covariate_cols)
+df_test = df_test.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
+
+# Filter again for strictly finite values
+df_test = df_test[np.isfinite(df_test["chemo_status"]) & np.isfinite(df_test["survival_status"])]
 
 # Redefine inputs after dropping rows
-T_test = df_test["Chemo_status"].values
-Y_test = df_test["survival_status"].values
+T_test = df_test["chemo_status"].astype(float).values
+Y_test = df_test["survival_status"].astype(float).values
 
 # Load and apply preprocessor to align with training
 preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
 X_test = preprocessor.transform(df_test[covariate_cols])
-
 cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
 
 # ---------------------------
@@ -46,21 +52,24 @@ summary_df.to_csv(calibration_output_path, index=False)
 print(f"\nCalibration summary saved to: {calibration_output_path}")
 
 # ---------------------------
-# Plot Calibration for Treatment = 1
+# Print detailed regression output similar to R-style
 # ---------------------------
-print("\nGenerating Calibration Plot for treatment = 1")
-fig = calibration_result.plot_cal(tmt=1)
-plt.tight_layout()
-plt.savefig(os.path.join(datasets_dir, "calibration_plot_treatment1.png"))
-plt.show()
+print("\nDetailed Calibration Coefficient Output:")
+model_reg = get_last_model_reg()
+if model_reg is not None:
+    coef_names = ['Intercept', 'mean.forest.prediction', 'differential.forest.prediction']
 
-# ---------------------------
-# Explanation
-# ---------------------------
-print("""
-This calibration test evaluates how well predicted CATEs align with observed treatment effects (GATEs).
+    # Print header
+    print(f"{'Coefficient':30s} {'Estimate':>10s} {'Std.Error':>10s} {'t-value':>10s} {'p-value':>12s} {'Signif':>6s}")
+    print("-" * 82)
 
-- The R^2 in the summary indicates how well the predicted CATE explains group-level outcomes.
-- The scatter plot shows each group's average predicted vs actual treatment effect, with a regression fit.
-- Strong alignment and high R^2 indicates that the CATE model is well-calibrated.
-""")
+    # Print each row of the summary
+    for idx, name in enumerate(coef_names):
+        estimate = model_reg.params[idx]
+        stderr = model_reg.bse[idx]
+        tval = model_reg.tvalues[idx]
+        pval = model_reg.pvalues[idx]
+        signif = '***' if pval < 0.001 else '**' if pval < 0.01 else '*' if pval < 0.05 else '.' if pval < 0.1 else ''
+        print(f"{name:30s} {estimate:10.6f} {stderr:10.6f} {tval:10.4f} {pval:12.4e} {signif:>6s}")
+else:
+    print("No regression model was returned from test_calibration().")
