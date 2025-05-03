@@ -34,7 +34,8 @@ exclude_cols = ['Pat ID', treatment_col, outcome_col, 'age','cci_Timo', 'Tumor m
 # List all columns in the DataFrame
 encoded_covariates = [col for col in df.columns if col not in exclude_cols and col not in numeric_cols]
 categorical_cols = encoded_covariates
+#print(categorical_cols)
 covariate_cols = numeric_cols + categorical_cols
-
+#print(covariate_cols)
 
 

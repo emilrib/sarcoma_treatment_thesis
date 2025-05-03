@@ -132,7 +132,7 @@ df_cf["CATE_upper"] = cate_upper
 # ---------------------------
 subgroup_vars = [
     'age_group', 'tumor_size_group', 'cci_group',
-    'Histological diagnosis', 'anatomic_region_label', 'Gender',
+    'anatomic_region_label', 'Gender',
     'grade_clean', 'Affected tissue'
 ]
 
@@ -160,6 +160,37 @@ ate = df_cf["CATE"].mean()
 ate_se = df_cf["CATE"].std() / np.sqrt(df_cf.shape[0])
 print(f"\nOverall ATE: {ate:.4f} ± {ate_se:.4f}")
 
+# ---------------------------
+# Combine all subgroup results for plotting
+# ---------------------------
+combined_subgroups = pd.concat(subgroup_results, ignore_index=True)
+combined_subgroups = combined_subgroups[combined_subgroups['Significant']]  # Filter to only significant if desired
+
+# Create x-axis labels combining variable and level
+combined_subgroups['ranking'] = combined_subgroups['Subgroup_Var'] + ": " + combined_subgroups[combined_subgroups.columns[0]].astype(str)
+
+# Sort for cleaner plotting
+combined_subgroups = combined_subgroups.sort_values('Mean_CATE')
+
+# ---------------------------
+# Plot: Subgroup Estimates with 95% CI
+# ---------------------------
+plt.figure(figsize=(12, 6))
+plt.errorbar(
+    x=combined_subgroups['ranking'],
+    y=combined_subgroups['Mean_CATE'],
+    yerr=2 * combined_subgroups['Std_CATE'],
+    fmt='o', capsize=4, ecolor='gray', color='blue', label='Estimate ± 2*SE'
+)
+plt.xticks(rotation=90)
+plt.axhline(0, color='black', linestyle='--')
+plt.title('Subgroup-Specific CATE Estimates with 95% CI')
+plt.xlabel('Subgroup')
+plt.ylabel('Estimated CATE')
+plt.tight_layout()
+plt.grid(True)
+plt.legend(loc='lower right')
+plt.show()
 
 # ---------------------------
 # Save Results
