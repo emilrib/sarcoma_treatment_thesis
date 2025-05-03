@@ -19,7 +19,7 @@ df = import_file(input_file)
 print(df.head(3))
 
 
-df = df[['Pat ID','survival_status', 'Chemo_status','age', 'Gender', 'Histological diagnosis', 'cci_Timo', 'grade_clean','Affected tissue',
+df = df[['Pat ID','survival_status', 'chemo_status','age', 'Gender', 'Histological diagnosis', 'cci_Timo', 'grade_clean','Affected tissue',
                   'reoperation_label', 'anatomic_region_label', 'metastasis_label', 'radiation_status', 'Tumor maximal size (mm)']]
 
 print(df.head(3))
@@ -29,7 +29,7 @@ print(df.head(3))
 # ---------------------------
 # Step 1: Prepare the age data for clustering
 bins = [20, 30, 40, 50, 60, 70, 80, 90, 100]  # Define the bin edges
-labels = ['20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-100']  # Labels for each group
+labels = ['0-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+']  # Labels for each group
 
 # Step 2: Assign age group labels based on the bins
 df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels, right=False)  # right=False ensures bins are inclusive of the lower bound
@@ -46,7 +46,7 @@ print(df.groupby('age_group')['age'].mean())
 
 # Step 2: Create subgroups for 'Tumor maximal size (mm)' using manual binning
 bins_tumor = [0, 50, 100, 150, 200, 250, float('inf')]  # The upper bound for each bin
-labels_tumor = ['0-50', '50-100', '100-150', '150-200', '200-250', '250+']  # Labels for each group
+labels_tumor = ['0-49', '50-99', '100-149', '150-199', '200-249', '250+']  # Labels for each group
 
 # Step 2: Assign tumor size group labels based on the bins
 df['tumor_size_group'] = pd.cut(df['Tumor maximal size (mm)'], bins=bins_tumor, labels=labels_tumor, right=False)
@@ -104,3 +104,10 @@ df_merged.columns = [re.sub(r'_y$', '', col) for col in df_merged.columns]
 
 output_file_merged = os.path.join(datasets_dir, "df_with_merged_groups.csv")
 df_merged.to_csv(output_file_merged, index=False)
+
+# ---------------------------
+# Extract and Save One-Hot Encoded Column Names
+# ---------------------------
+one_hot_cols = [col for col in df_merged.columns if any(base in col for base in categories)]
+one_hot_df = pd.DataFrame({'OneHotEncodedFeature': one_hot_cols})
+one_hot_df.to_csv(os.path.join(datasets_dir, "one_hot_encoded_columns.txt"), index=False)

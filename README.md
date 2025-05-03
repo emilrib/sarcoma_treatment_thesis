@@ -18,3 +18,18 @@ The original EconML library is under the MIT License. This project inherits that
 #### Binary Codes Meaning
 - `0`: **No**
 - `1`: **Yes**
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**
+#### Binary Codes Meaning
+- `0`: **No**
+- `1`: **Yes**

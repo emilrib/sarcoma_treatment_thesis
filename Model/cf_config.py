@@ -22,7 +22,7 @@ DEFINE VARIABLES FOR CAUSAL FOREST
 
 # model considering survival_status as outcome variable as well chemo status
 
-treatment_col = 'Chemo_status'
+treatment_col = 'chemo_status'
 outcome_col = 'survival_status'
 
 numeric_cols = ['reoperation_label', 'metastasis_label', 'radiation_status']

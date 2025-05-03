@@ -106,30 +106,7 @@ def chemo_indication_label(row):
     else:
         return 1
 
-df["Chemo_status"] = df['chemo_first_indication_Timo'].apply(chemo_indication_label)
-
-# --- Count and percentage calculation ---
-chemo_counts = df["Chemo_status"].value_counts().sort_index()
-chemo_counts.index = ["No Chemotherapy", "Received Chemotherapy"]
-percentages = (chemo_counts / chemo_counts.sum() * 100).round(1)
-
-# --- Plot ---
-plt.figure(figsize=(6, 4))
-bars = plt.bar(chemo_counts.index, chemo_counts.values, color=["#A9CCE3", "#2E86C1"], edgecolor="black")
-plt.title("Distribution of Chemotherapy Status")
-plt.ylabel("Number of Patients")
-plt.xticks(rotation=0)
-plt.grid(axis="y", linestyle="--", alpha=0.7)
-
-# --- Add labels: absolute + percentage ---
-for bar, count, pct in zip(bars, chemo_counts.values, percentages):
-    height = bar.get_height()
-    label = f"{count} ({pct:.1f}%)"
-    plt.text(bar.get_x() + bar.get_width() / 2, height + 0.5, label, ha='center', va='bottom', fontsize=10)
-
-plt.tight_layout()
-plt.show()
-
+df["chemo_status"] = df['chemo_first_indication_Timo'].apply(chemo_indication_label)
 
 #calculate the duration of the first chemotherapy in days
 
@@ -176,27 +153,6 @@ def survival_status(text):
         return 0
 
 df["survival_status"] = df['survival_status_label'].apply(survival_status)
-
-awd_counts = df["survival_status"].value_counts().sort_index()
-awd_counts.index = ["Not Alive", "Alive"]
-percentages = (awd_counts / awd_counts.sum() * 100).round(1)
-
-# --- Plot ---
-plt.figure(figsize=(6, 4))
-bars = plt.bar(awd_counts.index, awd_counts.values, color=["#AED6F1", "#2874A6"], edgecolor="black")
-plt.title("Distribution of Alive Status")
-plt.ylabel("Number of Patients")
-plt.xticks(rotation=0)
-plt.grid(axis="y", linestyle="--", alpha=0.7)
-
-# --- Add labels: absolute + percentage ---
-for bar, count, pct in zip(bars, awd_counts.values, percentages):
-    height = bar.get_height()
-    label = f"{count} ({pct:.1f}%)"
-    plt.text(bar.get_x() + bar.get_width() / 2, height + 0.5, label, ha='center', va='bottom', fontsize=10)
-
-plt.tight_layout()
-plt.show()
 
 #add label to distinguish patients that receive radiotherapy from the ones that did not
 def extract_radiotherapy_number(text):

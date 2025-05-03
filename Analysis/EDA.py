@@ -251,7 +251,7 @@ PATIENT TREATMENT
 """
 ##  PIe chart displaying the percentage of patients that received and did not receive chemotherapy
 # Count the number of 0s and 1s
-chemo_counts = df["Chemo_status"].value_counts().sort_index()
+chemo_counts = df["chemo_status"].value_counts().sort_index()
 total = chemo_counts.sum()
 
 # Labels mapped manually
@@ -306,7 +306,7 @@ plt.show()
 ##Cross-tabulation evaluating the combination of patient treatment and survival
 
 # Crosstab
-survival_chemo_ct = pd.crosstab(df["survival_status"], df["Chemo_status"])
+survival_chemo_ct = pd.crosstab(df["survival_status"], df["chemo_status"])
 
 # Relabel the axes for clarity
 survival_chemo_ct.index = ['Not Survived', 'Survived']
@@ -315,7 +315,6 @@ survival_chemo_ct.columns = ['No Chemotherapy', 'Chemotherapy']
 print("\nSurvival vs Chemotherapy CrossTab:")
 print(survival_chemo_ct)
 # Plot
-survival_chemo_ct.plot(kind='bar', stacked=True, color=['#ADD8E6', '#FFDAB9'], edgecolor='black', figsize=(8,6))
 
 #heatmap
 plt.figure(figsize=(8, 6))
