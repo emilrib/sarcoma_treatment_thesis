@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="update/models">
-      <change afterPath="$PROJECT_DIR$/Evaluation/Bootstrap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Analysis/Subgroups.py" beforeDir="false" afterPath="$PROJECT_DIR$/Analysis/Subgroups.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/causal_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/causal_forest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/cf_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/cf_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/cf_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/Model/cf_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Validation/Bootstrap.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -325,23 +318,7 @@
       <workItem from="1745793865281" duration="10973000" />
       <workItem from="1745876200398" duration="829000" />
       <workItem from="1746091251928" duration="41865000" />
-      <workItem from="1746175647874" duration="37959000" />
-    </task>
-    <task id="LOCAL-00002" summary="add/data_cleaning_process">
-      <option name="closed" value="true" />
-      <created>1741361577861</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1741361577861</updated>
-    </task>
-    <task id="LOCAL-00003" summary="add/new_columns">
-      <option name="closed" value="true" />
-      <created>1742159358781</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1742159358781</updated>
+      <workItem from="1746175647874" duration="39785000" />
     </task>
     <task id="LOCAL-00004" summary="add/new_columns">
       <option name="closed" value="true" />
@@ -719,7 +696,23 @@
       <option name="project" value="LOCAL" />
       <updated>1746301156887</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1746307178811</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1746307178811</updated>
+    </task>
+    <task id="LOCAL-00052" summary="update/models">
+      <option name="closed" value="true" />
+      <created>1746308416684</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1746308416684</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -782,7 +775,7 @@
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$model_evaluation.coverage" NAME="model_evaluation Coverage Results" MODIFIED="1745778581250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$SUTVA_analysis.coverage" NAME="SUTVA_analysis Coverage Results" MODIFIED="1745789436924" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$cf_config.coverage" NAME="cf_config Coverage Results" MODIFIED="1746303572959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Bootstrap.coverage" NAME="Bootstrap Coverage Results" MODIFIED="1746306538197" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Bootstrap.coverage" NAME="Bootstrap Coverage Results" MODIFIED="1746308388547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_processing.coverage" NAME="data-processing Coverage Results" MODIFIED="1746280092300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Preprocessing" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$RATE.coverage" NAME="RATE Coverage Results" MODIFIED="1746285685679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$EDA.coverage" NAME="EDA Coverage Results" MODIFIED="1746280104344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
