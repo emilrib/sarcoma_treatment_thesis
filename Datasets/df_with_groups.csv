@@ -1,0 +1,317 @@
+Pat ID,survival_status,chemo_status,age,Gender,cci_Timo,grade_clean,Affected tissue,reoperation_label,anatomic_region_label,metastasis_label,radiation_status,Tumor maximal size (mm),age_group,tumor_size_group,cci_group
+100161432,0,0,44,male,0.0,G3,Deep,0,Lower Extremity,0,1,105.0,40-49,100-149,0
+100661653,1,0,77,female,3.0,G1,Deep,1,Lower Extremity,0,0,110.0,70-79,100-149,3
+100783061,1,0,71,male,0.0,G2,Deep,0,Lower Extremity,0,1,180.0,70-79,150-199,0
+100801952,1,0,36,male,0.0,G1,Superficial,1,Others,0,1,65.0,30-39,50-99,0
+101526386,1,0,74,male,3.0,G3,Deep,1,Upper Extremity,0,1,57.0,70-79,50-99,3
+1024164,0,1,79,male,3.0,G3,Deep,1,Vizeral and Intraperitoneal,1,1,24.0,70-79,0-49,3
+1024802,0,1,59,male,1.0,G2,Deep,1,Lower Extremity,1,1,220.0,50-59,200-249,1
+1025352,1,1,50,male,0.0,G3,Deep,1,Upper Extremity,0,1,40.0,50-59,0-49,0
+1026721,1,0,27,male,0.0,G2,Deep,1,Retroperitoneal,1,0,109.0,0-29,100-149,0
+1027820,0,0,90,male,5.0,G3,Deep,1,Lower Extremity,1,1,95.0,90+,50-99,5
+1029742ksw,0,1,85,male,3.0,G3,Deep,1,Vizeral and Intraperitoneal,1,1,180.0,80-89,150-199,3
+1031575,1,0,76,female,0.0,G3,Deep,0,Lower Extremity,0,1,109.0,70-79,100-149,0
+1031579ksw,0,1,58,female,1.0,G3,Deep,1,Lower Extremity,1,0,216.0,50-59,200-249,1
+1035025,0,1,53,male,0.0,G3,Deep,1,Lower Extremity,1,1,82.0,50-59,50-99,0
+1035636,1,0,85,female,3.0,G1,Deep,1,Lower Extremity,0,0,38.0,80-89,0-49,3
+1037897,1,0,61,male,0.0,G1,Superficial,0,Lower Extremity,0,0,109.0,60-69,100-149,0
+1038771,1,0,63,male,1.0,G3,Deep,1,Retroperitoneal,0,0,270.0,60-69,250+,1
+1039395,1,0,58,female,2.0,G1,Deep,1,Lower Extremity,0,0,100.0,50-59,100-149,2
+1040820,1,0,83,male,5.0,G1,Deep,1,Lower Extremity,0,0,170.0,80-89,150-199,5
+1041910ksw,0,1,76,male,2.0,G3,Deep,1,Vizeral and Intraperitoneal,1,0,320.0,70-79,250+,2
+1042532ksw,0,1,42,male,0.0,G3,Deep,1,Head and Neck,1,1,51.0,40-49,50-99,0
+1043154ksw,1,0,63,female,0.0,G1,Deep,0,Lower Extremity,0,1,56.0,60-69,50-99,0
+1045021,1,1,59,female,3.0,G3,Superficial,1,Trunk,1,0,48.0,50-59,0-49,3
+1049321,1,0,49,male,0.0,G1,Deep,0,Lower Extremity,0,0,130.0,40-49,100-149,0
+1051442ksw,1,1,80,female,3.0,G2,Deep,1,Retroperitoneal,0,1,80.0,80-89,50-99,3
+1051612ksw,1,0,82,male,3.0,G2,Superficial,1,Trunk,0,1,35.0,80-89,0-49,3
+1055467ksw,0,0,66,female,0.0,G3,Deep,0,Lower Extremity,0,0,140.0,60-69,100-149,0
+1056047ksw,1,0,55,male,0.0,G1,Deep,1,Others,0,1,260.0,50-59,250+,0
+1057929,1,0,99,female,0.0,G1,Deep,0,Lower Extremity,0,0,295.0,90+,250+,0
+1058365,1,0,71,female,2.0,G1,Deep,1,Lower Extremity,0,0,60.0,70-79,50-99,2
+1059628ksw,0,1,75,male,2.0,G3,Deep,1,Retroperitoneal,1,1,33.0,70-79,0-49,2
+1060419ksw,1,0,56,male,0.0,G1,Deep,0,Lower Extremity,0,0,15.0,50-59,0-49,0
+1062817,1,0,64,male,0.0,G1,Deep,1,Lower Extremity,0,0,109.0,60-69,100-149,0
+1065132ksw,0,1,66,male,2.0,G3,Deep,1,Lower Extremity,1,1,200.0,60-69,200-249,2
+1065183ksw,0,0,82,male,0.0,G3,Deep,0,Lower Extremity,0,0,65.0,80-89,50-99,0
+1066129ksw,1,0,91,male,0.0,G1,Deep,0,Lower Extremity,0,0,200.0,90+,200-249,0
+1066131,1,0,57,female,0.0,G2,Deep,0,Lower Extremity,0,0,145.0,50-59,100-149,0
+1066772,1,0,29,female,0.0,G1,Superficial,1,Lower Extremity,0,0,82.0,0-29,50-99,0
+1067399,0,1,60,male,1.0,G3,Deep,1,Retroperitoneal,1,0,150.0,60-69,150-199,1
+1068383,1,0,89,female,5.0,G1,Superficial,1,Lower Extremity,0,0,49.0,80-89,0-49,5
+1071410,0,0,63,female,0.0,G3,Deep,0,Lower Extremity,0,0,160.0,60-69,150-199,0
+1072741ksw,1,0,62,female,2.0,G3,Deep,1,Lower Extremity,0,1,103.0,60-69,100-149,2
+1073393,1,0,64,female,1.0,G2,Deep,1,Lower Extremity,0,1,92.0,60-69,50-99,1
+1076361,1,0,71,male,3.0,G1,Deep,1,Lower Extremity,0,1,124.0,70-79,100-149,3
+1077126,1,0,74,female,0.0,G1,Deep,0,Lower Extremity,0,0,160.0,70-79,150-199,0
+1078241,0,0,84,female,0.0,G3,Deep,0,Lower Extremity,0,1,124.0,80-89,100-149,0
+1081132,1,0,79,female,0.0,G3,Superficial,0,Lower Extremity,0,1,109.0,70-79,100-149,0
+1082196,1,0,69,male,2.0,G3,Deep,1,Lower Extremity,1,1,125.0,60-69,100-149,2
+1084900ksw,0,1,76,male,2.0,G3,Deep,1,Retroperitoneal,1,0,130.0,70-79,100-149,2
+1085915,1,0,76,female,3.0,G1,Deep,1,Trunk,0,1,109.0,70-79,100-149,3
+1087516ksw,0,0,83,male,0.0,G1,Deep,0,Lower Extremity,0,0,270.0,80-89,250+,0
+1089543,1,1,48,female,2.0,G3,Deep,1,Retroperitoneal,1,1,133.0,40-49,100-149,2
+1091076,0,1,35,male,0.0,G3,Deep,1,Trunk,1,1,109.0,30-39,100-149,0
+1091431ksw,0,0,93,female,0.0,G1,Deep,0,Lower Extremity,0,0,230.0,90+,200-249,0
+1092113,0,0,79,male,3.0,G3,Deep,1,Retroperitoneal,0,0,200.0,70-79,200-249,3
+1092795,0,0,57,male,0.0,G2,Deep,0,Lower Extremity,0,1,145.0,50-59,100-149,0
+1093406ksw,1,0,64,female,1.0,G2,Superficial,1,Lower Extremity,0,0,22.0,60-69,0-49,1
+1094152ksw,0,1,61,female,1.0,G3,Deep,1,Retroperitoneal,1,1,160.0,60-69,150-199,1
+1101660ksw,1,0,81,female,3.0,G2,Deep,1,Vizeral and Intraperitoneal,0,0,30.0,80-89,0-49,3
+11023863,1,0,51,male,0.0,G3,Deep,0,Lower Extremity,0,0,35.0,50-59,0-49,0
+11026789,1,0,70,female,2.0,G2,Superficial,1,Upper Extremity,0,1,45.0,70-79,0-49,2
+11029032,1,0,64,female,0.0,G1,Deep,0,Lower Extremity,0,0,100.0,60-69,100-149,0
+11032260,1,0,93,female,0.0,G1,Superficial,0,Lower Extremity,0,0,109.0,90+,100-149,0
+11032262,1,0,51,female,0.0,G1,Deep,1,Trunk,0,0,58.0,50-59,50-99,0
+11033037,1,0,66,male,2.0,G1,Deep,1,Lower Extremity,0,0,345.0,60-69,250+,2
+11033140,1,0,31,female,0.0,G1,Deep,1,Lower Extremity,0,0,120.0,30-39,100-149,0
+11045702,1,0,53,female,0.0,G1,Deep,1,Trunk,0,0,100.0,50-59,100-149,0
+11054362,0,0,61,female,0.0,G3,Deep,0,Lower Extremity,0,0,109.0,60-69,100-149,0
+11059470,1,1,72,male,2.0,G3,Deep,1,Lower Extremity,0,1,136.0,70-79,100-149,2
+1106490ksw,1,0,75,female,2.0,G3,Deep,1,Retroperitoneal,1,1,170.0,70-79,150-199,2
+11065947,1,0,73,male,3.0,G2,Deep,1,Upper Extremity,0,1,63.0,70-79,50-99,3
+11066024,1,0,60,female,0.0,G3,Deep,0,Lower Extremity,0,1,140.0,60-69,100-149,0
+11069257,1,0,91,female,4.0,G1,Deep,1,Lower Extremity,0,0,109.0,90+,100-149,4
+11069467,1,0,65,female,3.0,G1,Deep,1,Others,0,0,20.0,60-69,0-49,3
+11070127,0,1,74,male,2.0,G3,Deep,1,Lower Extremity,1,1,140.0,70-79,100-149,2
+11073279,1,0,32,female,0.0,G3,Deep,1,Lower Extremity,1,1,68.0,30-39,50-99,0
+11078569,1,0,52,female,0.0,G1,Deep,1,Vizeral and Intraperitoneal,0,0,109.0,50-59,100-149,0
+11081764,0,0,89,male,0.0,G3,Deep,0,Lower Extremity,0,1,140.0,80-89,100-149,0
+11082607,1,0,55,male,0.0,G1,Deep,0,Lower Extremity,0,0,80.0,50-59,50-99,0
+11086475,0,1,62,male,2.0,G3,Deep,1,Lower Extremity,1,1,310.0,60-69,250+,2
+11087934,0,1,64,female,1.0,G3,Deep,1,Vizeral and Intraperitoneal,1,1,73.0,60-69,50-99,1
+11089306,0,1,85,male,4.0,G3,Deep,1,Vizeral and Intraperitoneal,1,0,60.0,80-89,50-99,4
+11093547,1,0,58,male,0.0,G3,Superficial,1,Head and Neck,0,0,30.0,50-59,0-49,0
+11095572,1,0,67,male,0.0,G2,Deep,0,Lower Extremity,0,0,109.0,60-69,100-149,0
+11096881,1,0,49,male,0.0,G3,Superficial,1,Lower Extremity,0,1,31.0,40-49,0-49,0
+11098352,0,0,82,male,3.0,G1,Superficial,1,Trunk,0,0,30.0,80-89,0-49,3
+11106643,1,0,59,male,0.0,G2,Deep,0,Lower Extremity,0,0,105.0,50-59,100-149,0
+11113897,1,0,55,male,1.0,G2,Deep,1,Upper Extremity,0,1,80.0,50-59,50-99,1
+11117407,1,0,34,male,0.0,G1,Deep,0,Lower Extremity,0,0,180.0,30-39,150-199,0
+11124418,1,0,69,female,2.0,G1,Superficial,1,Trunk,0,0,29.0,60-69,0-49,2
+11128036,1,0,57,female,1.0,G2,Deep,1,Lower Extremity,1,0,18.0,50-59,0-49,1
+11131605,0,0,37,male,0.0,G3,Deep,0,Lower Extremity,0,1,109.0,30-39,100-149,0
+11132606,1,0,60,female,1.0,G3,Deep,1,Retroperitoneal,0,1,35.0,60-69,0-49,1
+11135940,0,0,63,male,0.0,G3,Deep,0,Lower Extremity,0,0,110.0,60-69,100-149,0
+1114074ksw,1,0,40,male,0.0,G3,Deep,0,Lower Extremity,0,1,101.0,40-49,100-149,0
+11145799,1,0,63,male,2.0,G1,Deep,1,Retroperitoneal,0,0,31.0,60-69,0-49,2
+11150691,1,0,61,male,1.0,G1,Deep,1,Lower Extremity,0,0,210.0,60-69,200-249,1
+11157406,1,0,76,female,3.0,G2,Deep,1,Lower Extremity,0,1,105.0,70-79,100-149,3
+1115933ksw,1,0,61,female,1.0,G1,Superficial,1,Trunk,0,1,45.0,60-69,0-49,1
+1115964ksw,1,0,85,female,0.0,G1,Superficial,0,Lower Extremity,0,1,10.0,80-89,0-49,0
+11162676,1,0,74,male,3.0,G1,Superficial,1,Others,0,0,80.0,70-79,50-99,3
+11163546,1,0,92,female,4.0,G3,Deep,1,Retroperitoneal,0,0,200.0,90+,200-249,4
+11169073,1,0,33,female,0.0,G2,Deep,0,Lower Extremity,0,0,109.0,30-39,100-149,0
+11173620,1,1,41,female,0.0,G3,Deep,1,Lower Extremity,1,1,98.0,40-49,50-99,0
+11173657,1,0,70,male,2.0,G3,Deep,1,Lower Extremity,0,1,109.0,70-79,100-149,2
+11174222,1,0,55,female,1.0,G2,Deep,1,Lower Extremity,0,0,32.0,50-59,0-49,1
+11175886,1,0,65,male,0.0,G3,Superficial,0,Lower Extremity,0,1,109.0,60-69,100-149,0
+11176247,0,0,22,male,0.0,G3,Deep,0,Lower Extremity,0,1,109.0,0-29,100-149,0
+11182976,1,0,41,male,0.0,G1,Deep,1,Upper Extremity,0,1,80.0,40-49,50-99,0
+11182990,1,0,82,female,3.0,G3,Superficial,1,Lower Extremity,0,1,42.0,80-89,0-49,3
+11194213,0,1,71,male,2.0,G3,Deep,1,Upper Extremity,1,1,30.0,70-79,0-49,2
+11199316,1,0,64,female,2.0,G1,Deep,1,Lower Extremity,0,0,200.0,60-69,200-249,2
+11200077,1,0,70,male,0.0,G2,Deep,0,Lower Extremity,0,0,192.0,70-79,150-199,0
+11201781,0,0,82,male,0.0,G2,Deep,0,Lower Extremity,0,0,107.0,80-89,100-149,0
+11203520,0,0,53,male,1.0,G3,Superficial,1,Lower Extremity,1,1,58.0,50-59,50-99,1
+11209564,0,0,80,female,0.0,G2,Deep,0,Lower Extremity,0,0,84.0,80-89,50-99,0
+11210719,0,1,32,female,0.0,G3,Deep,1,Lower Extremity,1,1,129.0,30-39,100-149,0
+11211063,1,0,31,female,0.0,G2,Deep,0,Lower Extremity,0,0,109.0,30-39,100-149,0
+11235569,1,0,85,female,4.0,G3,Deep,1,Retroperitoneal,1,1,150.0,80-89,150-199,4
+1124553,1,0,90,male,6.0,G3,Superficial,1,Trunk,0,1,200.0,90+,200-249,6
+11273223,1,0,42,female,0.0,G1,Deep,0,Lower Extremity,0,0,289.0,40-49,250+,0
+11283029,1,0,73,male,0.0,G1,Deep,0,Lower Extremity,0,1,35.0,70-79,0-49,0
+1138032,1,0,64,male,0.0,G1,Deep,0,Lower Extremity,0,0,72.0,60-69,50-99,0
+1138511,0,0,89,male,3.0,G3,Deep,1,Retroperitoneal,0,1,80.0,80-89,50-99,3
+1150095,1,0,76,male,4.0,G3,Deep,1,Retroperitoneal,0,1,60.0,70-79,50-99,4
+1152406,1,0,68,male,0.0,G3,Deep,0,Lower Extremity,0,1,200.0,60-69,200-249,0
+1156225,1,0,79,female,3.0,G1,Superficial,1,Lower Extremity,0,0,109.0,70-79,100-149,3
+1156917,1,0,51,female,0.0,G1,Deep,1,Others,0,0,110.0,50-59,100-149,0
+1158734,1,0,51,male,0.0,G1,Deep,1,Upper Extremity,0,1,109.0,50-59,100-149,0
+1159023ksw,1,0,59,female,1.0,G1,Deep,1,Others,0,0,95.0,50-59,50-99,1
+1161536,0,1,58,female,1.0,G3,Deep,1,Vizeral and Intraperitoneal,1,0,210.0,50-59,200-249,1
+1164292,1,0,75,male,5.0,G3,Deep,1,Vizeral and Intraperitoneal,0,0,45.0,70-79,0-49,5
+1186847,0,1,45,female,0.0,G3,Deep,1,Others,0,1,117.0,40-49,100-149,0
+1189147,1,0,81,male,3.0,G3,Deep,1,Trunk,0,1,143.0,80-89,100-149,3
+1191029,1,0,59,male,0.0,G1,Deep,0,Lower Extremity,0,0,15.0,50-59,0-49,0
+1192056,1,0,78,male,4.0,G3,Deep,1,Vizeral and Intraperitoneal,0,1,52.0,70-79,50-99,4
+1192201,1,0,68,female,2.0,G1,Superficial,1,Lower Extremity,0,1,60.0,60-69,50-99,2
+1199705,1,0,59,male,2.0,G3,Deep,1,Lower Extremity,0,1,158.0,50-59,150-199,2
+1200292,1,0,49,male,0.0,G1,Superficial,1,Head and Neck,0,0,20.0,40-49,0-49,0
+1201406,1,0,53,male,1.0,G3,Deep,1,Upper Extremity,0,1,36.0,50-59,0-49,1
+1271674,1,0,81,male,4.0,G1,Deep,1,Vizeral and Intraperitoneal,0,0,250.0,80-89,250+,4
+1306766,0,1,77,female,4.0,G3,Deep,1,Lower Extremity,1,1,60.0,70-79,50-99,4
+1348361,0,0,64,female,4.0,G3,Deep,1,Others,1,0,109.0,60-69,100-149,4
+1367536,1,0,68,male,2.0,G2,Deep,1,Lower Extremity,0,1,25.0,60-69,0-49,2
+1482920,1,0,45,male,0.0,G1,Deep,1,Lower Extremity,0,1,90.0,40-49,50-99,0
+156590,0,1,66,female,1.0,G3,Deep,1,Retroperitoneal,1,1,109.0,60-69,100-149,1
+1623575,1,0,64,female,2.0,G1,Deep,1,Lower Extremity,0,1,100.0,60-69,100-149,2
+1832816,1,0,40,female,0.0,G1,Deep,0,Lower Extremity,0,0,150.0,40-49,150-199,0
+1845918,0,0,90,female,0.0,G3,Deep,0,Lower Extremity,0,1,130.0,90+,100-149,0
+1858971,0,1,62,male,3.0,G3,Deep,1,Lower Extremity,1,1,240.0,60-69,200-249,3
+1864637,1,1,39,male,0.0,G3,Deep,1,Lower Extremity,1,1,150.0,30-39,150-199,0
+200426462,0,0,55,male,2.0,G2,Deep,1,Upper Extremity,0,1,130.0,50-59,100-149,2
+200617321,1,0,21,female,0.0,G1,Superficial,1,Lower Extremity,0,0,50.0,0-29,50-99,0
+200673914,0,0,88,male,4.0,G3,Deep,1,Lower Extremity,0,1,109.0,80-89,100-149,4
+2014658,1,0,75,female,0.0,G1,Deep,0,Lower Extremity,0,1,24.0,70-79,0-49,0
+2016001,0,0,76,male,0.0,G2,Deep,0,Lower Extremity,0,1,25.0,70-79,0-49,0
+2062965,1,0,77,female,3.0,G1,Deep,1,Lower Extremity,0,0,128.0,70-79,100-149,3
+2103557,1,0,41,female,0.0,G3,Superficial,1,Lower Extremity,0,1,21.0,40-49,0-49,0
+2108267,1,0,79,female,0.0,G2,Deep,0,Lower Extremity,0,0,51.0,70-79,50-99,0
+2228440,1,0,36,female,0.0,G1,Deep,1,Lower Extremity,0,1,143.0,30-39,100-149,0
+2330172,1,0,86,female,0.0,G2,Superficial,0,Lower Extremity,0,1,80.0,80-89,50-99,0
+2393425,1,0,84,male,0.0,G3,Deep,0,Lower Extremity,0,1,23.0,80-89,0-49,0
+2497565,0,0,92,female,0.0,G3,Deep,0,Lower Extremity,0,1,100.0,90+,100-149,0
+2965739,1,0,73,female,6.0,G2,Deep,1,Lower Extremity,0,0,56.0,70-79,50-99,6
+3009605,1,0,63,female,1.0,G2,Deep,1,Trunk,0,1,74.0,60-69,50-99,1
+3046004,1,0,48,female,0.0,G1,Superficial,1,Lower Extremity,0,0,130.0,40-49,100-149,0
+3070279,1,0,85,male,3.0,G3,Deep,1,Vizeral and Intraperitoneal,0,1,47.0,80-89,0-49,3
+3132164,0,1,54,female,0.0,G2,Deep,1,Lower Extremity,1,1,64.0,50-59,50-99,0
+3218244,1,0,74,female,4.0,G3,Deep,1,Upper Extremity,0,1,49.0,70-79,0-49,4
+3282996,0,1,52,female,0.0,G3,Deep,1,Vizeral and Intraperitoneal,1,1,90.0,50-59,50-99,0
+3387453,1,1,59,female,1.0,G2,Deep,1,Vizeral and Intraperitoneal,1,1,64.0,50-59,50-99,1
+345717,1,1,73,male,2.0,G2,Deep,1,Retroperitoneal,0,0,280.0,70-79,250+,2
+3713571,1,0,59,male,1.0,G2,Deep,1,Trunk,0,1,87.0,50-59,50-99,1
+383929,1,0,85,male,0.0,G2,Deep,0,Lower Extremity,0,1,270.0,80-89,250+,0
+3931935,1,0,66,male,3.0,G1,Deep,1,Lower Extremity,0,0,220.0,60-69,200-249,3
+3957535,0,0,77,female,0.0,G1,Deep,1,Trunk,1,1,109.0,70-79,100-149,0
+3998282,1,0,74,female,3.0,G3,Superficial,1,Trunk,0,0,22.0,70-79,0-49,3
+4072073,0,1,68,female,1.0,G2,Deep,1,Vizeral and Intraperitoneal,1,1,109.0,60-69,100-149,1
+4072319,0,0,85,male,4.0,G3,Deep,1,Lower Extremity,0,1,25.0,80-89,0-49,4
+4084497,1,0,53,male,0.0,G3,Deep,1,Lower Extremity,0,1,104.0,50-59,100-149,0
+4128431,1,0,60,female,0.0,G2,Superficial,0,Lower Extremity,0,0,109.0,60-69,100-149,0
+4133915,1,0,65,female,2.0,G3,Superficial,1,Lower Extremity,0,1,38.0,60-69,0-49,2
+4136202,1,0,52,male,0.0,G1,Deep,1,Lower Extremity,0,0,72.0,50-59,50-99,0
+4173960,1,0,83,male,5.0,G1,Deep,1,Lower Extremity,0,0,230.0,80-89,200-249,5
+4258568,1,0,62,female,1.0,G1,Deep,1,Lower Extremity,0,1,130.0,60-69,100-149,1
+4391969,1,0,80,female,4.0,G2,Deep,1,Retroperitoneal,0,1,115.0,80-89,100-149,4
+4597575,1,0,30,female,0.0,G2,Deep,1,Lower Extremity,0,1,50.0,30-39,50-99,0
+4661834,1,0,76,male,0.0,G1,Deep,0,Lower Extremity,0,0,109.0,70-79,100-149,0
+5059739,1,0,55,male,1.0,G3,Superficial,1,Lower Extremity,0,1,60.0,50-59,50-99,1
+5124433,1,0,43,male,0.0,G2,Deep,1,Lower Extremity,0,1,66.0,40-49,50-99,0
+5581044,1,0,27,male,0.0,G2,Superficial,1,Trunk,0,0,100.0,0-29,100-149,0
+570075011,1,0,71,female,2.0,G3,Deep,1,Lower Extremity,0,1,58.0,70-79,50-99,2
+5714699,1,0,67,male,0.0,G2,Deep,0,Lower Extremity,0,1,155.0,60-69,150-199,0
+5877857,1,0,92,female,0.0,G1,Deep,0,Lower Extremity,0,0,239.0,90+,200-249,0
+644919,1,0,85,female,6.0,G2,Deep,1,Vizeral and Intraperitoneal,0,1,25.0,80-89,0-49,6
+7005393,1,0,65,male,2.0,G2,Deep,1,Vizeral and Intraperitoneal,0,0,210.0,60-69,200-249,2
+7008643,1,0,90,male,0.0,G3,Deep,0,Lower Extremity,0,1,69.0,90+,50-99,0
+7016180,1,0,55,male,0.0,G1,Deep,0,Lower Extremity,0,0,80.0,50-59,50-99,0
+7027290,1,0,89,female,4.0,G3,Deep,1,Upper Extremity,0,1,90.0,80-89,50-99,4
+7041863,1,0,51,male,0.0,G2,Deep,1,Lower Extremity,0,1,63.0,50-59,50-99,0
+7042017,1,0,76,female,3.0,G2,Deep,1,Retroperitoneal,0,0,52.0,70-79,50-99,3
+7042933,1,0,77,female,3.0,G2,Deep,1,Retroperitoneal,0,1,45.0,70-79,0-49,3
+7045924,1,0,82,male,0.0,G1,Deep,0,Lower Extremity,0,0,85.0,80-89,50-99,0
+7047993,0,1,82,female,3.0,G3,Deep,1,Upper Extremity,1,1,120.0,80-89,100-149,3
+7060449,1,0,51,female,0.0,G1,Deep,1,Trunk,0,0,23.0,50-59,0-49,0
+7063452,1,0,48,female,0.0,G3,Deep,1,Retroperitoneal,0,0,154.0,40-49,150-199,0
+7068292,0,0,59,female,0.0,G2,Deep,0,Lower Extremity,0,1,109.0,50-59,100-149,0
+7077825,1,0,50,female,0.0,G1,Deep,1,Lower Extremity,0,0,180.0,50-59,150-199,0
+7079630,1,0,56,male,0.0,G2,Deep,0,Lower Extremity,0,0,85.0,50-59,50-99,0
+7084249,1,0,70,male,0.0,G3,Superficial,0,Lower Extremity,0,1,109.0,70-79,100-149,0
+7093027,0,1,34,male,0.0,G3,Deep,1,Trunk,1,1,109.0,30-39,100-149,0
+7094437,0,1,62,female,1.0,G3,Deep,1,Others,1,1,135.0,60-69,100-149,1
+7095159,0,0,93,male,6.0,G3,Deep,1,Lower Extremity,0,1,20.0,90+,0-49,6
+7106525,0,1,55,male,1.0,G3,Deep,1,Lower Extremity,1,1,160.0,50-59,150-199,1
+7127671,0,0,90,female,4.0,G3,Deep,1,Lower Extremity,0,1,191.0,90+,150-199,4
+7164871,0,0,79,male,0.0,G3,Deep,0,Lower Extremity,0,1,68.0,70-79,50-99,0
+7189917,1,0,47,female,0.0,G3,Deep,1,Lower Extremity,1,1,73.0,40-49,50-99,0
+7193543,1,0,76,male,3.0,G1,Deep,1,Lower Extremity,0,0,220.0,70-79,200-249,3
+7212730,1,0,79,female,3.0,G1,Deep,1,Lower Extremity,0,0,310.0,70-79,250+,3
+7220739,0,1,52,female,1.0,G3,Deep,1,Vizeral and Intraperitoneal,0,1,135.0,50-59,100-149,1
+7223828,1,0,55,male,1.0,G1,Deep,1,Lower Extremity,0,0,109.0,50-59,100-149,1
+7224489,1,0,66,female,2.0,G3,Superficial,1,Trunk,0,1,89.0,60-69,50-99,2
+7230209,0,0,85,male,0.0,G3,Deep,0,Lower Extremity,0,0,140.0,80-89,100-149,0
+7236440,1,0,68,male,2.0,G1,Deep,1,Lower Extremity,0,0,190.0,60-69,150-199,2
+7241196,1,0,80,male,0.0,G1,Deep,0,Lower Extremity,0,0,150.0,80-89,150-199,0
+7270384,1,0,83,female,5.0,G2,Deep,1,Retroperitoneal,0,1,75.0,80-89,50-99,5
+7272468,1,0,78,male,3.0,G3,Deep,1,Lower Extremity,0,1,81.0,70-79,50-99,3
+7281176,1,0,76,male,0.0,G1,Deep,0,Lower Extremity,0,0,138.0,70-79,100-149,0
+7290020,1,1,61,female,1.0,G3,Deep,1,Retroperitoneal,1,0,129.0,60-69,100-149,1
+7302677,1,0,64,male,2.0,G3,Deep,1,Trunk,0,1,40.0,60-69,0-49,2
+7306607,0,0,92,female,0.0,G3,Deep,0,Lower Extremity,0,0,160.0,90+,150-199,0
+7321459,0,1,54,male,0.0,G1,Deep,1,Lower Extremity,0,1,145.0,50-59,100-149,0
+7354967,1,0,73,male,4.0,G3,Deep,1,Trunk,0,1,145.0,70-79,100-149,4
+7355593,1,1,90,male,4.0,G3,Deep,1,Lower Extremity,1,1,107.0,90+,100-149,4
+7371631,1,0,31,female,0.0,G1,Superficial,0,Lower Extremity,0,0,30.0,30-39,0-49,0
+7381688,0,0,88,female,0.0,G3,Deep,0,Lower Extremity,0,0,129.0,80-89,100-149,0
+7389708,1,0,52,male,1.0,G1,Deep,1,Lower Extremity,0,0,200.0,50-59,200-249,1
+7390813,1,0,74,male,3.0,G2,Deep,1,Retroperitoneal,0,1,67.0,70-79,50-99,3
+7396520,1,0,62,female,1.0,G2,Deep,1,Lower Extremity,0,1,180.0,60-69,150-199,1
+7397603,1,0,75,female,3.0,G3,Deep,1,Trunk,0,1,117.0,70-79,100-149,3
+7398851,1,0,80,female,4.0,G3,Deep,1,Trunk,0,1,60.0,80-89,50-99,4
+7414536,1,0,40,male,0.0,G1,Deep,1,Lower Extremity,0,1,74.0,40-49,50-99,0
+7453827,1,0,46,female,0.0,G1,Superficial,1,Others,0,0,30.0,40-49,0-49,0
+7457067luks,1,0,87,female,3.0,G3,Deep,1,Upper Extremity,0,1,109.0,80-89,100-149,3
+7457570,0,0,97,male,0.0,G2,Deep,0,Lower Extremity,0,1,135.0,90+,100-149,0
+7459180,1,0,27,female,0.0,G1,Superficial,1,Lower Extremity,0,0,25.0,0-29,0-49,0
+7472199,0,0,85,female,4.0,G3,Deep,1,Lower Extremity,1,1,53.0,80-89,50-99,4
+7502766,1,0,75,female,0.0,G2,Deep,0,Lower Extremity,0,1,200.0,70-79,200-249,0
+7509338,1,0,84,male,6.0,G1,Deep,1,Trunk,0,0,125.0,80-89,100-149,6
+7530399,1,0,60,female,1.0,G1,Deep,1,Retroperitoneal,0,0,250.0,60-69,250+,1
+7532677,0,0,77,female,2.0,G2,Deep,1,Retroperitoneal,0,0,53.0,70-79,50-99,2
+7540898,1,0,38,female,0.0,G2,Deep,0,Lower Extremity,0,1,70.0,30-39,50-99,0
+7541373,1,0,64,male,0.0,G1,Deep,0,Lower Extremity,0,0,215.0,60-69,200-249,0
+7549036,1,0,50,female,0.0,G1,Deep,1,Lower Extremity,0,1,110.0,50-59,100-149,0
+7555233,0,0,85,male,0.0,G3,Deep,0,Lower Extremity,0,0,95.0,80-89,50-99,0
+7565033,1,0,80,male,4.0,G2,Deep,1,Vizeral and Intraperitoneal,1,0,207.0,80-89,200-249,4
+758485,1,0,82,male,4.0,G3,Deep,1,Vizeral and Intraperitoneal,0,1,48.0,80-89,0-49,4
+7622263,1,0,83,male,5.0,G1,Deep,1,Vizeral and Intraperitoneal,0,0,40.0,80-89,0-49,5
+7622492,1,0,85,male,0.0,G3,Deep,0,Lower Extremity,0,0,45.0,80-89,0-49,0
+772232,1,0,50,male,0.0,G1,Deep,0,Lower Extremity,0,0,105.0,50-59,100-149,0
+8034078,1,0,67,female,1.0,G1,Deep,1,Lower Extremity,0,0,175.0,60-69,150-199,1
+8041667,1,0,64,male,1.0,G1,Deep,1,Lower Extremity,0,0,200.0,60-69,200-249,1
+8043280,1,0,84,male,6.0,G3,Deep,1,Lower Extremity,1,0,220.0,80-89,200-249,6
+8053731,1,0,44,female,0.0,G1,Superficial,1,Trunk,0,0,37.0,40-49,0-49,0
+8056327,1,0,71,male,0.0,G2,Deep,0,Lower Extremity,0,1,50.0,70-79,50-99,0
+8056530,1,1,57,male,1.0,G3,Deep,1,Retroperitoneal,0,0,360.0,50-59,250+,1
+8061602,1,0,61,male,0.0,G3,Deep,0,Lower Extremity,0,1,65.0,60-69,50-99,0
+8063607,1,0,50,female,0.0,G1,Deep,0,Lower Extremity,0,0,18.0,50-59,0-49,0
+8065375,1,0,58,male,1.0,G3,Superficial,1,Upper Extremity,0,1,37.0,50-59,0-49,1
+8081038,0,1,63,female,1.0,G3,Deep,1,Vizeral and Intraperitoneal,1,1,80.0,60-69,50-99,1
+8099932,1,0,53,female,2.0,G1,Deep,1,Lower Extremity,0,1,188.0,50-59,150-199,2
+8112716,1,0,62,female,0.0,G1,Deep,0,Lower Extremity,0,0,20.0,60-69,0-49,0
+8113981,1,0,86,female,3.0,G2,Superficial,1,Upper Extremity,0,0,35.0,80-89,0-49,3
+8131238,1,1,74,female,0.0,G1,Deep,1,Vizeral and Intraperitoneal,1,1,109.0,70-79,100-149,0
+8136245,1,0,81,female,3.0,G1,Deep,1,Trunk,0,0,170.0,80-89,150-199,3
+8138829,1,0,20,male,0.0,G3,Deep,0,Lower Extremity,0,1,65.0,0-29,50-99,0
+8141140,1,0,25,female,0.0,G1,Superficial,1,Trunk,0,0,18.0,0-29,0-49,0
+8141702,1,1,57,male,1.0,G3,Deep,1,Retroperitoneal,1,1,99.0,50-59,50-99,1
+8142960,0,1,77,male,3.0,G3,Deep,1,Trunk,1,1,84.0,70-79,50-99,3
+8163249,0,0,70,male,1.0,G3,Superficial,1,Head and Neck,1,0,17.0,70-79,0-49,1
+8164739,1,0,70,male,0.0,G2,Superficial,0,Lower Extremity,0,0,20.0,70-79,0-49,0
+8164798,1,1,42,female,0.0,G3,Deep,1,Upper Extremity,0,1,50.0,40-49,50-99,0
+8200354,1,0,73,male,2.0,G1,Deep,1,Vizeral and Intraperitoneal,0,0,60.0,70-79,50-99,2
+8223908,1,0,82,male,0.0,G2,Deep,0,Lower Extremity,0,1,36.0,80-89,0-49,0
+8226866,0,0,51,female,0.0,G3,Superficial,0,Lower Extremity,0,0,34.0,50-59,0-49,0
+8243730,1,0,69,male,2.0,G2,Deep,1,Vizeral and Intraperitoneal,0,0,70.0,60-69,50-99,2
+8264064,1,0,52,male,0.0,G1,Superficial,1,Trunk,0,0,80.0,50-59,50-99,0
+8281960,1,0,54,male,3.0,G3,Deep,1,Vizeral and Intraperitoneal,0,0,120.0,50-59,100-149,3
+8318847,1,0,62,female,0.0,G2,Deep,0,Lower Extremity,0,0,120.0,60-69,100-149,0
+8329971,1,0,81,male,3.0,G1,Superficial,1,Trunk,0,1,21.0,80-89,0-49,3
+8355673,1,0,50,male,0.0,G1,Superficial,1,Lower Extremity,0,0,90.0,50-59,50-99,0
+8358676,1,0,37,female,2.0,G2,Deep,1,Upper Extremity,1,1,70.0,30-39,50-99,2
+8358977,1,0,64,male,0.0,G2,Deep,0,Lower Extremity,0,1,270.0,60-69,250+,0
+8371682,0,0,81,female,3.0,G3,Deep,1,Trunk,1,1,120.0,80-89,100-149,3
+8400173,1,0,63,male,1.0,G1,Superficial,1,Lower Extremity,0,0,17.0,60-69,0-49,1
+8404797,1,0,45,male,0.0,G1,Deep,1,Lower Extremity,0,1,140.0,40-49,100-149,0
+8409243,0,0,91,female,0.0,G3,Deep,0,Lower Extremity,0,1,210.0,90+,200-249,0
+8411410,1,0,85,male,3.0,G3,Deep,1,Upper Extremity,0,1,56.0,80-89,50-99,3
+8417989,0,0,84,male,0.0,G1,Deep,0,Lower Extremity,0,0,150.0,80-89,150-199,0
+8476799,1,0,48,female,0.0,G2,Deep,1,Upper Extremity,1,1,49.0,40-49,0-49,0
+8486345,1,0,71,male,0.0,G1,Deep,0,Lower Extremity,0,0,120.0,70-79,100-149,0
+8502025,0,0,94,female,4.0,G3,Deep,1,Upper Extremity,1,1,120.0,90+,100-149,4
+8506090,1,0,75,male,3.0,G2,Superficial,1,Lower Extremity,0,1,25.0,70-79,0-49,3
+8517956,1,1,33,male,0.0,G3,Deep,1,Lower Extremity,1,1,44.0,30-39,0-49,0
+8530105,1,0,41,female,0.0,G1,Deep,0,Lower Extremity,0,1,88.0,40-49,50-99,0
+8553685,1,0,72,female,2.0,G3,Superficial,1,Lower Extremity,0,1,36.0,70-79,0-49,2
+8563359,1,0,75,male,3.0,G1,Deep,1,Lower Extremity,0,0,150.0,70-79,150-199,3
+8567794,1,0,71,male,0.0,G2,Deep,0,Lower Extremity,0,0,300.0,70-79,250+,0
+8574708,1,0,39,male,0.0,G2,Deep,1,Lower Extremity,0,1,210.0,30-39,200-249,0
+8575879,0,0,55,male,0.0,G3,Deep,0,Lower Extremity,0,1,63.0,50-59,50-99,0
+8585768,0,0,84,female,0.0,G2,Deep,0,Lower Extremity,0,1,300.0,80-89,250+,0
+8614143,1,0,67,female,3.0,G3,Deep,1,Lower Extremity,0,1,38.0,60-69,0-49,3
+8619397,0,0,69,female,0.0,G3,Superficial,0,Lower Extremity,0,0,190.0,60-69,150-199,0
+883980,1,0,72,male,2.0,G1,Deep,1,Lower Extremity,0,0,200.0,70-79,200-249,2
+941190,1,0,81,female,0.0,G2,Deep,0,Lower Extremity,0,1,122.0,80-89,100-149,0
+974226,0,0,64,male,0.0,G3,Deep,0,Lower Extremity,0,0,40.0,60-69,0-49,0

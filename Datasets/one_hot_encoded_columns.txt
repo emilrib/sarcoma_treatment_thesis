@@ -1,0 +1,52 @@
+OneHotEncodedFeature
+Pat ID
+age
+Gender
+cci_Timo
+grade_clean
+Affected tissue
+anatomic_region_label
+Tumor maximal size (mm)
+age_group
+tumor_size_group
+cci_group
+survival_status
+chemo_status
+reoperation_label
+metastasis_label
+radiation_status
+anatomic_region_label_Head and Neck
+anatomic_region_label_Lower Extremity
+anatomic_region_label_Others
+anatomic_region_label_Retroperitoneal
+anatomic_region_label_Trunk
+anatomic_region_label_Upper Extremity
+anatomic_region_label_Vizeral and Intraperitoneal
+Gender_female
+Gender_male
+grade_clean_G1
+grade_clean_G2
+grade_clean_G3
+Affected tissue_Deep
+Affected tissue_Superficial
+tumor_size_group_0-49
+tumor_size_group_50-99
+tumor_size_group_100-149
+tumor_size_group_150-199
+tumor_size_group_200-249
+tumor_size_group_250+
+age_group_0-29
+age_group_30-39
+age_group_40-49
+age_group_50-59
+age_group_60-69
+age_group_70-79
+age_group_80-89
+age_group_90+
+cci_group_0
+cci_group_1
+cci_group_2
+cci_group_3
+cci_group_4
+cci_group_5
+cci_group_6

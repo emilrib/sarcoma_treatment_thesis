@@ -1,13 +1,7 @@
 import os.path
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
 import re
-from collections import Counter
-from sklearn.cluster import KMeans
-from Model.cf_config import covariate_cols
 from global_config import datasets_dir
-import seaborn as sns
 
 input_file = os.path.join(datasets_dir, "dataset_labelled.csv")
 
@@ -109,6 +103,6 @@ df_merged.to_csv(output_file_merged, index=False)
 # ---------------------------
 # Extract and Save One-Hot Encoded Column Names
 # ---------------------------
-one_hot_cols = [col for col in df_merged.columns if any(base in col for base in covariate_cols)]
+one_hot_cols = [col for col in df_merged.columns if any(base in col for base in df_merged)]
 one_hot_df = pd.DataFrame({'OneHotEncodedFeature': one_hot_cols})
 one_hot_df.to_csv(os.path.join(datasets_dir, "one_hot_encoded_columns.txt"), index=False)

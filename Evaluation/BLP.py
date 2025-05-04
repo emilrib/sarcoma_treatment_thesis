@@ -6,7 +6,7 @@ import joblib
 import statsmodels.api as sm
 import matplotlib.patches as mpatches
 from global_config import datasets_dir, model_dir
-from Model.cf_config import covariate_cols
+from Analysis.cf_config import covariate_cols
 
 # ---------------------------
 # Load Data and Model

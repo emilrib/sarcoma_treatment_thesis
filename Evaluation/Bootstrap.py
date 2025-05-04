@@ -2,21 +2,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.impute import SimpleImputer
-from sklearn.metrics import mean_squared_error
-from econml.dml import CausalForestDML
 from sklearn.tree import DecisionTreeClassifier
-from collections import Counter
-import joblib
 import os
 from scipy.stats import mode
 from global_config import datasets_dir
-from Model.cf_config import treatment_col, outcome_col, covariate_cols, categorical_cols, numeric_cols
 from sklearn.metrics import accuracy_score
 
 df_path = os.path.join(datasets_dir, "df_with_merged_groups.csv")

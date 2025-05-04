@@ -3,8 +3,6 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-import pickle
 from scipy import stats
 from sklearn.model_selection import KFold, ParameterGrid
 from econml.dml import CausalForestDML
@@ -18,7 +16,7 @@ from sklearn.metrics import mean_squared_error
 import joblib
 
 from global_config import datasets_dir, model_dir
-from Model.cf_config import (
+from Analysis.cf_config import (
     treatment_col,
     outcome_col,
     covariate_cols,

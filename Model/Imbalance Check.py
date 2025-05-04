@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import pickle
 from global_config import datasets_dir
-from Model.cf_config import (
+from Analysis.cf_config import (
     treatment_col,
     covariate_cols,
     numeric_cols
