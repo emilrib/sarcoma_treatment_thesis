@@ -66,26 +66,58 @@ print(f"Standard Deviation of Weights: {weights.std():.4f}")
 print(f"Minimum Weight: {weights.min():.4f}")
 print(f"Maximum Weight: {weights.max():.4f}")
 
-plt.figure(figsize=(8, 5))
-plt.hist(weights, bins=30, edgecolor='k', alpha=0.7)
-plt.title("Distribution of IPTW Weights")
-plt.xlabel("IPTW Weight")
-plt.ylabel("Frequency")
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+# ---------------------------
+# Effective Sample Size (ESS)
+# ---------------------------
+def compute_effective_sample_size(weights):
+    numerator = (np.sum(weights))**2
+    denominator = np.sum(weights**2)
+    return numerator / denominator
+
+# Compute ESS
+ess = compute_effective_sample_size(df['weights'].values)
+print(f"\nEffective Sample Size (ESS): {ess:.2f} out of {len(df)} total samples")
+
+# Cap weights at 99th percentile
+threshold = np.percentile(df['weights'], 99)
+df_trimmed = df[df['weights'] <= threshold]
+print(f"Trimmed dataset size: {df_trimmed.shape[0]} (from original {df.shape[0]})")
+
+ess_trimmed= compute_effective_sample_size(df_trimmed['weights'].values)
+print(f"\nEffective Sample Size (ESS): {ess_trimmed:.2f} out of {len(df)} total samples")
+
+# ---------------------------
+# Cap weights at 99th percentile and plot trimmed weights
+# ---------------------------
+threshold = np.percentile(df['weights'], 99)
+df_trimmed = df[df['weights'] <= threshold]
+
+# ---------------------------
+# Summary of Trimmed Weights
+# ---------------------------
+print("\nSummary of Trimmed IPTW Weights:")
+print(f"Mean: {df_trimmed['weights'].mean():.4f}")
+print(f"Standard Deviation: {df_trimmed['weights'].std():.4f}")
+print(f"Min: {df_trimmed['weights'].min():.4f}")
+print(f"Max: {df_trimmed['weights'].max():.4f}")
+
+ess_trimmed = compute_effective_sample_size(df_trimmed['weights'].values)
+print(f"Effective Sample Size (Trimmed): {ess_trimmed:.2f} out of {len(df)} total samples")
 
 # ---------------------------
 # Save the weights DataFrame to a pickle file
 # ---------------------------
+
+# Display for user
+
 id_col = 'Pat ID' if 'Pat ID' in df.columns else df.columns[0]
 weights_file_pickle = os.path.join(datasets_dir, "weights.pkl")
-df[[id_col, 'weights']].to_pickle(weights_file_pickle)
+df_trimmed[[id_col, 'weights']].to_pickle(weights_file_pickle)
 print("Weights have been saved to pickle file:", weights_file_pickle)
 
 # ---------------------------
 # Save IPTW Processed Data to CSV
 # ---------------------------
 output_file = os.path.join(datasets_dir, "df_with_iptw_weights.csv")
-df.to_csv(output_file, index=False)
+df_trimmed.to_csv(output_file, index=False)
 print(f"Processed Data with Weights saved to: {output_file}")
