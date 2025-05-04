@@ -5,7 +5,6 @@ import numpy as np
 import re
 from collections import Counter
 from sklearn.cluster import KMeans
-
 from Model.cf_config import covariate_cols
 from global_config import datasets_dir
 import seaborn as sns
