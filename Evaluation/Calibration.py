@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import joblib
 from global_config import datasets_dir, model_dir
-from Analysis.cf_config import covariate_cols
+from Model.cf_config import covariate_cols
 from validate.calibration_test import test_calibration, get_last_model_reg
 
 # ---------------------------

@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 from global_config import datasets_dir, model_dir
-from Analysis.cf_config import covariate_cols
+from Model.cf_config import covariate_cols
 
 # ---------------------------
 # Load model and dataset with CATEs

@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from global_config import datasets_dir
-from Analysis.cf_config import (numeric_cols, categorical_cols, treatment_col)
+from Model.cf_config import (numeric_cols, categorical_cols, treatment_col)
 
 # ---------------------------
 # Load the imbalanced variables (SMD > 0.1)

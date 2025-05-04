@@ -16,7 +16,7 @@ from sklearn.metrics import mean_squared_error
 import joblib
 
 from global_config import datasets_dir, model_dir
-from Analysis.cf_config import (
+from Model.cf_config import (
     treatment_col,
     outcome_col,
     covariate_cols,

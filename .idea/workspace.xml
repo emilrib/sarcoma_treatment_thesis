@@ -7,11 +7,6 @@
     <list default="true" id="70100b27-7a63-48e3-8de0-6d5d9d02154e" name="Changes" comment="delete">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Analysis/EDA.py" beforeDir="false" afterPath="$PROJECT_DIR$/Analysis/EDA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Analysis/Subgroups.py" beforeDir="false" afterPath="$PROJECT_DIR$/Analysis/Subgroups.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/dataset_with_subgroups.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Datasets/dataset_with_subgroups.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/df_with_groups.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Datasets/df_with_groups.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/df_with_merged_groups.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Datasets/df_with_merged_groups.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/one_hot_encoded_columns.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Datasets/one_hot_encoded_columns.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -326,15 +321,7 @@
       <workItem from="1745876200398" duration="829000" />
       <workItem from="1746091251928" duration="41865000" />
       <workItem from="1746175647874" duration="39785000" />
-      <workItem from="1746346949331" duration="8617000" />
-    </task>
-    <task id="LOCAL-00009" summary="update/requirements">
-      <option name="closed" value="true" />
-      <created>1744388818259</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1744388818259</updated>
+      <workItem from="1746346949331" duration="15737000" />
     </task>
     <task id="LOCAL-00010" summary="update/labels">
       <option name="closed" value="true" />
@@ -720,7 +707,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746352179847</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="delete">
+      <option name="closed" value="true" />
+      <created>1746358951081</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1746358951081</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -788,7 +783,7 @@
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$Bootstrap.coverage" NAME="Bootstrap Coverage Results" MODIFIED="1746308388547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$RATE.coverage" NAME="RATE Coverage Results" MODIFIED="1746285685679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Evaluation" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$data_processing.coverage" NAME="data-processing Coverage Results" MODIFIED="1746347126470" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Preprocessing" />
-    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$EDA.coverage" NAME="EDA Coverage Results" MODIFIED="1746358359935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
+    <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$EDA.coverage" NAME="EDA Coverage Results" MODIFIED="1746365277870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$IPTW.coverage" NAME="IPTW Coverage Results" MODIFIED="1746280182469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$test.coverage" NAME="test Coverage Results" MODIFIED="1746347497727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
     <SUITE FILE_PATH="coverage/sarcoma_treatment_thesis$econml_model.coverage" NAME="econml_model Coverage Results" MODIFIED="1744475137475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
