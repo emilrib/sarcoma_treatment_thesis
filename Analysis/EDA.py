@@ -7,14 +7,15 @@ from collections import Counter
 from global_config import datasets_dir
 import seaborn as sns
 
-
-input_file = os.path.join(datasets_dir, "dataset_labelled.csv")
+input_file_labelled = os.path.join(datasets_dir, "dataset_labelled.csv")
+input_file = os.path.join(datasets_dir, "df_with_groups.csv")
 
 def import_file(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
     return df
 df = import_file(input_file)
+df_labelled = import_file(input_file_labelled)
 
 print(df.head(3))
 
@@ -22,92 +23,47 @@ print(df.head(3))
 # Demographic Data
 # ---------------------------
 
-df_demographics = df[['Pat ID','age', 'Gender']]
+df_demographics = df[['Pat ID','age', 'Gender', 'age_group']]
+group_col = 'age_group'
+value_col = 'age'  # Assuming you have a numeric age column in df_history
 
-#This chart displays the total amount of the sample as well as the distribution by gender
-gender_counts = df_demographics.groupby('Gender')['Pat ID'].nunique().sort_index()
+# Define a sorting function for age groups like "20-29", "80+"
+def sort_age_group(label):
+    if isinstance(label, str):
+        if '+' in label:
+            return int(label.replace('+', '').strip())
+        elif '-' in label:
+            return int(label.split('-')[0].strip())
+    return float('inf')
 
-# Calculate the total number of patients
-total_patients = df['Pat ID'].nunique()
-print( f'Total Patients: {total_patients}')
-# Calculate the percentage of each gender
-total_count = gender_counts.sum()
+# Sort age groups logically
+sorted_age_groups = sorted(df_demographics[group_col].dropna().unique(), key=sort_age_group)
 
-gender_percentages = (gender_counts / total_count) * 100
-
-# Plotting the bar chart
-plt.figure(figsize=(5, 5))  # Set the figure size
-bars = plt.bar(gender_counts.index, gender_counts.values, color=['pink', '#ADD8E6'])
-
-# Adding count and percentage labels to each bar
-for bar, percentage in zip(bars, gender_percentages):
-    yval = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width()/2, yval, f'{int(yval)}\n({percentage:.1f}%)', ha='center', va='bottom')  # ha: horizontal alignment
-
-# Display total above the bars
-plt.text(0.4, max(gender_counts.values), f'Total: {total_patients}', ha='center', va='bottom', fontsize=12, color='green')
-
-plt.xlabel('Gender', fontsize=12)  # X-axis label
-plt.ylabel('Number of Patients', fontsize=12)  # Y-axis label
-plt.title('Patient Distribution by Gender', fontsize=12, weight='bold')  # Chart title
-plt.ylim(0, max(gender_counts.values) * 1.2)  # Set y-axis limits to include text
-plt.show()  # Display the chart
-
-# The boxplot calculates the age of the patients and displays the ages in which sarcoma seems to appear the most. Outliers are also here identified and need to be verified with the SNN for data quality issues.
-ages = df_demographics['age']
-median = round(ages.median(), 2)
-mean = round(ages.mean(), 2)
-quartiles = ages.quantile([0.25, 0.75])
-iqr = quartiles[0.75] - quartiles[0.25]
-lower_whisker = max(ages.min(), quartiles[0.25] - 1.5 * iqr)
-upper_whisker = min(ages.max(), quartiles[0.75] + 1.5 * iqr)
-
-# Identify outliers
-outlier_mask = (ages < lower_whisker) | (ages > upper_whisker)
-outlier_values = ages[outlier_mask]
-
-# Plot
-plt.figure(figsize=(10, 8))
-
-# Boxplot
-box = plt.boxplot(
-    ages,
-    widths=0.6,
-    vert=True,
-    patch_artist=True,
-    showfliers=False,
-    showmeans=True,
-    meanprops=dict(marker='o', markerfacecolor='green', markeredgecolor='black', markersize=8)
+# Create boxplot
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    x=group_col,
+    y=value_col,
+    data=df_demographics,
+    order=sorted_age_groups,
+    color="#ADD8E6",
+    flierprops=dict(marker='o', markerfacecolor='darkorange', markersize=8, linestyle='none')
 )
 
-# Color the box
-for element in ['boxes', 'whiskers', 'caps', 'medians']:
-    for item in box[element]:
-        item.set(color='black')
-for patch in box['boxes']:
-    patch.set_facecolor("#ADD8E6")
+# Add red dot and label for mean in each group
+for i, grp in enumerate(sorted_age_groups):
+    mean_val = df_demographics[df_demographics[group_col] == grp][value_col].mean()
+    plt.scatter(i, mean_val, color='red', s=40, zorder=10)
+    plt.text(i, mean_val + 0.5, f"{mean_val:.1f}", ha='center', va='bottom', fontsize=9, color='red')
 
-# Add manual median dot for legend
-plt.scatter(x=1, y=median, color='red', s=50, zorder=10, label=f'Median: {median:.2f}')
-# Outliers
-if not outlier_values.empty:
-    plt.scatter(np.ones(outlier_values.shape[0]), outlier_values, color='orange', s=50, label='Outliers')
+# Formatting
+plt.title('Age Distribution by Age Group', fontsize=14, weight='bold')
+plt.xlabel(group_col.replace('_', ' ').title(), fontsize=12)
+plt.ylabel('Age (years)', fontsize=12)
+plt.grid(True, axis='y', linestyle='--', alpha=0.7)
 
-# Add whisker lines as invisible dots (for legend only)
-plt.scatter([], [], color='black', label=f'Lower Whisker: {lower_whisker:.2f}')
-plt.scatter([], [], color='black', label=f'Upper Whisker: {upper_whisker:.2f}')
-# Optional: add quartile lines
-plt.axhline(y=quartiles[0.25], color='gray', linestyle='--', label=f'Q1: {quartiles[0.25]:.2f}')
-plt.axhline(y=quartiles[0.75], color='gray', linestyle='--', label=f'Q3: {quartiles[0.75]:.2f}')
-
-# Final plot formatting
-plt.title('Age Distribution of Sarcoma Patients', fontsize=14, weight='bold')
-plt.ylabel('Age', fontsize=12)
-plt.xticks([1], ['Patients'])
-plt.legend()
 plt.tight_layout()
 plt.show()
-
 # Age range for debugging/confirmation
 print("Min age:", df_demographics['age'].min())
 print("Max age:", df_demographics['age'].max())
@@ -116,7 +72,7 @@ print("Max age:", df_demographics['age'].max())
 # Patient History
 # ---------------------------
 
-df_history = df[['Pat ID','Histological diagnosis', 'cci_Timo', 'grade_clean', 'Affected tissue',
+df_history = df[['Pat ID', 'cci_Timo', 'grade_clean', 'Affected tissue','tumor_size_group',
                  'anatomic_region_label',  'reoperation_label', 'Tumor maximal size (mm)', 'radiation_status', 'metastasis_label',  'reoperation_label']]
 
 #Display of values of CCI
@@ -160,7 +116,7 @@ def extract_group_words(text):
     return group_words
 
 # Extract and flatten all group words from the column
-histological_diagnosis_group= df_history['Histological diagnosis'].dropna().apply(extract_group_words).sum()
+histological_diagnosis_group= df_labelled['Histological diagnosis'].dropna().apply(extract_group_words).sum()
 
 # Count the frequency of group words
 histological_diagnosis_counts = Counter(histological_diagnosis_group)
@@ -218,74 +174,52 @@ plt.show()
 print(metastasis_counts)
 
 #Display in a box plot how the tumor size is distributed
-tumor_size = df_history["Tumor maximal size (mm)"]
+# Set grouping column
+group_col = 'tumor_size_group'
+value_col = "Tumor maximal size (mm)"
 
-# Compute statistics
-mean_value = tumor_size.mean()
-median_value = tumor_size.median()
-q1 = tumor_size.quantile(0.25)
-q3 = tumor_size.quantile(0.75)
-iqr = q3 - q1
-lower_whisker = max(tumor_size.min(), q1 - 1.5 * iqr)
-upper_whisker = min(tumor_size.max(), q3 + 1.5 * iqr)
+# Convert group labels to a sorted list
+sorted_groups = sorted(df_history[group_col].dropna().unique(), key=lambda x: int(str(x).split('-')[0]))
 
-# --- Boxplot for Tumor Size ---
-plt.figure(figsize=(8, 6))
+# Initialize plot
+# Grouping and value columns
+group_col = 'tumor_size_group'
+value_col = "Tumor maximal size (mm)"
+
+# Define robust sorting function
+def extract_numeric(label):
+    if isinstance(label, str):
+        if '+' in label:
+            return int(label.replace('+', '').strip())
+        elif '-' in label:
+            return int(label.split('-')[0].strip())
+    return float('inf')  # fallback
+
+# Sort the tumor size groups logically
+sorted_groups = sorted(df_history[group_col].dropna().unique(), key=extract_numeric)
+
+# Create boxplot
+plt.figure(figsize=(10, 6))
 sns.boxplot(
-    y=tumor_size,
+    x=group_col,
+    y=value_col,
+    data=df_history,
+    order=sorted_groups,
     color="#ADD8E6",
-    width=0.5,
     flierprops=dict(marker='o', markerfacecolor='darkorange', markersize=8, linestyle='none')
 )
 
-# Plot mean and median points
-plt.scatter(0, mean_value, color='red', s=80, zorder=10, label=f"Mean: {mean_value:.1f} mm")
-plt.scatter(0, median_value, color='green', s=80, zorder=10, label=f"Median: {median_value:.1f} mm")
-
-# Add invisible points to legend for quartiles and whiskers
-plt.scatter([], [], color='black', label=f"Q1: {q1:.1f} mm")
-plt.scatter([], [], color='black', label=f"Q3: {q3:.1f} mm")
-plt.scatter([], [], color='darkorange', label=f"Lower Whisker: {lower_whisker:.1f} mm")
-plt.scatter([], [], color='darkorange', label=f"Upper Whisker: {upper_whisker:.1f} mm")
+# Add smaller mean markers with labels
+for i, grp in enumerate(sorted_groups):
+    mean_val = df_history[df_history[group_col] == grp][value_col].mean()
+    plt.scatter(i, mean_val, color='red', s=40, zorder=10)
+    plt.text(i, mean_val + 0.5, f"{mean_val:.1f}", ha='center', va='bottom', fontsize=9, color='red')
 
 # Formatting
-plt.title('Distribution of Tumor Size (mm)', fontsize=14, weight='bold')
+plt.title('Tumor Size Distribution by Subgroup', fontsize=14, weight='bold')
+plt.xlabel(group_col.replace('_', ' ').title(), fontsize=12)
 plt.ylabel('Tumor Size (mm)', fontsize=12)
 plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-plt.legend()
-plt.tight_layout()
-plt.show()
-
-# Countplot for Grading
-
-# Ensure correct order
-grade_order = ['G1', 'G2', 'G3']
-
-plt.figure(figsize=(8, 6))
-sns.countplot(
-    x="grade_clean",
-    data=df_history,
-    order=grade_order,  # Specify the desired order
-    palette="pastel",
-    edgecolor="black",
-    hue="grade_clean",
-    legend=False
-)
-
-plt.title('Number of Occurrences by FNCLCC Grading', fontsize=14, weight='bold')
-plt.xlabel('FNCLCC Grading', fontsize=12)
-plt.ylabel('Number of Occurrences', fontsize=12)
-plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-
-# Add counts above bars
-for p in plt.gca().patches:
-    plt.gca().annotate(f'{int(p.get_height())}',
-                       (p.get_x() + p.get_width() / 2., p.get_height()),
-                       ha='center', va='center',
-                       fontsize=10, color='black',
-                       xytext=(0, 10),
-                       textcoords='offset points')
-
 plt.tight_layout()
 plt.show()
 

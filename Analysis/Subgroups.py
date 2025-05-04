@@ -24,7 +24,7 @@ print(df.head(3))
 # ---------------------------
 # Step 1: Prepare the age data for clustering
 bins = [20, 30, 40, 50, 60, 70, 80, 90, 100]  # Define the bin edges
-labels = ['0-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+']  # Labels for each group
+labels = ['0-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-100']  # Labels for each group
 
 # Step 2: Assign age group labels based on the bins
 df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels, right=False)  # right=False ensures bins are inclusive of the lower bound
@@ -41,7 +41,7 @@ print(df.groupby('age_group')['age'].mean())
 
 # Step 2: Create subgroups for 'Tumor maximal size (mm)' using manual binning
 bins_tumor = [0, 50, 100, 150, 200, 250, float('inf')]  # The upper bound for each bin
-labels_tumor = ['0-49', '50-99', '100-149', '150-199', '200-249', '250+']  # Labels for each group
+labels_tumor = ['0-49', '50-99', '100-149', '150-199', '200-249', '250-350']  # Labels for each group
 
 # Step 2: Assign tumor size group labels based on the bins
 df['tumor_size_group'] = pd.cut(df['Tumor maximal size (mm)'], bins=bins_tumor, labels=labels_tumor, right=False)

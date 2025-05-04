@@ -34,7 +34,7 @@ tumor_size_group_50-99
 tumor_size_group_100-149
 tumor_size_group_150-199
 tumor_size_group_200-249
-tumor_size_group_250+
+tumor_size_group_250-350
 age_group_0-29
 age_group_30-39
 age_group_40-49
@@ -42,7 +42,7 @@ age_group_50-59
 age_group_60-69
 age_group_70-79
 age_group_80-89
-age_group_90+
+age_group_90-100
 cci_group_0
 cci_group_1
 cci_group_2
