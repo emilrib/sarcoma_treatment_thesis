@@ -97,8 +97,8 @@ for bar in ax.patches:
     )
 
 plt.xlabel('CCI Groups', fontsize=12)
-plt.ylabel('Number of Occurrences', fontsize=12)
-plt.title('Occurrences by Charlson Comorbidity Index (CCI)', fontsize=14, weight='bold')
+plt.ylabel('Number of Patients', fontsize=12)
+plt.title('Distribution by Charlson Comorbidity Index (CCI)', fontsize=14, weight='bold')
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
@@ -136,7 +136,7 @@ for index, value in enumerate(anatomic_grouping_counts):
     plt.text(value + 0.1, index, str(value), va='center', fontsize=10)
 
 plt.title('Total Sarcoma cases per Anatomic Region Group', fontsize=14, weight='bold')
-plt.xlabel('Total', fontsize=12)
+plt.xlabel('Number of Patients', fontsize=12)
 plt.ylabel('Anatomic Region', fontsize=12)
 plt.grid(axis='x', linestyle='--', alpha=0.7)
 plt.xticks(fontsize=10)
@@ -228,13 +228,19 @@ plt.show()
 # ---------------------------
 
 ##  PIe chart displaying the percentage of patients that received and did not receive chemotherapy
-# Count the number of 0s and 1s
-
 df_treatment = df[['Pat ID','chemo_status', 'reoperation_label', 'radiation_status']]
 
+# Rename columns for display
+label_mapping = {
+    'chemo_status': 'Chemotherapy',
+    'reoperation_label': 'Operation',
+    'radiation_status': 'Radiotherapy'
+}
+df_treatment_renamed = df_treatment.rename(columns=label_mapping)
+
 # Count 0s and 1s for each treatment variable
-treatment_counts = df_treatment.drop(columns='Pat ID').apply(lambda col: col.value_counts()).T
-treatment_counts = treatment_counts[[0, 1]].fillna(0).astype(int)  # Ensure both 0 and 1 exist
+treatment_counts = df_treatment_renamed.drop(columns='Pat ID').apply(lambda col: col.value_counts()).T
+treatment_counts = treatment_counts[[0, 1]].fillna(0).astype(int)
 
 # Create figure and axes
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -245,11 +251,8 @@ for i, col in enumerate(treatment_counts.index):
     total = treatment_counts.loc[col].sum()
     bottom = 0
     for j, value in enumerate(treatment_counts.loc[col]):
-        # Centered label within the bar segment
         ax.text(i, bottom + value / 2, str(value), ha='center', va='center', fontsize=10)
         bottom += value
-    # Total label above the stacked bar
-#    ax.text(i, total + 2, f'Total: {total}', ha='center', va='bottom', fontsize=12)
 
 # Labels and formatting
 ax.set_title('Patient Counts by Treatment Type', fontsize=14, weight='bold')
@@ -265,6 +268,7 @@ ax.legend(['Treatment not received', 'Treatment received'], title='Legend',
 
 plt.tight_layout(rect=[0, 0, 0.85, 1])  # Leave space for the legend
 plt.show()
+
 
 # ---------------------------
 # Patient Outcome
