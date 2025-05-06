@@ -1,10 +1,9 @@
-
 import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from sklearn.model_selection import KFold, ParameterGrid
+from sklearn.model_selection import train_test_split, KFold, ParameterGrid
 from econml.dml import CausalForestDML
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
@@ -14,14 +13,9 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_squared_error
 import joblib
-
 from global_config import datasets_dir, model_dir
 from Model.cf_config import (
-    treatment_col,
-    outcome_col,
-    covariate_cols,
-    categorical_cols,
-    numeric_cols
+    treatment_col, outcome_col, covariate_cols, categorical_cols, numeric_cols
 )
 
 # ---------------------------
@@ -33,12 +27,13 @@ df = df.merge(weights_df, on='Pat ID')
 
 # Filter valid entries
 df_cf = df.dropna(subset=[treatment_col, outcome_col, 'weights']).copy()
-
-# Cast categories to string
 for col in categorical_cols:
     df_cf[col] = df_cf[col].astype(str)
 
-# Setup preprocessing
+# Split filtered data
+train_df, test_df = train_test_split(df_cf, test_size=0.2, random_state=42)
+
+# Preprocessing pipeline
 preprocessor = ColumnTransformer(transformers=[
     ('num', Pipeline([
         ('imputer', SimpleImputer(strategy='mean')),
@@ -50,12 +45,16 @@ preprocessor = ColumnTransformer(transformers=[
     ]), categorical_cols)
 ])
 
-# Preprocess all data
-df_cf = df_cf.reset_index(drop=True)
-X_all = preprocessor.fit_transform(df_cf[covariate_cols])
-Y_all = df_cf[outcome_col].astype(int).values
-T_all = df_cf[treatment_col].astype(int).values
-W_all = df_cf['weights'].values
+# Fit-transform train, transform test
+X_train = preprocessor.fit_transform(train_df[covariate_cols])
+Y_train = train_df[outcome_col].astype(int).values
+T_train = train_df[treatment_col].astype(int).values
+W_train = train_df['weights'].values
+
+X_test = preprocessor.transform(test_df[covariate_cols])
+Y_test = test_df[outcome_col].astype(int).values
+T_test = test_df[treatment_col].astype(int).values
+W_test = test_df['weights'].values
 
 # ---------------------------
 # Hyperparameter Tuning Setup
@@ -76,11 +75,11 @@ for params in ParameterGrid(param_grid):
     fold_mses = []
     print(f"\nTrying hyperparameters: {params}")
 
-    for train_idx, val_idx in kf.split(X_all):
-        X_train, X_val = X_all[train_idx], X_all[val_idx]
-        Y_train, Y_val = Y_all[train_idx], Y_all[val_idx]
-        T_train, T_val = T_all[train_idx], T_all[val_idx]
-        W_train = W_all[train_idx]
+    for train_idx, val_idx in kf.split(X_train):
+        X_tr, X_val = X_train[train_idx], X_train[val_idx]
+        Y_tr, Y_val = Y_train[train_idx], Y_train[val_idx]
+        T_tr, T_val = T_train[train_idx], T_train[val_idx]
+        W_tr = W_train[train_idx]
 
         cf_model = CausalForestDML(
             model_y=RandomForestRegressor(n_estimators=100, random_state=42),
@@ -90,7 +89,7 @@ for params in ParameterGrid(param_grid):
             cv=3,
             **params
         )
-        cf_model.fit(Y_train, T_train, X=X_train, sample_weight=W_train)
+        cf_model.fit(Y_tr, T_tr, X=X_tr, sample_weight=W_tr)
         cate_val = cf_model.effect(X_val)
         pseudo_outcome = cate_val * T_val
         mse = mean_squared_error(Y_val, pseudo_outcome)
@@ -105,7 +104,7 @@ for params in ParameterGrid(param_grid):
 print(f"\nBest hyperparameters selected: {best_params}")
 
 # ---------------------------
-# Final Model Fit with Best Params
+# Final Model Fit
 # ---------------------------
 cf_model = CausalForestDML(
     model_y=RandomForestRegressor(n_estimators=100, random_state=42),
@@ -115,74 +114,75 @@ cf_model = CausalForestDML(
     cv=3,
     **best_params
 )
-cf_model.fit(Y_all, T_all, X=X_all, sample_weight=W_all)
+cf_model.fit(Y_train, T_train, X=X_train, sample_weight=W_train)
 
-cate_preds = cf_model.effect(X_all)
-cate_lower, cate_upper = cf_model.effect_interval(X_all)
-
-# Attach results
-df_cf["CATE"] = cate_preds
-df_cf["CATE_lower"] = cate_lower
-df_cf["CATE_upper"] = cate_upper
+# Predict on test data
+cate_test = cf_model.effect(X_test)
+cate_lower_test, cate_upper_test = cf_model.effect_interval(X_test)
+test_df = test_df.reset_index(drop=True)
+test_df["CATE"] = cate_test
+test_df["CATE_lower"] = cate_lower_test
+test_df["CATE_upper"] = cate_upper_test
 
 # ---------------------------
-# Subgroup CATE Analysis Based on Covariates
+# Subgroup CATE Analysis (Test Set)
 # ---------------------------
 subgroup_vars = [
     'age_group', 'tumor_size_group', 'cci_group',
-    'anatomic_region_label', 'Gender',
-    'grade_clean', 'Affected tissue'
+    'anatomic_region_label', 'Gender', 'grade_clean', 'Affected tissue', 'radiation_status', 'metastasis_label', 'reoperation_label'
 ]
 
-subgroup_results = []
-print("\nSubgroup-specific CATE summary:")
+subgroup_results_test = []
+print("\nSubgroup-specific CATE summary (on test set):")
+min_group_size = 10
 for col in subgroup_vars:
-    if col in df_cf.columns:
-        summary = df_cf.groupby(col).agg(
+    if col in test_df.columns:
+        test_df[col] = test_df[col].astype(str)
+        summary = test_df.groupby(col).agg(
             Mean_CATE=('CATE', 'mean'),
             Std_CATE=('CATE', 'std'),
             Count=('CATE', 'count')
         ).reset_index()
+        summary = summary[summary['Count'] >= min_group_size]
         summary['Z_Score'] = summary['Mean_CATE'] / summary['Std_CATE']
         summary['p_value'] = 2 * (1 - stats.norm.cdf(np.abs(summary['Z_Score'])))
+        summary['p_value'] = summary['p_value'].clip(lower=1e-16)
         summary['Significant'] = summary['p_value'] < 0.05
+        summary['p_value'] = summary['p_value'].apply(lambda x: f"{x:.2e}")
+
         print(f"\n>>> Subgroup analysis by: {col}")
-        print(summary[[col, 'Mean_CATE', 'Std_CATE', 'Z_Score', 'p_value', 'Significant']])
+        with pd.option_context('display.float_format', '{:0.2e}'.format):
+            print(summary[[col, 'Mean_CATE', 'Std_CATE', 'Z_Score', 'p_value', 'Significant']])
+
         summary['Subgroup_Var'] = col
-        subgroup_results.append(summary)
+        subgroup_results_test.append(summary)
 
 # ---------------------------
-# Overall ATE
+# Overall ATE on Test Set
 # ---------------------------
-ate = df_cf["CATE"].mean()
-ate_se = df_cf["CATE"].std() / np.sqrt(df_cf.shape[0])
-print(f"\nOverall ATE: {ate:.4f} ± {ate_se:.4f}")
+ate = test_df["CATE"].mean()
+ate_se = test_df["CATE"].std() / np.sqrt(test_df.shape[0])
+print(f"\nTest Set ATE: {ate:.4f} ± {ate_se:.4f}")
 
 # ---------------------------
-# Combine all subgroup results for plotting
+# Plot: Subgroup Mean ± 2*SD Estimates
 # ---------------------------
-combined_subgroups = pd.concat(subgroup_results, ignore_index=True)
-combined_subgroups = combined_subgroups[combined_subgroups['Significant']]  # Filter to only significant if desired
+combined_subgroups_test = pd.concat(subgroup_results_test, ignore_index=True)
+combined_subgroups_test['ranking'] = (
+    combined_subgroups_test['Subgroup_Var'] + ": " + combined_subgroups_test[combined_subgroups_test.columns[0]].astype(str)
+)
+combined_subgroups_test = combined_subgroups_test.sort_values('Mean_CATE')
 
-# Create x-axis labels combining variable and level
-combined_subgroups['ranking'] = combined_subgroups['Subgroup_Var'] + ": " + combined_subgroups[combined_subgroups.columns[0]].astype(str)
-
-# Sort for cleaner plotting
-combined_subgroups = combined_subgroups.sort_values('Mean_CATE')
-
-# ---------------------------
-# Plot: Subgroup Estimates with 95% CI
-# ---------------------------
 plt.figure(figsize=(12, 6))
 plt.errorbar(
-    x=combined_subgroups['ranking'],
-    y=combined_subgroups['Mean_CATE'],
-    yerr=2 * combined_subgroups['Std_CATE'],
-    fmt='o', capsize=4, ecolor='gray', color='blue', label='Estimate ± 2*SE'
+    x=combined_subgroups_test['ranking'],
+    y=combined_subgroups_test['Mean_CATE'],
+    yerr=2 * combined_subgroups_test['Std_CATE'],
+    fmt='o', capsize=4, ecolor='gray', color='blue', label='Mean ± 2*SD'
 )
 plt.xticks(rotation=90)
 plt.axhline(0, color='black', linestyle='--')
-plt.title('Subgroup-Specific CATE Estimates with 95% CI')
+plt.title('Subgroup Mean CATE Estimates (Test Set) with ±2 SD')
 plt.xlabel('Subgroup')
 plt.ylabel('Estimated CATE')
 plt.tight_layout()
@@ -195,13 +195,5 @@ plt.show()
 # ---------------------------
 joblib.dump(cf_model, os.path.join(model_dir, "cf_model.pkl"))
 joblib.dump(preprocessor, os.path.join(model_dir, "preprocessor.pkl"))
-df_cf.to_csv(os.path.join(datasets_dir, "cf_results.csv"), index=False)
-
-# ---------------------------
-# Answering the Hypothesis
-# ---------------------------
-any_significant = any([df['Significant'].any() for df in subgroup_results])
-if not any_significant:
-    print("\nFail to reject the null hypothesis: No significant heterogeneity detected.")
-else:
-    print("\nReject the null hypothesis: Significant heterogeneity in treatment effect detected.")
+test_df.to_csv(os.path.join(datasets_dir, "cf_test_results.csv"), index=False)
+combined_subgroups_test.to_csv(os.path.join(datasets_dir, "test_subgroup_summary.csv"), index=False)
