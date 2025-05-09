@@ -79,8 +79,11 @@ def test_calibration(model, X, T, y, n_bins=5):
     model_reg = sm.OLS(gate_vals, X_reg).fit(cov_type='HC3')
     _last_model_reg = model_reg
 
-    print("\nCalibration Regression Summary (R-style):")
+    print("\nDetailed Calibration Coefficient Output:")
+    # Print header
     coef_names = ['Intercept', 'mean.forest.prediction', 'differential.forest.prediction']
+    print(f"{'Coefficient':30s} {'Estimate':>10s} {'Std.Error':>10s} {'t-value':>10s} {'p-value':>12s} {'Signif':>6s}")
+    print("-" * 82)
     for idx, name in enumerate(coef_names):
         estimate = model_reg.params[idx]
         stderr = model_reg.bse[idx]

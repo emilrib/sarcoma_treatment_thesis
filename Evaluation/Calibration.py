@@ -37,35 +37,4 @@ cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
 print("\nRunning test_calibration from evaluate.calibration_test...")
 calibration_result = test_calibration(model=cf_model, X=X_test, T=T_test, y=Y_test, n_bins=5)
 
-# Print Calibration Summary
-summary_df = calibration_result.summary()
-print("\nCalibration Summary:")
-print(summary_df)
 
-# Save calibration summary as CSV
-calibration_output_path = os.path.join(datasets_dir, "cate_calibration_summary.csv")
-summary_df.to_csv(calibration_output_path, index=False)
-print(f"\nCalibration summary saved to: {calibration_output_path}")
-
-# ---------------------------
-# Print detailed regression output similar to R-style
-# ---------------------------
-print("\nDetailed Calibration Coefficient Output:")
-model_reg = get_last_model_reg()
-if model_reg is not None:
-    coef_names = ['Intercept', 'mean.forest.prediction', 'differential.forest.prediction']
-
-    # Print header
-    print(f"{'Coefficient':30s} {'Estimate':>10s} {'Std.Error':>10s} {'t-value':>10s} {'p-value':>12s} {'Signif':>6s}")
-    print("-" * 82)
-
-    # Print each row of the summary
-    for idx, name in enumerate(coef_names):
-        estimate = model_reg.params[idx]
-        stderr = model_reg.bse[idx]
-        tval = model_reg.tvalues[idx]
-        pval = model_reg.pvalues[idx]
-        signif = '***' if pval < 0.001 else '**' if pval < 0.01 else '*' if pval < 0.05 else '.' if pval < 0.1 else ''
-        print(f"{name:30s} {estimate:10.6f} {stderr:10.6f} {tval:10.4f} {pval:12.4e} {signif:>6s}")
-else:
-    print("No regression model was returned from test_calibration().")
