@@ -7,22 +7,19 @@ from global_config import datasets_dir, model_dir
 from Model.cf_config import covariate_cols
 
 # ---------------------------
-# Load model and dataset with CATEs
+# Load model and test dataset with CATEs
 # ---------------------------
-df_cf = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
+df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
 preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
 
 # ---------------------------
-# Define evaluation subset (last 20% of patients)
+# Use stored CATEs directly from test dataset
 # ---------------------------
-test_frac = 0.2
-test_size = int(test_frac * df_cf.shape[0])
-df_test = df_cf.iloc[-test_size:].copy()
-
-# Preprocess test data
-X_test = preprocessor.transform(df_test[covariate_cols])
 pred_cate = df_test["CATE"].values
+
+# Transform test features
+X_test = preprocessor.transform(df_test[covariate_cols])
 true_cate = cf_model.effect(X_test)
 
 # ---------------------------
@@ -67,7 +64,7 @@ print(rate_df)
 print(f"\nAUTOC: {AUTOC:.4f} ± {AUTOC_stderr:.4f}  (95% CI: {AUTOC_lower:.4f} to {AUTOC_upper:.4f})")
 
 # ---------------------------
-# Overlay CATE by subgroup in top quantile
+# Subgroup CATE Summary in Top 10%
 # ---------------------------
 top_10_idx = sorted_indices[:int(0.1 * len(sorted_indices))]
 top_10_df = df_test.iloc[top_10_idx]
@@ -87,18 +84,21 @@ for var in subgroup_vars:
 # ---------------------------
 # Plot TOC Curve
 # ---------------------------
+import matplotlib.ticker as mticker
 plt.figure(figsize=(10, 4))
 plt.plot(rate_df['Top Percentile'], rate_df['Average Treatment Effect'], marker='o', label='TOC Curve')
 plt.fill_between(
     rate_df['Top Percentile'],
     rate_df['Average Treatment Effect'] - 1.96 * AUTOC_stderr,
     rate_df['Average Treatment Effect'] + 1.96 * AUTOC_stderr,
-    alpha=0.2, color='blue', label='95% Confidence Interval')
+    alpha=0.2, color='blue', label='95% Confidence Interval'
+)
 plt.title('TOC Curve with CATE Prioritization')
 plt.xlabel('Top Percentile of Patients')
 plt.ylabel('Average Treatment Effect')
 plt.axhline(0, color='black', linestyle='--')
 plt.legend()
 plt.grid(True)
-plt.tight_layout()
-plt.show()
+
+
+
