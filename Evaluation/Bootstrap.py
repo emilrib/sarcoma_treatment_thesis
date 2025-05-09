@@ -28,7 +28,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 # ---------------------------
 # Bagged Trees with OOB and Test Error
 # ---------------------------
-B = 100
+B = 200
 n = X_train.shape[0]
 oob_errors = []
 test_errors = []
@@ -81,6 +81,12 @@ for b in range(B):
     test_error = 1 - accuracy_score(y_test, test_preds)
     test_errors.append(test_error)
 
+# ---------------------------
+# Summary Statistics
+# ---------------------------
+print("\nSummary Statistics on Test Labels:")
+summary = pd.Series(y_test).describe(percentiles=[0.1, 0.25, 0.5, 0.75, 0.9])
+print(summary)
 
 # ---------------------------
 # Plot OOB vs Test Error
