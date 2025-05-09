@@ -12,9 +12,9 @@ from validate.calibration_test import test_calibration, get_last_model_reg
 df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
 # Diagnostic check for NaNs
-missing = df_test[["chemo_status", "survival_status"] + covariate_cols].isnull().sum()
-print("\nMissing value check:")
-print(missing[missing > 0])
+#missing = df_test[["chemo_status", "survival_status"] + covariate_cols].isnull().sum()
+#print("\nMissing value check:")
+#print(missing[missing > 0])
 
 # Drop rows with any NaNs in required columns
 df_test = df_test.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
@@ -34,7 +34,6 @@ cf_model = joblib.load(os.path.join(model_dir, "cf_model.pkl"))
 # ---------------------------
 # Run Calibration
 # ---------------------------
-print("\nRunning test_calibration from evaluate.calibration_test...")
 calibration_result = test_calibration(model=cf_model, X=X_test, T=T_test, y=Y_test, n_bins=5)
 
 
