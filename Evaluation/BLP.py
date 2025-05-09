@@ -6,7 +6,7 @@ import joblib
 import statsmodels.api as sm
 import matplotlib.patches as mpatches
 from global_config import datasets_dir, model_dir
-from Model.cf_config import covariate_cols
+from Model.cf_config import covariate_cols, treatment_col, outcome_col
 
 # ---------------------------
 # Load Data and Model
@@ -14,16 +14,16 @@ from Model.cf_config import covariate_cols
 df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
 # Diagnostic check for NaNs
-missing = df_test[["chemo_status", "survival_status"] + covariate_cols].isnull().sum()
-print("\nMissing value check:")
-print(missing[missing > 0])
+#missing = df_test[["chemo_status", "survival_status"] + covariate_cols].isnull().sum()
+#print("\nMissing value check:")
+#print(missing[missing > 0])
 
 # Drop rows with any NaNs in required columns
-df_test = df_test.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
+#df_test = df_test.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
 
 # Redefine inputs after dropping rows
-T_test = df_test["chemo_status"].values
-Y_test = df_test["survival_status"].values
+#T_test = df_test["chemo_status"].values
+#Y_test = df_test["survival_status"].values
 
 # Load and apply preprocessor to align with training
 preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
