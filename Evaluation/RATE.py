@@ -99,6 +99,7 @@ plt.ylabel('Average Treatment Effect')
 plt.axhline(0, color='black', linestyle='--')
 plt.legend()
 plt.grid(True)
+plt.show()
 
 
 

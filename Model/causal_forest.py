@@ -180,7 +180,7 @@ plt.errorbar(
     yerr=2 * combined_subgroups_test['Std_CATE'],
     fmt='o', capsize=4, ecolor='gray', color='blue', label='Mean ± 2*SD'
 )
-plt.xticks(rotation=90)
+plt.xticks(rotation=90$
 plt.axhline(0, color='black', linestyle='--')
 plt.title('Subgroup Mean CATE Estimates (Test Set) with ±2 SD')
 plt.xlabel('Subgroup')

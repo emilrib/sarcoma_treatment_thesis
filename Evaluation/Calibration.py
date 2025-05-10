@@ -18,13 +18,17 @@ df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
 # Drop rows with any NaNs in required columns
 df_test = df_test.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
+#df_test = df_test.dropna(subset=["chemo_status", "metastasis_label"] + covariate_cols)
+
 
 # Filter again for strictly finite values
 df_test = df_test[np.isfinite(df_test["chemo_status"]) & np.isfinite(df_test["survival_status"])]
+#df_test = df_test[np.isfinite(df_test["chemo_status"]) & np.isfinite(df_test["metastasis_label"])]
 
 # Redefine inputs after dropping rows
 T_test = df_test["chemo_status"].astype(float).values
 Y_test = df_test["survival_status"].astype(float).values
+#Y_test = df_test["metastasis_label"].astype(float).values
 
 # Load and apply preprocessor to align with training
 preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))

@@ -12,12 +12,14 @@ from Model.cf_config import covariate_cols
 # ---------------------------
 df = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 df = df.dropna(subset=["chemo_status", "survival_status"] + covariate_cols)
+#df = df.dropna(subset=["chemo_status", "metastasis_label"] + covariate_cols)
 preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
 
 # Preprocess features
 X = preprocessor.transform(df[covariate_cols])
 T = df["chemo_status"].astype(int).values
 Y = df["survival_status"].astype(int).values
+#Y = df["metastasis_label"].astype(int).values
 
 # ---------------------------
 # Split treated and control groups
