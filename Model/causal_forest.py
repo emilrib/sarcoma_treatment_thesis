@@ -127,10 +127,11 @@ test_df["CATE_upper"] = cate_upper_test
 # ---------------------------
 # Subgroup CATE Analysis (Test Set)
 # ---------------------------
+
 subgroup_vars = [
-    'age_group', 'tumor_size_group', 'cci_group',
-    'anatomic_region_label', 'Gender', 'grade_clean', 'Affected tissue', 'radiation_status', 'metastasis_label', 'reoperation_label'
-]
+    'age_group', 'tumor_size_group', 'cci_group','anatomic_region_label', 'Gender', 'grade_clean',
+    'Affected tissue', 'radiation_status', 'metastasis_label', 'reoperation_label']
+
 
 subgroup_results_test = []
 print("\nSubgroup-specific CATE summary (on test set):")
@@ -180,7 +181,7 @@ plt.errorbar(
     yerr=2 * combined_subgroups_test['Std_CATE'],
     fmt='o', capsize=4, ecolor='gray', color='blue', label='Mean ± 2*SD'
 )
-plt.xticks(rotation=90$
+plt.xticks(rotation=90)
 plt.axhline(0, color='black', linestyle='--')
 plt.title('Subgroup Mean CATE Estimates (Test Set) with ±2 SD')
 plt.xlabel('Subgroup')
@@ -197,5 +198,4 @@ joblib.dump(cf_model, os.path.join(model_dir, "cf_model.pkl"))
 joblib.dump(preprocessor, os.path.join(model_dir, "preprocessor.pkl"))
 test_df.to_csv(os.path.join(datasets_dir, "cf_test_results.csv"), index=False)
 combined_subgroups_test.to_csv(os.path.join(datasets_dir, "test_subgroup_summary.csv"), index=False)
-
 

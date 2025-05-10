@@ -13,7 +13,6 @@ from Model.cf_config import covariate_cols, treatment_col, outcome_col
 # ---------------------------
 df_test = pd.read_csv(os.path.join(datasets_dir, "cf_results.csv"))
 
-
 # Load and apply preprocessor to align with training
 preprocessor = joblib.load(os.path.join(model_dir, "preprocessor.pkl"))
 X_test = preprocessor.transform(df_test[covariate_cols])
