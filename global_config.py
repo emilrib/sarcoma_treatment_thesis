@@ -11,9 +11,9 @@ datasets_dir = os.path.join(BASE_DIR, "Datasets")
 evaluation_dir = os.path.join(BASE_DIR, "Evaluation")
 model_dir = os.path.join(BASE_DIR, "Model")
 preprocessing_dir = os.path.join(BASE_DIR, "Preprocessing")
-
+validation_dir = os.path.join(BASE_DIR, "Validation")
 # Create folders if they don't exist
-for folder in [analysis_dir, datasets_dir, evaluation_dir, model_dir, preprocessing_dir]:
+for folder in [analysis_dir, datasets_dir, evaluation_dir, model_dir, preprocessing_dir, validation_dir]:
     os.makedirs(folder, exist_ok=True)
 
 #print(f" datasets_dir: {datasets_dir}")

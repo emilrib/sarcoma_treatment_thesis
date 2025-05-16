@@ -4,97 +4,76 @@ import matplotlib.pyplot as plt
 import numpy as np
 import re
 from collections import Counter
+from global_config import datasets_dir
+import seaborn as sns
 
-output_dir = os.path.join(os.getcwd())
-
-input_file = os.path.join(output_dir, "dataset_labelled.csv")
+input_file_labelled = os.path.join(datasets_dir, "dataset_labelled.csv")
+input_file = os.path.join(datasets_dir, "df_with_groups.csv")
 
 def import_file(file_path):
     df = pd.read_csv(file_path)
     #print(df.head())
     return df
 df = import_file(input_file)
+df_labelled = import_file(input_file_labelled)
 
 print(df.head(3))
 
-"""
-DEMOGRAPHIC DATA 
-"""
+# ---------------------------
+# Demographic Data
+# ---------------------------
 
-df_demographics = df[['Pat ID','age', 'Gender', 'gender_label']]
+df_demographics = df[['Pat ID','age', 'Gender', 'age_group']]
+group_col = 'age_group'
+value_col = 'age'  # Assuming you have a numeric age column in df_history
 
-#This chart displays the total amount of the sample as well as the distribution by gender
-gender_counts = df_demographics.groupby('Gender')['Pat ID'].nunique().sort_index()
+# Define a sorting function for age groups like "20-29", "80+"
+def sort_age_group(label):
+    if isinstance(label, str):
+        if '+' in label:
+            return int(label.replace('+', '').strip())
+        elif '-' in label:
+            return int(label.split('-')[0].strip())
+    return float('inf')
 
-# Calculate the total number of patients
-total_patients = df['Pat ID'].nunique()
-print( f'Total Patients: {total_patients}')
-# Calculate the percentage of each gender
-total_count = gender_counts.sum()
+# Sort age groups logically
+sorted_age_groups = sorted(df_demographics[group_col].dropna().unique(), key=sort_age_group)
 
-gender_percentages = (gender_counts / total_count) * 100
+# Create boxplot
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    x=group_col,
+    y=value_col,
+    data=df_demographics,
+    order=sorted_age_groups,
+    color="#ADD8E6",
+    flierprops=dict(marker='o', markerfacecolor='darkorange', markersize=8, linestyle='none')
+)
 
-# Plotting the bar chart
-plt.figure(figsize=(5, 5))  # Set the figure size
-bars = plt.bar(gender_counts.index, gender_counts.values, color=['pink', 'blue'])
+# Add red dot and label for mean in each group
+for i, grp in enumerate(sorted_age_groups):
+    mean_val = df_demographics[df_demographics[group_col] == grp][value_col].mean()
+    plt.scatter(i, mean_val, color='red', s=40, zorder=10)
+    plt.text(i, mean_val + 0.5, f"{mean_val:.1f}", ha='center', va='bottom', fontsize=9, color='red')
 
-# Adding count and percentage labels to each bar
-for bar, percentage in zip(bars, gender_percentages):
-    yval = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width()/2, yval, f'{int(yval)}\n({percentage:.1f}%)', ha='center', va='bottom')  # ha: horizontal alignment
+# Formatting
+plt.title('Age Distribution by Age Group', fontsize=14, weight='bold')
+plt.xlabel(group_col.replace('_', ' ').title(), fontsize=12)
+plt.ylabel('Age (years)', fontsize=12)
+plt.grid(True, axis='y', linestyle='--', alpha=0.7)
 
-# Display total above the bars
-plt.text(0.4, max(gender_counts.values), f'Total: {total_patients}', ha='center', va='bottom', fontsize=12, color='green')
-
-plt.xlabel('Gender')  # X-axis label
-plt.ylabel('Number of Patients')  # Y-axis label
-plt.title('Patient Distribution by Gender')  # Chart title
-plt.ylim(0, max(gender_counts.values) * 1.2)  # Set y-axis limits to include text
-plt.show()  # Display the chart
-
-# The boxplot calculates the age of the patients and displays the ages in which sarcoma seems to appear the most. Outliers are also here identified and need to be verified with the SNN for data quality issues.
-ages = df_demographics['age']
-# Calculate statistics
-median = round(ages.median())
-mean = round(ages.mean())
-quartiles = round(ages.quantile([0.25, 0.75]))
-iqr = quartiles[0.75] - quartiles[0.25]
-lower_whisker = quartiles[0.25] - 1.5 * iqr
-upper_whisker = quartiles[0.75] + 1.5 * iqr
-# Identify outliers
-outlier_mask = (ages < lower_whisker) | (ages > upper_whisker)
-outlier_values = ages[outlier_mask]
-
-
-# Plot
-plt.figure(figsize=(10, 8))
-
-# Boxplot of patient ages
-plt.boxplot(ages, widths=0.6, vert=True, patch_artist=True, showfliers=False)
-
-# Highlight manually calculated outliers
-if not outlier_values.empty:
-    plt.scatter(np.ones(outlier_values.shape[0]), outlier_values, color='orange', s=50, label='Outliers')
-
-# Display stats
-plt.scatter(x=1, y=median, color='red', label=f'Median: {median:.2f}')
-plt.scatter(x=1, y=mean, color='green', label=f'Mean: {mean:.2f}')
-plt.axhline(y=quartiles[0.25], color='gray', linestyle='--', label=f'Q1: {quartiles[0.25]:.2f}')
-plt.axhline(y=quartiles[0.75], color='gray', linestyle='--', label=f'Q3: {quartiles[0.75]:.2f}')
-
-plt.title('Age Distribution of Sarcoma Patients')
-plt.ylabel('Age')
-plt.xticks([1], ['Patients'])
-plt.legend()
+plt.tight_layout()
 plt.show()
-print(df_demographics['age'].min())
-print(df_demographics['age'].max())
+# Age range for debugging/confirmation
+print("Min age:", df_demographics['age'].min())
+print("Max age:", df_demographics['age'].max())
 
-"""
-PATIENT HISTORY
-"""
+# ---------------------------
+# Patient History
+# ---------------------------
 
-df_history = df[['Pat ID','date_first_patientcontact_Timo', 'Histological diagnosis', '(W) Other diagnoses?_Timo', 'cci_Timo', 'dignity_timo', 'anatomicregion_group_Timo', 'anatomic_region_label',  'Affected tissue', 'number_all_operation_Timo', 'Tumor maximal size (mm)', 'metastasis_status', 'metastasis_label', 'metastasis_label_description', 'reoperation_label']]
+df_history = df[['Pat ID', 'cci_Timo', 'grade_clean', 'Affected tissue','tumor_size_group',
+                 'anatomic_region_label',  'reoperation_label', 'Tumor maximal size (mm)', 'radiation_status', 'metastasis_label',  'reoperation_label']]
 
 #Display of values of CCI
 print(type(df_history['cci_Timo'][0]))
@@ -117,16 +96,15 @@ for bar in ax.patches:
         ha='center', va='bottom', fontsize=10
     )
 
-plt.xlabel('CCI Groups')
-plt.ylabel('Number of Occurrences')
-plt.title('Number of Occurrences by Different CCI Groups', fontsize=14)
+plt.xlabel('CCI Groups', fontsize=12)
+plt.ylabel('Number of Patients', fontsize=12)
+plt.title('Distribution by Charlson Comorbidity Index (CCI)', fontsize=14, weight='bold')
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.show()
 
 #Identify the most common deceases in patients history
-
 
 def extract_group_words(text):
     text = text.strip().lower()  # Convert to lowercase and remove surrounding spaces
@@ -138,22 +116,16 @@ def extract_group_words(text):
     return group_words
 
 # Extract and flatten all group words from the column
-other_diagnoses_group= df_history['(W) Other diagnoses?_Timo'].dropna().apply(extract_group_words).sum()
-histological_diagnosis_group= df_history['Histological diagnosis'].dropna().apply(extract_group_words).sum()
+histological_diagnosis_group= df_labelled['Histological diagnosis'].dropna().apply(extract_group_words).sum()
 
 # Count the frequency of group words
-other_diagnoses_counts = Counter(other_diagnoses_group)
 histological_diagnosis_counts = Counter(histological_diagnosis_group)
 
 # Convert to DataFrame for better visualization
-group_words_other_diagnosis = pd.DataFrame(other_diagnoses_counts.items(), columns=['Most occurred Other Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
-group_words_histoloical_diagnosis = pd.DataFrame(histological_diagnosis_counts.items(), columns=['Most occurred Histological Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
+group_words_histolocial_diagnosis = pd.DataFrame(histological_diagnosis_counts.items(), columns=['Most occurred Histological Diagnosis', 'Frequency']).sort_values(by='Frequency', ascending=False)
 
 # Display the top 10 most common group words
-print(group_words_other_diagnosis.head(10))
-print(group_words_histoloical_diagnosis.head(10))
-
-"""
+print(group_words_histolocial_diagnosis.head(5))
 
 #Display the total patient per anatomic region group
 anatomic_grouping_counts = df_history['anatomic_region_label'].value_counts()
@@ -163,19 +135,19 @@ anatomic_grouping_counts.plot(kind='barh', color='#ADD8E6', edgecolor='black')
 for index, value in enumerate(anatomic_grouping_counts):
     plt.text(value + 0.1, index, str(value), va='center', fontsize=10)
 
-plt.title('Total Sarcoma cases per Anatomic Region Group', fontsize=10, weight='bold')
-plt.xlabel('Total', fontsize=12)
-plt.ylabel('Group', fontsize=12)
+plt.title('Total Sarcoma cases per Anatomic Region Group', fontsize=14, weight='bold')
+plt.xlabel('Number of Patients', fontsize=12)
+plt.ylabel('Anatomic Region', fontsize=12)
 plt.grid(axis='x', linestyle='--', alpha=0.7)
 plt.xticks(fontsize=10)
 plt.yticks(fontsize=10)
 plt.tight_layout()
 plt.show()
-"""
+
 # Analyse the percentage of the data sample with metastasis and its resurfacing time
 metastasis_counts = df_history['metastasis_label'].value_counts()
 
-label_map = {1: 'No', 2: 'Yes'}
+label_map = {0: 'No Metastasis', 1: 'Metastasis'}
 translated_index = metastasis_counts.index.map(label_map)
 
 sizes = metastasis_counts.values
@@ -192,57 +164,172 @@ plt.pie(
     sizes,
     labels=labels,
     autopct=autopct_func,
-    startangle=140,
-    colors=['#FFDAB9', '#ADD8E6', '#FFFFE0'],
-    wedgeprops={'edgecolor': 'black'},
-    textprops={'fontsize': 12}
+    startangle=90,
+    colors=['#FFDAB9', '#ADD8E6'],
+    wedgeprops={'edgecolor': 'black'}
 )
-plt.title('Presence of Metastasis by First Diagnosis')
+plt.title('Presence of Metastasis', fontsize=14, weight='bold')
 plt.axis('equal')  # Ensures pie is a circle
 plt.show()
 print(metastasis_counts)
 
-metastasis_counts_description = df_history['metastasis_label_description'].value_counts()
+#Display in a box plot how the tumor size is distributed
+# Set grouping column
+group_col = 'tumor_size_group'
+value_col = "Tumor maximal size (mm)"
 
-# Data
-labels = metastasis_counts_description.index
-values = metastasis_counts_description.values
-total = values.sum()
+# Convert group labels to a sorted list
+sorted_groups = sorted(df_history[group_col].dropna().unique(), key=lambda x: int(str(x).split('-')[0]))
 
-# Plot
+# Initialize plot
+# Grouping and value columns
+group_col = 'tumor_size_group'
+value_col = "Tumor maximal size (mm)"
+
+# Define robust sorting function
+def extract_numeric(label):
+    if isinstance(label, str):
+        if '+' in label:
+            return int(label.replace('+', '').strip())
+        elif '-' in label:
+            return int(label.split('-')[0].strip())
+    return float('inf')  # fallback
+
+# Sort the tumor size groups logically
+sorted_groups = sorted(df_history[group_col].dropna().unique(), key=extract_numeric)
+
+# Create boxplot
 plt.figure(figsize=(10, 6))
-bars = plt.bar(
-    labels, values,
-    color=['#ACE1AF', '#FFDAB9', '#ADD8E6', '#FFFFE0'],
-    edgecolor='black'
+sns.boxplot(
+    x=group_col,
+    y=value_col,
+    data=df_history,
+    order=sorted_groups,
+    color="#ADD8E6",
+    flierprops=dict(marker='o', markerfacecolor='darkorange', markersize=8, linestyle='none')
 )
 
-# Add absolute values & prepare percentage labels
-percentages = []
-for bar, label, value in zip(bars, labels, values):
-    plt.text(
-        bar.get_x() + bar.get_width() / 2,
-        value,
-        f'{value}',
-        ha='center', va='bottom', fontsize=10
-    )
-    percentages.append(f"{label}: {value / total:.1%}")
+# Add smaller mean markers with labels
+for i, grp in enumerate(sorted_groups):
+    mean_val = df_history[df_history[group_col] == grp][value_col].mean()
+    plt.scatter(i, mean_val, color='red', s=40, zorder=10)
+    plt.text(i, mean_val + 0.5, f"{mean_val:.1f}", ha='center', va='bottom', fontsize=9, color='red')
 
-# Description box with percentages
-description = "\n".join(percentages)
-plt.gca().text(
-    1.02, 0.95,
-    description,
-    transform=plt.gca().transAxes,
-    fontsize=10,
-    verticalalignment='top',
-    bbox=dict(boxstyle='round', facecolor='white', edgecolor='gray', alpha=0.8)
+# Formatting
+plt.title('Tumor Size Distribution by Subgroup', fontsize=14, weight='bold')
+plt.xlabel(group_col.replace('_', ' ').title(), fontsize=12)
+plt.ylabel('Tumor Size (mm)', fontsize=12)
+plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+
+# ---------------------------
+# Patient Treatment
+# ---------------------------
+
+##  PIe chart displaying the percentage of patients that received and did not receive chemotherapy
+df_treatment = df[['Pat ID','chemo_status', 'reoperation_label', 'radiation_status']]
+
+# Rename columns for display
+label_mapping = {
+    'chemo_status': 'Chemotherapy',
+    'reoperation_label': 'Operation',
+    'radiation_status': 'Radiotherapy'
+}
+df_treatment_renamed = df_treatment.rename(columns=label_mapping)
+
+# Count 0s and 1s for each treatment variable
+treatment_counts = df_treatment_renamed.drop(columns='Pat ID').apply(lambda col: col.value_counts()).T
+treatment_counts = treatment_counts[[0, 1]].fillna(0).astype(int)
+
+# Create figure and axes
+fig, ax = plt.subplots(figsize=(8, 6))
+treatment_counts.plot(kind='bar', stacked=True, color=['#FFDAB9', '#ADD8E6'], edgecolor='black', ax=ax)
+
+# Add text for individual bar segments
+for i, col in enumerate(treatment_counts.index):
+    total = treatment_counts.loc[col].sum()
+    bottom = 0
+    for j, value in enumerate(treatment_counts.loc[col]):
+        ax.text(i, bottom + value / 2, str(value), ha='center', va='center', fontsize=10)
+        bottom += value
+
+# Labels and formatting
+ax.set_title('Patient Counts by Treatment Type', fontsize=14, weight='bold')
+ax.set_xlabel('Treatment Type', fontsize=12)
+ax.set_ylabel('Number of Patients', fontsize=12)
+ax.set_xticks(range(len(treatment_counts.index)))
+ax.set_xticklabels(treatment_counts.index, rotation=0)
+ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+
+# Move legend outside the plot
+ax.legend(['Treatment not received', 'Treatment received'], title='Legend',
+          bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+
+plt.tight_layout(rect=[0, 0, 0.85, 1])  # Leave space for the legend
+plt.show()
+
+
+# ---------------------------
+# Patient Outcome
+# ---------------------------
+
+## Pie char dispaly the pertage of patient survival
+
+# Count survival statuses (assuming 0 = Not Survived, 1 = Survived)
+survival_counts = df["survival_status"].value_counts().sort_index()
+total_survival = survival_counts.sum()
+
+# Labels mapped manually
+labels_survival = ['Not Survived', 'Survived']
+colors_survival = ['#FFDAB9', '#ADD8E6']
+
+# Custom autopct function
+def autopct_format_survival(pct):
+    count = int(round(pct * total_survival / 100.0))
+    return f'{pct:.1f}%\n({count})'
+
+
+plt.figure(figsize=(6, 6))
+plt.pie(survival_counts,
+        labels=labels_survival,
+        autopct=autopct_format_survival,
+        startangle=90,
+        colors=colors_survival,
+        wedgeprops={'edgecolor': 'black'})
+
+# Title only (no legend)
+plt.title('Percentage of Patient Survival', fontsize=14, weight='bold' )
+plt.tight_layout()
+plt.show()
+
+##Cross-tabulation evaluating the combination of patient treatment and survival
+
+# Crosstab
+survival_chemo_ct = pd.crosstab(df["survival_status"], df["chemo_status"])
+
+# Relabel the axes for clarity
+survival_chemo_ct.index = ['Not Survived', 'Survived']
+survival_chemo_ct.columns = ['No Chemotherapy', 'Chemotherapy']
+
+print("\nSurvival vs Chemotherapy CrossTab:")
+print(survival_chemo_ct)
+# Plot
+
+#Heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(
+    survival_chemo_ct,
+    annot=True,
+    fmt='d',
+    cmap='YlOrRd',
+    linewidths=0.5,
+    linecolor='black',
+    cbar_kws={"label": "Number of Patients"}
 )
 
-# Titles and styling
-plt.title('Metastasis Cases by Resurfacing Time', fontsize=12, weight='bold')
-plt.xlabel('Resurfacing Time')
-plt.ylabel('Number of Cases')
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.title('Survival Status vs Chemotherapy', fontsize=14, weight='bold')
+plt.xlabel('Chemotherapy Status', fontsize=12)
+plt.ylabel('Survival Status', fontsize=12)
 plt.tight_layout()
 plt.show()

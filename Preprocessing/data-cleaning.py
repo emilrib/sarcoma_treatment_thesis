@@ -27,14 +27,14 @@ dataset_raw = df[['Pat ID','Date of birth', 'Gender', 'date_first_patientcontact
 duplicates = dataset_raw[dataset_raw.duplicated(keep=False)]
 
 
-dataset_filtered = dataset_raw[dataset_raw['anatomicregion_group_Timo'] != 1]
+#dataset_filtered = dataset_raw[dataset_raw['anatomicregion_group_Timo'] != 1]
 
 #test for change in total amount
-total = dataset_filtered['Pat ID'].nunique()
+total = dataset_raw['Pat ID'].nunique()
 print( f'Total Patients: {total}')
 
 
-dataset_filtered = dataset_filtered.copy()
+dataset_filtered = dataset_raw.copy()
 
 dataset_filtered.loc[:, 'Histological diagnosis'] = dataset_filtered['Histological diagnosis'].str.replace(r'^\d+(\.\d+)*\.\s*', '', regex=True)
 
