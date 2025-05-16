@@ -69,7 +69,8 @@ print(f"\nAUTOC: {AUTOC:.4f} ± {AUTOC_stderr:.4f}  (95% CI: {AUTOC_lower:.4f} t
 top_10_idx = sorted_indices[:int(0.1 * len(sorted_indices))]
 top_10_df = df_test.iloc[top_10_idx]
 
-subgroup_vars = ['age_group', 'tumor_size_group', 'cci_group', 'Gender', 'grade_clean']
+subgroup_vars = ['age_group', 'tumor_size_group', 'cci_group', 'Gender', 'grade_clean',
+                 'anatomic_region_label', 'reoperation_label', 'metastasis_label', 'radiation_status', 'Affected tissue']
 
 print("\nSubgroup CATEs in Top 10% Priority Group:")
 for var in subgroup_vars:
